@@ -1,0 +1,45 @@
+1. <ID> 			: 	<ID> <LETRA>
+2. <ID> 			:	<ID> <DIGITO>
+3. <ID> 			:	<LETRA>
+4. <LETRA> 		: 	a | b | c | d |...........| x | y | z | A | B | C | D |........| X | Y | Z
+5. <CAR_ESPECIAL> 		: 	¿ | ° | %  | ? | ¡ | ~ | ¬ 
+6. <OPMULTI> 		: 	*
+7. <OP_ESP_MUL> 	: 	*=
+8. <OPDIV> 		: 	/
+9. <OP_ESP_DIV> 	: 	/=
+10. <OPMAS> 		: 	+
+11. <OP_ESP_MAS> 	: 	+=
+12. <OPMENOS> 		: 	-
+13. <OP_ESP_MEN> 	: 	-=
+14. <MAYOR> 		:	>
+15. <MENOR> 		: 	<
+16. <MAYOR_IGUAL> 	: 	>=
+17. <MENOR_IGUAL> 	: 	<= 
+18. <ASIGNA> 		: 	:=
+19. <IGUAL> 		: 	==
+20. <DISTINTO> 		: 	!=
+21. <NEGADO> 		: 	!
+22. <OP_AND> 		: 	&&
+23. <OP_OR> 		: 	||
+24. <P_ABRE> 		: 	(
+25. <P_CIERRA> 		: 	)
+26. <COR_ABRE> 		: 	[
+27. <COR_CIERRA> 	: 	]
+28. <COMA> 		: 	,
+29. <PUNTO_COMA> 	: 	;
+30. <PUNTO> 		: 	.
+31. <CONST_FLOAT> 	: 	<DIGITO2> <PUNTO> <DIGITO2>
+32. <CONST_FLOAT> 	: 	<PUNTO> <DIGITO2>
+33. <CONST_ENT> 	: 	<DIGITO2>
+34. <DIGITO2> 		: 	<DIGITO2> <DIGITO>
+35. <DIGITO2> 		: 	<DIGITO>
+36. <DIGITO> 		: 	0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9
+37. <COMILLA> 		: 	“
+38. <CONST_STR> 	: 	<COMILLA> <CONST_STR2> <COMILLA>
+39. <CONST_STR2> 	: 	<CONST_STR2><CAR_TODO>
+40. <CONST_STR2> 	: 	<CAR_TODO>
+41. <CAR_TODO> 		:	<DIGITO>
+42. <CAR_TODO> 		:	<LETRA>
+43. <CAR_TODO> 		:	<CAR_ESPECIAL>
+44.	<LL_ABRE>		:	{
+45.	<LL_CIERRA>		:	}
