@@ -1,0 +1,10 @@
+BEGINPROG
+
+a="jjjjjjjjjjjjjjjjaaaaaaaaa";
+as=1;
+-/comentario sin cerrar/-
+	
+
+ENDPROG
+
+

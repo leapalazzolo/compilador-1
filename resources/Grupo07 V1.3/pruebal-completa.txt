@@ -1,0 +1,93 @@
+VAR
+	[INT,FLOAT,STRING]:[a,b,c];
+ENDVAR
+
+BEGINPROG
+
+	b=2+6-c;
+
+	READ b;
+
+	WRITE b;
+
+	WRITE "hola";
+
+	r="hola cadena";
+
+	r=((4+5)*c);
+
+	c=24;
+
+	c=235.5572345345;
+
+	f=25*c/2+5.4;
+
+	a="hola";
+
+	b="mundo";
+
+	c=a++b;
+
+	c="hola"++"mundo";
+
+	c=a++"mundo";
+
+	c="hola"++b;	
+
+	WHILE
+		a IN [3+2,c,d]
+	DO
+		b=3-2;
+	ENDWHILE
+	
+	TAKE (+;3;[3;4;5]); 
+	
+	TAKE (-;3;[3;4;5]);
+	
+	TAKE (*;3;[3;4;5]);
+	
+	TAKE (/;3;[3;4;5]);
+	
+	TAKE (/;3;[]);
+
+	IF(a==0 AND b<3)
+	
+	THEN
+		c=2;
+	ELSE
+		c=3;
+	ENDIF
+
+	IF(a==0 OR b<3)
+	
+	THEN
+		c=2;
+	ELSE
+		c=3;
+	ENDIF
+
+	IF(NOT a==0)
+	
+	THEN
+		c=2;
+	ELSE
+		c=3;
+	ENDIF
+
+	WHILE (a<1 AND b==1)
+		a=a-1;
+	ENDWHILE
+
+	WHILE (a<1 OR b==1)
+		a=a-1;
+	ENDWHILE
+
+	WHILE (NOT a<1)
+		a=a-1;
+	ENDWHILE
+
+	-/COMENTARIO/-COMENTARIO-//-
+
+ENDPROG
+
+
