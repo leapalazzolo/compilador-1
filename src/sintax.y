@@ -2,14 +2,16 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "y.tab.h"
+#include "defines.h"
+
 FILE  *yyin; //Archivo de Entrada
 %}
-%token <str_val>TOKEN_ID
+
+%token <int>TOKEN_ID
 %%
 
 factor: TOKEN_ID			
-{
- printf ("Factor = ID\n");                        
+{                    
 };
 %%
 

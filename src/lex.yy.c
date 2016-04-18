@@ -476,9 +476,11 @@ char *yytext;
 #include <stdio.h>
 #include <stdlib.h>
 #include "y.tab.h"
+#include "defines.h"
+extern int yylval;
 
 FILE  *yyin;
-#line 482 "lex.yy.c"
+#line 484 "lex.yy.c"
 
 #define INITIAL 0
 
@@ -687,8 +689,8 @@ YY_DECL
 		}
 
 	{
-#line 52 "lex.l"
-#line 692 "lex.yy.c"
+#line 53 "lex.l"
+#line 694 "lex.yy.c"
 
 	while ( 1 )		/* loops until end-of-file is reached */
 		{
@@ -757,10 +759,10 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 52 "lex.l"
+#line 53 "lex.l"
 ECHO;
 	YY_BREAK
-#line 764 "lex.yy.c"
+#line 766 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -1767,4 +1769,4 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 52 "lex.l"
+#line 53 "lex.l"

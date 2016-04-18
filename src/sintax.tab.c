@@ -67,9 +67,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "y.tab.h"
+#include "defines.h"
+
 FILE  *yyin; //Archivo de Entrada
 
-#line 73 "y.tab.c" /* yacc.c:339  */
+#line 75 "sintax.tab.c" /* yacc.c:339  */
 
 # ifndef YY_NULLPTR
 #  if defined __cplusplus && 201103L <= __cplusplus
@@ -87,10 +89,7 @@ FILE  *yyin; //Archivo de Entrada
 # define YYERROR_VERBOSE 0
 #endif
 
-/* In a future release of Bison, this section will be replaced
-   by #include "y.tab.h".  */
-#ifndef YY_YY_Y_TAB_H_INCLUDED
-# define YY_YY_Y_TAB_H_INCLUDED
+
 /* Debug traces.  */
 #ifndef YYDEBUG
 # define YYDEBUG 0
@@ -107,8 +106,6 @@ extern int yydebug;
     TOKEN_ID = 258
   };
 #endif
-/* Tokens.  */
-#define TOKEN_ID 258
 
 /* Value type.  */
 
@@ -117,11 +114,11 @@ extern YYSTYPE yylval;
 
 int yyparse (void);
 
-#endif /* !YY_YY_Y_TAB_H_INCLUDED  */
+
 
 /* Copy the second part of user declarations.  */
 
-#line 125 "y.tab.c" /* yacc.c:358  */
+#line 122 "sintax.tab.c" /* yacc.c:358  */
 
 #ifdef short
 # undef short
@@ -418,7 +415,7 @@ static const yytype_uint8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    10,    10
+       0,    13,    13
 };
 #endif
 
@@ -1183,15 +1180,14 @@ yyreduce:
   switch (yyn)
     {
         case 2:
-#line 11 "sintax.y" /* yacc.c:1646  */
-    {
- printf ("Factor = ID\n");                        
+#line 14 "sintax.y" /* yacc.c:1646  */
+    {                    
 }
-#line 1191 "y.tab.c" /* yacc.c:1646  */
+#line 1187 "sintax.tab.c" /* yacc.c:1646  */
     break;
 
 
-#line 1195 "y.tab.c" /* yacc.c:1646  */
+#line 1191 "sintax.tab.c" /* yacc.c:1646  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -1419,7 +1415,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 14 "sintax.y" /* yacc.c:1906  */
+#line 16 "sintax.y" /* yacc.c:1906  */
 
 
 //función para realizar todo lo que haga falta previo a terminar
