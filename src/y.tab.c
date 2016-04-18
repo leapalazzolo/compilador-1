@@ -73,7 +73,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "y.tab.h"
-#include "lex.yy.c"
+#include "lex.yy.h"
 
 FILE  *yyin; //Archivo de Entrada
 
@@ -213,7 +213,7 @@ YYID (yyi)
 }
 #endif
 
-#if ! defined yyoverflow
+#if ! defined yyoverflow || YYERROR_VERBOSE
 
 /* The parser invokes alloca or malloc; define the necessary symbols.  */
 
@@ -256,7 +256,6 @@ YYID (yyi)
 #  define YYSTACK_FREE YYFREE
 #  ifndef YYSTACK_ALLOC_MAXIMUM
 #   define YYSTACK_ALLOC_MAXIMUM YYSIZE_MAXIMUM
-typedef double YYSTYPE;
 #  endif
 #  if (defined __cplusplus && ! defined _STDLIB_H \
        && ! ((defined YYMALLOC || defined malloc) \

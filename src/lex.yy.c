@@ -378,7 +378,8 @@ char *yytext;
 #include <stdio.h>
 #include <stdlib.h>
 #include "y.tab.h"
-#line 382 "lex.yy.c"
+extern YYSTYPE yylval;
+#line 383 "lex.yy.c"
 
 /* Macros after this point can all be overridden by user definitions in
  * section 1.
@@ -529,12 +530,12 @@ YY_DECL
 	register char *yy_cp, *yy_bp;
 	register int yy_act;
 
-#line 48 "lex.l"
+#line 49 "lex.l"
 
    #ifndef yywrap
    yywrap() { return 1; }
    #endif
-#line 538 "lex.yy.c"
+#line 539 "lex.yy.c"
 
 	if ( yy_init )
 		{
@@ -627,10 +628,10 @@ do_action:	/* This label is used only to access EOF actions. */
 	{ /* beginning of action switch */
 case 1:
 YY_RULE_SETUP
-#line 52 "lex.l"
+#line 53 "lex.l"
 ECHO;
 	YY_BREAK
-#line 634 "lex.yy.c"
+#line 635 "lex.yy.c"
 			case YY_STATE_EOF(INITIAL):
 				yyterminate();
 
@@ -1514,4 +1515,4 @@ int main()
 	return 0;
 	}
 #endif
-#line 52 "lex.l"
+#line 53 "lex.l"

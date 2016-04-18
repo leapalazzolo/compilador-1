@@ -52,7 +52,6 @@
 
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
 # define YYSTYPE_IS_DECLARED 1
-typedef double YYSTYPE;
 #endif
 
 extern YYSTYPE yylval;
