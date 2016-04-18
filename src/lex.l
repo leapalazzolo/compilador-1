@@ -2,15 +2,18 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "y.tab.h"
-extern YYSTYPE yylval;
+
+FILE  *yyin;
 %}
+
 
 %option noyywrap  
 %option yylineno 
 
+
 ID					{LETRA}({LETRA}|{DIGITO}|_)*
 LETRA				[a-zA-Z]
-CAR_ESPECIAL		[¿,?,¡,!]
+CAR_ESPECIAL		[ï¿½,?,ï¿½,!]
 OPMULTI				["*"]
 OP_ESP_MUL			["*="]
 OPDIV				["/"]
@@ -40,13 +43,10 @@ CONST_FLOAT    		{DIGITO}+"."{DIGITO}+
 CONST_INT       	{DIGITO}+
 DIGITO				[0-9]
 COMILLA				["\""]
-CONST_STR			{COMILLA}{CONST_STR2}+{COMILLA}
+CONST_STR			{COMILLA}({CONST_STR2})+{COMILLA}
 CONST_STR2			{CONST_STR2}({CAR_TODO})*
 CAR_TODO			{DIGITO}|{LETRA}|{CAR_ESPECIAL}
 LL_ABRE 			[{]
 LL_CIERRA 			[}]
 
 %%
-   #ifndef yywrap
-   yywrap() { return 1; }
-   #endif
