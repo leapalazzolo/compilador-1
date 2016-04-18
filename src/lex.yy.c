@@ -477,10 +477,9 @@ char *yytext;
 #include <stdlib.h>
 #include "y.tab.h"
 #include "defines.h"
-extern int yylval;
 
 FILE  *yyin;
-#line 484 "lex.yy.c"
+#line 483 "lex.yy.c"
 
 #define INITIAL 0
 
@@ -690,7 +689,7 @@ YY_DECL
 
 	{
 #line 53 "lex.l"
-#line 694 "lex.yy.c"
+#line 693 "lex.yy.c"
 
 	while ( 1 )		/* loops until end-of-file is reached */
 		{
@@ -762,7 +761,7 @@ YY_RULE_SETUP
 #line 53 "lex.l"
 ECHO;
 	YY_BREAK
-#line 766 "lex.yy.c"
+#line 765 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 

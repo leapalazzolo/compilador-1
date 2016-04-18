@@ -7,6 +7,13 @@
 FILE  *yyin; //Archivo de Entrada
 %}
 
+/* PARA OBTENER LOS VALORES Y PASAR A TS*/
+%union {
+int intval;
+double val;
+char *str_val;
+}
+
 %token <int>TOKEN_ID
 %%
 
@@ -42,6 +49,10 @@ int main(int argc, char **argv ) {
 	return EXIT_SUCCESS;
 }
 
-
-%%
+int yyerror(void)
+{
+	printf("Syntax Error\n");
+	system ("Pause");
+	exit (1);
+}
 
