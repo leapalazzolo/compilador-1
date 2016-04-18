@@ -33,7 +33,7 @@ int main(int argc, char **argv ) {
 	FILE  *yyin; //Archivo de Entrada
 
 	if ( argc > 0 ){
-		if ((yyin = fopen(argv[0], "r")) == NULL)
+		if ((yyin = fopen(argv[1], "r")) == NULL)
 		{
 			printf("\nNo se puede abrir el archivo: %s\n", argv[1]);
 			return -1;
