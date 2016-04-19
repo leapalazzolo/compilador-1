@@ -173,6 +173,9 @@ COMENTARIO          .
 \n 				++linecount;
 [ /t] 
 
+
+.				{ puts("\nCARACTER NO RECONOCIDO"); exit(1);}
+
 %%
 /*
 
