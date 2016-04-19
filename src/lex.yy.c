@@ -1896,7 +1896,7 @@ int main()
 #endif
 #line 176 "lex.l"
 
-
+/*
 
 int main( int argc, char **argv )
 {
@@ -1914,3 +1914,4 @@ else
 
 
 }
+*/

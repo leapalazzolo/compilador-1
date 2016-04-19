@@ -1,2 +1,5 @@
 flex lex.l
-gcc lex.yy.c
+
+bison -dyv sintax.y
+
+gcc.exe lex.yy.c y.tab.c -o final.exe

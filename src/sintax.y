@@ -2,7 +2,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "y.tab.h"
-#include "defines.h"
 
 FILE  *yyin; //Archivo de Entrada
 %}
@@ -30,20 +29,24 @@ void finally(FILE *yyin){
 int main(int argc, char **argv ) {
 	puts("Corriendo el compilador...");
 
-	FILE  *yyin; //Archivo de Entrada
+	++argv, --argc; 
 
-	if ( argc > 0 ){
-		if ((yyin = fopen(argv[1], "r")) == NULL)
-		{
-			printf("\nNo se puede abrir el archivo: %s\n", argv[1]);
-			return -1;
-		}
-	} else{
-		puts("\nNo especificó el archivo como parámetro\n");
-		return -1;
-	}
 
-	yylex();
+	if ( argc > 0 ) {
+	     puts("true");
+	     yyin = fopen( argv[0], "r" );
+     }	else {
+	     puts("false");
+	     yyin = stdin;
+
+     }
+
+
+     int algo;
+     while(algo = yylex()) {
+		printf("%d ", algo);
+     }
+
 
 	finally(yyin);
 	return EXIT_SUCCESS;
