@@ -1,0 +1,7 @@
+DIM [a,b] AS [INT, STRING];
+
+a = 3;
+
+b = "esto es una cadena";
+-/ b = "asdasdasdasdasdasdasdasdasdasdasdasdasdasd"; Esto tira error lexico y esta bien, xq supera los 30 caracteres/-
+-/Esto es un comentario asdasd 123123123 1 //// --- /-
