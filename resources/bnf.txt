@@ -1,0 +1,120 @@
+REGLAS SINTACTICAS:
+
+<programa> : PR_MAIN PR_DIM <declaracion_variables> PR_ENDIM <lista_sentencias> | PR_MAIN <lista_sentencias>
+
+<lista_sentencias> : <sentencia> | <sentencia> <lista_sentencias>
+<sentencia> : <condicional>
+<sentencia> : <asignacion>
+<sentencia> : <iteracion>
+<sentencia> : <io>
+
+<!-- Funciones especiales de este cuatrimestre -->
+<sentencia> : <iguales>
+<sentencia> : <filter>
+<!-- fin de funciones especiales -->
+
+<iguales> : #PR_IGUALES ( <expresion>, [<lista_expresiones>] )
+<lista_expresiones> : <expresion> , <lista_expresiones> | <expresion>
+
+<filter> : PR_FILTER ( <condicion> , [<lista_variables>] )
+<lista_variables> : <ID> , <lista_variables> | <ID>
+
+<io> : <entrada> | <salida>
+
+<entrada> : READ id
+<salida> : WRITE id | WRITE cte
+
+<condicional> : IF <condicion> THEN <lista_sentencias> ENDIF | IF <condicion> THEN <lista_sentencias> else <lista_sentencias> ENDIF
+
+<condicion> : <comparacion>
+<condicion> : <comparacion> and <comparacion>
+<condicion> : <comparacion> or <comparacion>
+<comparacion> : <expresion> <comparador> <expresion> | NOT <expresion>
+
+<iteracion> : PR_WHILE <condicion> PR_BEGIN <lista_sentencias> PR_END
+
+<asignacion> : <ID> := <expresion>
+<expresion> : <termino> | <expresion> + <termino> | <expresion> - <termino>
+<termino> : <factor> | <termino> / <factor> | <termino> * <factor>
+<factor> : cte | id | <expresion>
+
+<declaracion_variables> : [<declaraciones>]
+<declaraciones> : <ID>, <declaraciones> ,<tipo_dato> | <ID> <dec_as> <tipo_dato>
+<dec_as> : ] AS [
+
+<programa> : <lista_sentencias>
+<lista_sentencias> : <sentencia> | <sentencia> <lista_sentencias>
+
+<sentencia> : <condicional>
+<sentencia> : <asignacion>
+<sentencia> : <declaracion_variables>
+<sentencia> : <iteracion>
+<sentencia> : <io>
+
+<!-- Funciones especiales de este cuatrimestre -->
+<sentencia> : <iguales> <!-- TODO -->
+<sentencia> : <filter> <!-- TODO -->
+<!-- fin de funciones especiales -->
+
+<io> : <entrada> | <salida>
+
+<entrada> : READ id
+<salida> : WRITE id | WRITE cte
+
+<condicional> : IF <condicion> THEN <lista_sentencias> ENDIF | IF <condicion> THEN <lista_sentencias> ELSE <lista_sentencias> ENDIF
+
+<condicion> : <comparacion>
+<condicion> : <comparacion> and <comparacion>
+<condicion> : <comparacion> or <comparacion>
+<comparacion> : <expresion> <comparador> <expresion> | NOT <expresion>
+
+<iteracion> : while <condicion> begin <lista_sentencias> end
+
+<asignacion> : id := <expresion>
+<expresion> : <termino> | <expresion> + <termino> | <expresion> - <termino>
+<termino> : <factor> | <termino> / <factor> | <termino> * <factor>
+<factor> : cte | id | <expresion>
+
+<declaracion_variables> : DIM [ <lista_variables_tipos> ]
+<lista_variables_tipos> : id ] AS [ <tipo_dato> | id , <variables> , <tipo_dato>
+<tipo_dato> : PR_INT | PR_FLOAT | PR_STRING
+<comparador> : > | < | <= | >= | == | !=
+
+REGLAS LEXICAS:
+
+<KEYWORD>				["if"]
+<ID>					{LETRA}({LETRA}|{DIGITO}|_|-)*
+<LETRA>				[a-zA-Z]
+<CAR_ESPECIAL>		[�,?,�,!]
+<OPMULTI>				["*"]
+<OPDIV>				["/"]
+<OPMAS>				["+"]
+<OPMENOS>				["-"]
+<OPCONCAT>			["++"]
+<MAYOR>				[">"]
+<MENOR>				["<"]
+<MAYOR_IGUAL>			[">="]
+<MENOR_IGUAL>			["<="]
+<ASIGNA>				[":="]
+<IGUAL>				["=="]
+<DISTINTO>			["!="]
+<NEGADO>				["NOT"]
+<OP_AND>				["AND"]
+<OP_OR>				["OR"]
+<P_ABRE>				["("]
+<P_CIERRA>			[")"]
+<COR_ABRE>			["["]
+<COR_CIERRA>			["]"]
+<COMA>				[","]
+<PUNTO_COMA>			[";"]
+<PUNTO>				["."]
+<ESPACIO> 			[" "]
+<ENTER> 				["\n"]
+<TAB> 				["\t"]
+<CONST_FLOAT>    		{DIGITO}+"."{DIGITO}*|"."{DIGITO}+
+<CONST_INT>       	{DIGITO}+
+<DIGITO>				[0-9]
+<COMILLA>				["\""]
+<CADENA>              .
+<COMENTARIO>          .
+

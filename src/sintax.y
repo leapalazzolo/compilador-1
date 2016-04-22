@@ -335,7 +335,7 @@ lista_variables_tipos : TOKEN_ID COR_CIERRA OP_AS COR_ABRE tipo_dato | TOKEN_ID 
 	puts("-------------------\n");
 }
 
-variables : TOKEN_ID | TOKEN_ID COMA variables
+variables : TOKEN_ID
 {
 	puts("variables : TOKEN_ID\n");
 	puts("-------------------\n");
