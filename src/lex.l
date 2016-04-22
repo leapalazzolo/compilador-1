@@ -177,22 +177,3 @@ COMENTARIO          .
 .				{ puts("\nCARACTER NO RECONOCIDO"); exit(1);}
 
 %%
-/*
-
-int main( int argc, char **argv )
-{
-
-++argv, --argc; 
-if ( argc > 0 )
-     yyin = fopen( argv[0], "r" );
-else
-     yyin = stdin;
-
-     int algo;
-     while(algo = yylex()) {
-		printf("%d ", algo);
-     }
-
-
-}
-*/

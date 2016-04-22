@@ -21,7 +21,7 @@
 <entrada> : READ id
 <salida> : WRITE id | WRITE cte
 
-<condicional> : IF <condicion> THEN <lista_sentencias> ENDIF | IF <condicion> THEN <lista_sentencias> else <lista_sentencias> ENDIF
+<condicional> : IF <condicion> THEN <lista_sentencias> ENDIF | IF <condicion> THEN <lista_sentencias> ELSE <lista_sentencias> ENDIF
 
 <condicion> : <comparacion>
 <condicion> : <comparacion> and <comparacion>
@@ -39,3 +39,39 @@
 <lista_variables_tipos> : id ] AS [ <tipo_dato> | id , <variables> , <tipo_dato>
 <tipo_dato> : int | float | string
 <comparador> : > | < | <= | >= | == | !=
+
+KEYWORD				["if"]
+ID					{LETRA}({LETRA}|{DIGITO}|_|-)*
+LETRA				[a-zA-Z]
+CAR_ESPECIAL		[�,?,�,!]
+OPMULTI				["*"]
+OPDIV				["/"]
+OPMAS				["+"]
+OPMENOS				["-"]
+OPCONCAT			["++"]
+MAYOR				[">"]
+MENOR				["<"]
+MAYOR_IGUAL			[">="]
+MENOR_IGUAL			["<="]
+ASIGNA				[":="]
+IGUAL				["=="]
+DISTINTO			["!="]
+NEGADO				["NOT"]
+OP_AND				["AND"]
+OP_OR				["OR"]
+P_ABRE				["("]
+P_CIERRA			[")"]
+COR_ABRE			["["]
+COR_CIERRA			["]"]
+COMA				[","]
+PUNTO_COMA			[";"]
+PUNTO				["."]
+ESPACIO 			[" "]
+ENTER 				["\n"]
+TAB 				["\t"]
+CONST_FLOAT    		{DIGITO}+"."{DIGITO}*|"."{DIGITO}+
+CONST_INT       	{DIGITO}+
+DIGITO				[0-9]
+COMILLA				["\""]
+CADENA              .
+COMENTARIO          .
