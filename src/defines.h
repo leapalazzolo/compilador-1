@@ -43,3 +43,14 @@
 #define CONST_FLOAT 40
 #define CONST_STR 41
 #define PR_DIM 42
+
+
+typedef struct
+{
+ char *cNombre;
+ char *cTipo;
+ char *cValor;
+ int iLongitud;
+ char *cAlias;
+} t_tablaSimbolos;
+

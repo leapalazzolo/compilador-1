@@ -68,7 +68,7 @@
 /* Copy the first part of user declarations.  */
 
 /* Line 189 of yacc.c  */
-#line 1 "sintax.y"
+#line 1 "../../src/sintax.y"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -203,7 +203,7 @@ typedef union YYSTYPE
 {
 
 /* Line 214 of yacc.c  */
-#line 10 "sintax.y"
+#line 10 "../../src/sintax.y"
 
 int intval;
 double val;
@@ -1526,7 +1526,7 @@ yyreduce:
         case 2:
 
 /* Line 1455 of yacc.c  */
-#line 63 "sintax.y"
+#line 63 "../../src/sintax.y"
     {
 	puts("COMPILACION EXITOSA\n");
 	puts("-------------------\n");
@@ -1536,7 +1536,7 @@ yyreduce:
   case 3:
 
 /* Line 1455 of yacc.c  */
-#line 69 "sintax.y"
+#line 69 "../../src/sintax.y"
     {
 	puts("Código con variables\n");
 	puts("-------------------\n");
@@ -1546,7 +1546,7 @@ yyreduce:
   case 4:
 
 /* Line 1455 of yacc.c  */
-#line 75 "sintax.y"
+#line 75 "../../src/sintax.y"
     {
 	puts("Código sin variables\n");
 	puts("-------------------\n");
@@ -1556,7 +1556,7 @@ yyreduce:
   case 5:
 
 /* Line 1455 of yacc.c  */
-#line 81 "sintax.y"
+#line 81 "../../src/sintax.y"
     {
 	puts("Varias sentencias\n");
 	puts("-------------------\n");
@@ -1566,7 +1566,7 @@ yyreduce:
   case 6:
 
 /* Line 1455 of yacc.c  */
-#line 87 "sintax.y"
+#line 87 "../../src/sintax.y"
     {
 	puts("Última sentencia\n");
 	puts("-------------------\n");
@@ -1576,7 +1576,7 @@ yyreduce:
   case 7:
 
 /* Line 1455 of yacc.c  */
-#line 93 "sintax.y"
+#line 93 "../../src/sintax.y"
     {
 	puts("Una sola sentencia\n");
 	puts("-------------------\n");
@@ -1586,7 +1586,7 @@ yyreduce:
   case 8:
 
 /* Line 1455 of yacc.c  */
-#line 99 "sintax.y"
+#line 99 "../../src/sintax.y"
     {
 	puts("Varias sentencias\n");
 	puts("-------------------\n");
@@ -1596,7 +1596,7 @@ yyreduce:
   case 9:
 
 /* Line 1455 of yacc.c  */
-#line 105 "sintax.y"
+#line 105 "../../src/sintax.y"
     {
 	puts("Condicional\n");
 	puts("-------------------\n");
@@ -1606,7 +1606,7 @@ yyreduce:
   case 10:
 
 /* Line 1455 of yacc.c  */
-#line 111 "sintax.y"
+#line 111 "../../src/sintax.y"
     {
 	puts("Asignación\n");
 	puts("-------------------\n");
@@ -1616,7 +1616,7 @@ yyreduce:
   case 11:
 
 /* Line 1455 of yacc.c  */
-#line 117 "sintax.y"
+#line 117 "../../src/sintax.y"
     {
 	puts("Iteración\n");
 	puts("-------------------\n");
@@ -1626,7 +1626,7 @@ yyreduce:
   case 12:
 
 /* Line 1455 of yacc.c  */
-#line 123 "sintax.y"
+#line 123 "../../src/sintax.y"
     {
 	puts("Operación de entrada salidas\n");
 	puts("-------------------\n");
@@ -1636,7 +1636,7 @@ yyreduce:
   case 13:
 
 /* Line 1455 of yacc.c  */
-#line 129 "sintax.y"
+#line 129 "../../src/sintax.y"
     {
 	puts("Operación de iguales\n");
 	puts("-------------------\n");
@@ -1646,7 +1646,7 @@ yyreduce:
   case 14:
 
 /* Line 1455 of yacc.c  */
-#line 135 "sintax.y"
+#line 135 "../../src/sintax.y"
     {
 	puts("Operación de filters\n");
 	puts("-------------------\n");
@@ -1656,7 +1656,7 @@ yyreduce:
   case 15:
 
 /* Line 1455 of yacc.c  */
-#line 141 "sintax.y"
+#line 141 "../../src/sintax.y"
     {
 	puts("iguales : PR_IGUALES PAR_ABRE expresion COMA COR_ABRElista_expresiones COR_CIERRA PAR_CIERRA\n");
 	puts("-------------------\n");
@@ -1666,7 +1666,7 @@ yyreduce:
   case 16:
 
 /* Line 1455 of yacc.c  */
-#line 147 "sintax.y"
+#line 147 "../../src/sintax.y"
     {
 	puts("Lista de expresiones\n");
 	puts("-------------------\n");
@@ -1676,7 +1676,7 @@ yyreduce:
   case 17:
 
 /* Line 1455 of yacc.c  */
-#line 153 "sintax.y"
+#line 153 "../../src/sintax.y"
     {
 	puts("Última expresión\n");
 	puts("-------------------\n");
@@ -1686,7 +1686,7 @@ yyreduce:
   case 18:
 
 /* Line 1455 of yacc.c  */
-#line 159 "sintax.y"
+#line 159 "../../src/sintax.y"
     {
 	puts("filter : PR_FILTER PAR_ABRE condicion COMA COR_ABRE lista_variables COR_CIERRA PAR_CIERRA\n");
 	puts("-------------------\n");
@@ -1696,7 +1696,7 @@ yyreduce:
   case 19:
 
 /* Line 1455 of yacc.c  */
-#line 165 "sintax.y"
+#line 165 "../../src/sintax.y"
     {
 	puts("Lista de variables\n");
 	puts("-------------------\n");
@@ -1706,7 +1706,7 @@ yyreduce:
   case 20:
 
 /* Line 1455 of yacc.c  */
-#line 171 "sintax.y"
+#line 171 "../../src/sintax.y"
     {
 	puts("Última variable\n");
 	puts("-------------------\n");
@@ -1716,7 +1716,7 @@ yyreduce:
   case 21:
 
 /* Line 1455 of yacc.c  */
-#line 177 "sintax.y"
+#line 177 "../../src/sintax.y"
     {
 	puts("io : entrada\n");
 	puts("-------------------\n");
@@ -1726,7 +1726,7 @@ yyreduce:
   case 22:
 
 /* Line 1455 of yacc.c  */
-#line 183 "sintax.y"
+#line 183 "../../src/sintax.y"
     {
 	puts("io : salida\n");
 	puts("-------------------\n");
@@ -1736,7 +1736,7 @@ yyreduce:
   case 23:
 
 /* Line 1455 of yacc.c  */
-#line 189 "sintax.y"
+#line 189 "../../src/sintax.y"
     {
 	puts("entrada : READ id\n");
 	puts("-------------------\n");
@@ -1746,7 +1746,7 @@ yyreduce:
   case 24:
 
 /* Line 1455 of yacc.c  */
-#line 195 "sintax.y"
+#line 195 "../../src/sintax.y"
     {
 	puts("salida : PR_WRITE id\n");
 	puts("-------------------\n");
@@ -1756,7 +1756,7 @@ yyreduce:
   case 25:
 
 /* Line 1455 of yacc.c  */
-#line 201 "sintax.y"
+#line 201 "../../src/sintax.y"
     {
 	puts("salida : PR_WRITE cte\n");
 	puts("-------------------\n");
@@ -1766,7 +1766,7 @@ yyreduce:
   case 26:
 
 /* Line 1455 of yacc.c  */
-#line 207 "sintax.y"
+#line 207 "../../src/sintax.y"
     {
 	puts("Condicional sin ELSE\n");
 	puts("-------------------\n");
@@ -1776,7 +1776,7 @@ yyreduce:
   case 27:
 
 /* Line 1455 of yacc.c  */
-#line 213 "sintax.y"
+#line 213 "../../src/sintax.y"
     {
 	puts("Condicional con ELSE\n");
 	puts("-------------------\n");
@@ -1786,7 +1786,7 @@ yyreduce:
   case 28:
 
 /* Line 1455 of yacc.c  */
-#line 219 "sintax.y"
+#line 219 "../../src/sintax.y"
     {
 	puts("condicion : comparacion\n");
 	puts("-------------------\n");
@@ -1796,7 +1796,7 @@ yyreduce:
   case 29:
 
 /* Line 1455 of yacc.c  */
-#line 225 "sintax.y"
+#line 225 "../../src/sintax.y"
     {
 	puts("condicion : comparacion and comparacion\n");
 	puts("-------------------\n");
@@ -1806,7 +1806,7 @@ yyreduce:
   case 30:
 
 /* Line 1455 of yacc.c  */
-#line 231 "sintax.y"
+#line 231 "../../src/sintax.y"
     {
 	puts("condicion : comparacion or comparacion\n");
 	puts("-------------------\n");
@@ -1816,7 +1816,7 @@ yyreduce:
   case 31:
 
 /* Line 1455 of yacc.c  */
-#line 237 "sintax.y"
+#line 237 "../../src/sintax.y"
     {
 	puts("comparacion : expresion comparador expresion\n");
 	puts("-------------------\n");
@@ -1826,7 +1826,7 @@ yyreduce:
   case 32:
 
 /* Line 1455 of yacc.c  */
-#line 243 "sintax.y"
+#line 243 "../../src/sintax.y"
     {
 	puts("comparacion : PR_NOT expresion\n");
 	puts("-------------------\n");
@@ -1836,7 +1836,7 @@ yyreduce:
   case 33:
 
 /* Line 1455 of yacc.c  */
-#line 249 "sintax.y"
+#line 249 "../../src/sintax.y"
     {
 	puts("Iteración\n");
 	puts("-------------------\n");
@@ -1846,7 +1846,7 @@ yyreduce:
   case 34:
 
 /* Line 1455 of yacc.c  */
-#line 255 "sintax.y"
+#line 255 "../../src/sintax.y"
     {
 	puts("Asignación\n");
 	puts("-------------------\n");
@@ -1856,7 +1856,7 @@ yyreduce:
   case 35:
 
 /* Line 1455 of yacc.c  */
-#line 261 "sintax.y"
+#line 261 "../../src/sintax.y"
     {
 	puts("Asignación\n");
 	puts("-------------------\n");
@@ -1866,7 +1866,7 @@ yyreduce:
   case 36:
 
 /* Line 1455 of yacc.c  */
-#line 267 "sintax.y"
+#line 267 "../../src/sintax.y"
     {
 	puts("Suma\n");
 	puts("-------------------\n");
@@ -1876,7 +1876,7 @@ yyreduce:
   case 37:
 
 /* Line 1455 of yacc.c  */
-#line 273 "sintax.y"
+#line 273 "../../src/sintax.y"
     {
 	puts("Resta\n");
 	puts("-------------------\n");
@@ -1886,7 +1886,7 @@ yyreduce:
   case 38:
 
 /* Line 1455 of yacc.c  */
-#line 279 "sintax.y"
+#line 279 "../../src/sintax.y"
     {
 	puts("termino : factor\n");
 	puts("-------------------\n");
@@ -1896,7 +1896,7 @@ yyreduce:
   case 39:
 
 /* Line 1455 of yacc.c  */
-#line 285 "sintax.y"
+#line 285 "../../src/sintax.y"
     {
 	puts("División\n");
 	puts("-------------------\n");
@@ -1906,7 +1906,7 @@ yyreduce:
   case 40:
 
 /* Line 1455 of yacc.c  */
-#line 291 "sintax.y"
+#line 291 "../../src/sintax.y"
     {
 	puts("Multiplicación\n");
 	puts("-------------------\n");
@@ -1916,7 +1916,7 @@ yyreduce:
   case 41:
 
 /* Line 1455 of yacc.c  */
-#line 297 "sintax.y"
+#line 297 "../../src/sintax.y"
     {
 	puts("factor : cte\n");
 	puts("-------------------\n");
@@ -1926,7 +1926,7 @@ yyreduce:
   case 42:
 
 /* Line 1455 of yacc.c  */
-#line 303 "sintax.y"
+#line 303 "../../src/sintax.y"
     {
 	puts("factor : cte\n");
 	puts("-------------------\n");
@@ -1936,7 +1936,7 @@ yyreduce:
   case 43:
 
 /* Line 1455 of yacc.c  */
-#line 309 "sintax.y"
+#line 309 "../../src/sintax.y"
     {
 	puts("factor : cte\n");
 	puts("-------------------\n");
@@ -1946,7 +1946,7 @@ yyreduce:
   case 44:
 
 /* Line 1455 of yacc.c  */
-#line 315 "sintax.y"
+#line 315 "../../src/sintax.y"
     {
 	puts("factor : TOKEN_ID\n");
 	puts("-------------------\n");
@@ -1956,7 +1956,7 @@ yyreduce:
   case 45:
 
 /* Line 1455 of yacc.c  */
-#line 321 "sintax.y"
+#line 321 "../../src/sintax.y"
     {
 	puts("factor : expresion\n");
 	puts("-------------------\n");
@@ -1966,7 +1966,7 @@ yyreduce:
   case 46:
 
 /* Line 1455 of yacc.c  */
-#line 327 "sintax.y"
+#line 327 "../../src/sintax.y"
     {
 	puts("Declaración de variables\n");
 	puts("-------------------\n");
@@ -1976,7 +1976,7 @@ yyreduce:
   case 48:
 
 /* Line 1455 of yacc.c  */
-#line 333 "sintax.y"
+#line 333 "../../src/sintax.y"
     {
 	puts("Lista de variables\n");
 	puts("-------------------\n");
@@ -1986,7 +1986,7 @@ yyreduce:
   case 50:
 
 /* Line 1455 of yacc.c  */
-#line 339 "sintax.y"
+#line 339 "../../src/sintax.y"
     {
 	puts("variables : TOKEN_ID\n");
 	puts("-------------------\n");
@@ -1996,7 +1996,7 @@ yyreduce:
   case 51:
 
 /* Line 1455 of yacc.c  */
-#line 345 "sintax.y"
+#line 345 "../../src/sintax.y"
     {
 	puts("variables : TOKEN_ID COMA variables\n");
 	puts("-------------------\n");
@@ -2006,7 +2006,7 @@ yyreduce:
   case 52:
 
 /* Line 1455 of yacc.c  */
-#line 351 "sintax.y"
+#line 351 "../../src/sintax.y"
     {
 	puts("PR_INT\n");
 	puts("-------------------\n");
@@ -2016,7 +2016,7 @@ yyreduce:
   case 53:
 
 /* Line 1455 of yacc.c  */
-#line 357 "sintax.y"
+#line 357 "../../src/sintax.y"
     {
 	puts("PR_FLOAT\n");
 	puts("-------------------\n");
@@ -2026,7 +2026,7 @@ yyreduce:
   case 54:
 
 /* Line 1455 of yacc.c  */
-#line 363 "sintax.y"
+#line 363 "../../src/sintax.y"
     {
 	puts("PR_STRING\n");
 	puts("-------------------\n");
@@ -2036,7 +2036,7 @@ yyreduce:
   case 55:
 
 /* Line 1455 of yacc.c  */
-#line 369 "sintax.y"
+#line 369 "../../src/sintax.y"
     {
 	puts("OP_MAYOR\n");
 	puts("-------------------\n");
@@ -2046,7 +2046,7 @@ yyreduce:
   case 56:
 
 /* Line 1455 of yacc.c  */
-#line 375 "sintax.y"
+#line 375 "../../src/sintax.y"
     {
 	puts("OP_MENOR\n");
 	puts("-------------------\n");
@@ -2056,7 +2056,7 @@ yyreduce:
   case 57:
 
 /* Line 1455 of yacc.c  */
-#line 381 "sintax.y"
+#line 381 "../../src/sintax.y"
     {
 	puts("OP_MENOR_IGUAL\n");
 	puts("-------------------\n");
@@ -2066,7 +2066,7 @@ yyreduce:
   case 58:
 
 /* Line 1455 of yacc.c  */
-#line 387 "sintax.y"
+#line 387 "../../src/sintax.y"
     {
 	puts("OP_MAYOR_IGUAL\n");
 	puts("-------------------\n");
@@ -2076,7 +2076,7 @@ yyreduce:
   case 59:
 
 /* Line 1455 of yacc.c  */
-#line 393 "sintax.y"
+#line 393 "../../src/sintax.y"
     {
 	puts("OP_IGUAL_IGUAL\n");
 	puts("-------------------\n");
@@ -2086,7 +2086,7 @@ yyreduce:
   case 60:
 
 /* Line 1455 of yacc.c  */
-#line 399 "sintax.y"
+#line 399 "../../src/sintax.y"
     {
 	puts("OP_DISTINTO\n");
 	puts("-------------------\n");
@@ -2308,7 +2308,7 @@ yyreturn:
 
 
 /* Line 1675 of yacc.c  */
-#line 404 "sintax.y"
+#line 404 "../../src/sintax.y"
 
 
 //función para realizar todo lo que haga falta previo a terminar
