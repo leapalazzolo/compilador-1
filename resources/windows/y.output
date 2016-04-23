@@ -12,7 +12,6 @@ Rules useless in parser due to conflicts
    39        | termino OP_MUL factor
 
    48 variables: TOKEN_ID
-   50          | TOKEN_ID COMA variables
 
 
 Estado 36 conflictos: 8 desplazamiento(s)/reducción(ones)
@@ -28,7 +27,6 @@ Estado 75 conflictos: 27 reducción(ones)/reducción(ones)
 Estado 76 conflictos: 27 reducción(ones)/reducción(ones)
 Estado 90 conflictos: 3 desplazamiento/reducción, 1 reducción/reducción
 Estado 95 conflictos: 1 desplazamiento(s)/reducción(ones)
-Estado 113 conflictos: 1 reducción(ones)/reducción(ones)
 
 
 Gramática
@@ -105,25 +103,24 @@ Gramática
 
    48 variables: TOKEN_ID
    49          | TOKEN_ID COMA variables
-   50          | TOKEN_ID COMA variables
 
-   51 tipo_dato: PR_INT
-   52          | PR_FLOAT
-   53          | PR_STRING
+   50 tipo_dato: PR_INT
+   51          | PR_FLOAT
+   52          | PR_STRING
 
-   54 comparador: OP_MAYOR
-   55           | OP_MENOR
-   56           | OP_MENOR_IGUAL
-   57           | OP_MAYOR_IGUAL
-   58           | OP_IGUAL_IGUAL
-   59           | OP_DISTINTO
+   53 comparador: OP_MAYOR
+   54           | OP_MENOR
+   55           | OP_MENOR_IGUAL
+   56           | OP_MAYOR_IGUAL
+   57           | OP_IGUAL_IGUAL
+   58           | OP_DISTINTO
 
 
 Terminales con las reglas donde aparecen
 
 $end (0) 0
 error (256)
-TOKEN_ID (258) 18 19 22 23 33 43 46 47 48 49 50
+TOKEN_ID (258) 18 19 22 23 33 43 46 47 48 49
 CONST_INT (259) 41
 CONST_STR (260) 24 40
 CONST_FLOAT (261) 42
@@ -146,7 +143,7 @@ PAR_ABRE (277) 14 17
 PAR_CIERRA (278) 14 17
 COR_ABRE (279) 14 17 45 46
 COR_CIERRA (280) 14 17 45 46
-COMA (281) 14 15 17 18 47 49 50
+COMA (281) 14 15 17 18 47 49
 OP_LOG_AND (282) 28
 OP_LOG_OR (283) 29
 OP_LOG_NOT (284)
@@ -154,18 +151,18 @@ OP_SUMA (285) 35
 OP_RESTA (286) 36
 OP_MUL (287) 39
 OP_DIV (288) 38
-OP_MAYOR (289) 54
-OP_MAYOR_IGUAL (290) 57
-OP_MENOR (291) 55
-OP_MENOR_IGUAL (292) 56
-OP_DISTINTO (293) 59
-OP_IGUAL_IGUAL (294) 58
+OP_MAYOR (289) 53
+OP_MAYOR_IGUAL (290) 56
+OP_MENOR (291) 54
+OP_MENOR_IGUAL (292) 55
+OP_DISTINTO (293) 58
+OP_IGUAL_IGUAL (294) 57
 OP_IGUAL (295) 33
 OP_AS (296) 46
 OP_DIM (297) 45
-PR_FLOAT (298) 52
-PR_INT (299) 51
-PR_STRING (300) 53
+PR_FLOAT (298) 51
+PR_INT (299) 50
+PR_STRING (300) 52
 
 
 No terminales con las reglas donde aparecen
@@ -216,11 +213,11 @@ declaracion_variables (66)
 lista_variables_tipos (67)
     en la izquierda: 46 47, en la derecha: 45
 variables (68)
-    en la izquierda: 48 49 50, en la derecha: 47 49 50
+    en la izquierda: 48 49, en la derecha: 47 49
 tipo_dato (69)
-    en la izquierda: 51 52 53, en la derecha: 46 47
+    en la izquierda: 50 51 52, en la derecha: 46 47
 comparador (70)
-    en la izquierda: 54 55 56 57 58 59, en la derecha: 30
+    en la izquierda: 53 54 55 56 57 58, en la derecha: 30
 
 
 estado 0
@@ -884,44 +881,44 @@ estado 53
 
 estado 54
 
-   54 comparador: OP_MAYOR .
+   53 comparador: OP_MAYOR .
 
-    $default  reduce usando la regla 54 (comparador)
+    $default  reduce usando la regla 53 (comparador)
 
 
 estado 55
 
-   57 comparador: OP_MAYOR_IGUAL .
-
-    $default  reduce usando la regla 57 (comparador)
-
-
-estado 56
-
-   55 comparador: OP_MENOR .
-
-    $default  reduce usando la regla 55 (comparador)
-
-
-estado 57
-
-   56 comparador: OP_MENOR_IGUAL .
+   56 comparador: OP_MAYOR_IGUAL .
 
     $default  reduce usando la regla 56 (comparador)
 
 
+estado 56
+
+   54 comparador: OP_MENOR .
+
+    $default  reduce usando la regla 54 (comparador)
+
+
+estado 57
+
+   55 comparador: OP_MENOR_IGUAL .
+
+    $default  reduce usando la regla 55 (comparador)
+
+
 estado 58
 
-   59 comparador: OP_DISTINTO .
+   58 comparador: OP_DISTINTO .
 
-    $default  reduce usando la regla 59 (comparador)
+    $default  reduce usando la regla 58 (comparador)
 
 
 estado 59
 
-   58 comparador: OP_IGUAL_IGUAL .
+   57 comparador: OP_IGUAL_IGUAL .
 
-    $default  reduce usando la regla 58 (comparador)
+    $default  reduce usando la regla 57 (comparador)
 
 
 estado 60
@@ -1536,7 +1533,6 @@ estado 95
 
    48 variables: TOKEN_ID .
    49          | TOKEN_ID . COMA variables
-   50          | TOKEN_ID . COMA variables
 
     COMA  desplazar e ir al estado 103
 
@@ -1609,7 +1605,6 @@ estado 102
 estado 103
 
    49 variables: TOKEN_ID COMA . variables
-   50          | TOKEN_ID COMA . variables
 
     TOKEN_ID  desplazar e ir al estado 95
 
@@ -1657,23 +1652,23 @@ estado 108
 
 estado 109
 
-   52 tipo_dato: PR_FLOAT .
-
-    $default  reduce usando la regla 52 (tipo_dato)
-
-
-estado 110
-
-   51 tipo_dato: PR_INT .
+   51 tipo_dato: PR_FLOAT .
 
     $default  reduce usando la regla 51 (tipo_dato)
 
 
+estado 110
+
+   50 tipo_dato: PR_INT .
+
+    $default  reduce usando la regla 50 (tipo_dato)
+
+
 estado 111
 
-   53 tipo_dato: PR_STRING .
+   52 tipo_dato: PR_STRING .
 
-    $default  reduce usando la regla 53 (tipo_dato)
+    $default  reduce usando la regla 52 (tipo_dato)
 
 
 estado 112
@@ -1686,10 +1681,7 @@ estado 112
 estado 113
 
    49 variables: TOKEN_ID COMA variables .
-   50          | TOKEN_ID COMA variables .
 
-    COMA      reduce usando la regla 49 (variables)
-    COMA      [reduce usando la regla 50 (variables)]
     $default  reduce usando la regla 49 (variables)
 
 

@@ -36,7 +36,8 @@
 <factor> : cte | id | <expresion>
 
 <declaracion_variables> : DIM [ <lista_variables_tipos> ]
-<lista_variables_tipos> : id ] AS [ <tipo_dato> | id , <variables> , <tipo_dato>
+<!-- <lista_variables_tipos> : id ] AS [ <tipo_dato> | id , <variables> , <tipo_dato> -->
+<lista_variables_tipos> : id , <lista_variables_tipos> , <tipo_dato> | id ] AS [ <tipo_dato>
 <tipo_dato> : int | float | string
 <comparador> : > | < | <= | >= | == | !=
 

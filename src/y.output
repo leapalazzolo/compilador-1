@@ -3,41 +3,13 @@ Terminals unused in grammar
    OP_LOG_NOT
 
 
-Rules useless in parser due to conflicts
-
-   35 expresion: expresion OP_SUMA termino
-   36          | expresion OP_RESTA termino
-
-   38 termino: termino OP_DIV factor
-   39        | termino OP_MUL factor
-
-   48 variables: TOKEN_ID
-   50          | TOKEN_ID COMA variables
-
-
-Estado 36 conflictos: 8 desplazamiento(s)/reducción(ones)
-Estado 37 conflictos: 2 desplazamiento(s)/reducción(ones)
-Estado 42 conflictos: 2 desplazamiento/reducción, 11 reducción/reducción
-Estado 46 conflictos: 3 desplazamiento(s)/reducción(ones)
-Estado 48 conflictos: 2 desplazamiento/reducción, 5 reducción/reducción
-Estado 71 conflictos: 2 desplazamiento(s)/reducción(ones)
-Estado 72 conflictos: 2 desplazamiento/reducción, 27 reducción/reducción
-Estado 73 conflictos: 2 desplazamiento/reducción, 27 reducción/reducción
-Estado 74 conflictos: 2 desplazamiento/reducción, 5 reducción/reducción
-Estado 75 conflictos: 27 reducción(ones)/reducción(ones)
-Estado 76 conflictos: 27 reducción(ones)/reducción(ones)
-Estado 90 conflictos: 3 desplazamiento/reducción, 1 reducción/reducción
-Estado 95 conflictos: 1 desplazamiento(s)/reducción(ones)
-Estado 113 conflictos: 1 reducción(ones)/reducción(ones)
-
-
 Gramática
 
     0 $accept: pgm $end
 
     1 pgm: programa
 
-    2 programa: PR_MAIN PR_DIM declaracion_variables PR_ENDIM lista_sentencias
+    2 programa: PR_DIM declaracion_variables PR_ENDIM lista_sentencias
     3         | PR_MAIN lista_sentencias
     4         | sentencia lista_sentencias
     5         | sentencia
@@ -96,38 +68,33 @@ Gramática
    41       | CONST_INT
    42       | CONST_FLOAT
    43       | TOKEN_ID
-   44       | expresion
 
-   45 declaracion_variables: OP_DIM COR_ABRE lista_variables_tipos COR_CIERRA
+   44 declaracion_variables: OP_DIM COR_ABRE lista_variables_tipos COR_CIERRA
 
-   46 lista_variables_tipos: TOKEN_ID COR_CIERRA OP_AS COR_ABRE tipo_dato
-   47                      | TOKEN_ID COMA variables COMA tipo_dato
+   45 lista_variables_tipos: TOKEN_ID COR_CIERRA OP_AS COR_ABRE tipo_dato
+   46                      | TOKEN_ID COMA lista_variables_tipos COMA tipo_dato
 
-   48 variables: TOKEN_ID
-   49          | TOKEN_ID COMA variables
-   50          | TOKEN_ID COMA variables
+   47 tipo_dato: PR_INT
+   48          | PR_FLOAT
+   49          | PR_STRING
 
-   51 tipo_dato: PR_INT
-   52          | PR_FLOAT
-   53          | PR_STRING
-
-   54 comparador: OP_MAYOR
-   55           | OP_MENOR
-   56           | OP_MENOR_IGUAL
-   57           | OP_MAYOR_IGUAL
-   58           | OP_IGUAL_IGUAL
-   59           | OP_DISTINTO
+   50 comparador: OP_MAYOR
+   51           | OP_MENOR
+   52           | OP_MENOR_IGUAL
+   53           | OP_MAYOR_IGUAL
+   54           | OP_IGUAL_IGUAL
+   55           | OP_DISTINTO
 
 
 Terminales con las reglas donde aparecen
 
 $end (0) 0
 error (256)
-TOKEN_ID (258) 18 19 22 23 33 43 46 47 48 49 50
+TOKEN_ID (258) 18 19 22 23 33 43 45 46
 CONST_INT (259) 41
 CONST_STR (260) 24 40
 CONST_FLOAT (261) 42
-PR_MAIN (262) 2 3
+PR_MAIN (262) 3
 PR_DIM (263) 2
 PR_ENDIM (264) 2
 PR_IGUALES (265) 14
@@ -144,9 +111,9 @@ PR_BEGIN (275) 32
 PR_END (276) 32
 PAR_ABRE (277) 14 17
 PAR_CIERRA (278) 14 17
-COR_ABRE (279) 14 17 45 46
-COR_CIERRA (280) 14 17 45 46
-COMA (281) 14 15 17 18 47 49 50
+COR_ABRE (279) 14 17 44 45
+COR_CIERRA (280) 14 17 44 45
+COMA (281) 14 15 17 18 46
 OP_LOG_AND (282) 28
 OP_LOG_OR (283) 29
 OP_LOG_NOT (284)
@@ -154,18 +121,18 @@ OP_SUMA (285) 35
 OP_RESTA (286) 36
 OP_MUL (287) 39
 OP_DIV (288) 38
-OP_MAYOR (289) 54
-OP_MAYOR_IGUAL (290) 57
-OP_MENOR (291) 55
-OP_MENOR_IGUAL (292) 56
-OP_DISTINTO (293) 59
-OP_IGUAL_IGUAL (294) 58
+OP_MAYOR (289) 50
+OP_MAYOR_IGUAL (290) 53
+OP_MENOR (291) 51
+OP_MENOR_IGUAL (292) 52
+OP_DISTINTO (293) 55
+OP_IGUAL_IGUAL (294) 54
 OP_IGUAL (295) 33
-OP_AS (296) 46
-OP_DIM (297) 45
-PR_FLOAT (298) 52
-PR_INT (299) 51
-PR_STRING (300) 53
+OP_AS (296) 45
+OP_DIM (297) 44
+PR_FLOAT (298) 48
+PR_INT (299) 47
+PR_STRING (300) 49
 
 
 No terminales con las reglas donde aparecen
@@ -206,21 +173,19 @@ asignacion (62)
     en la izquierda: 33, en la derecha: 9
 expresion (63)
     en la izquierda: 34 35 36, en la derecha: 14 15 16 30 31 33 35
-    36 44
+    36
 termino (64)
     en la izquierda: 37 38 39, en la derecha: 34 35 36 38 39
 factor (65)
-    en la izquierda: 40 41 42 43 44, en la derecha: 37 38 39
+    en la izquierda: 40 41 42 43, en la derecha: 37 38 39
 declaracion_variables (66)
-    en la izquierda: 45, en la derecha: 2
+    en la izquierda: 44, en la derecha: 2
 lista_variables_tipos (67)
-    en la izquierda: 46 47, en la derecha: 45
-variables (68)
-    en la izquierda: 48 49 50, en la derecha: 47 49 50
-tipo_dato (69)
-    en la izquierda: 51 52 53, en la derecha: 46 47
-comparador (70)
-    en la izquierda: 54 55 56 57 58 59, en la derecha: 30
+    en la izquierda: 45 46, en la derecha: 44 46
+tipo_dato (68)
+    en la izquierda: 47 48 49, en la derecha: 45 46
+comparador (69)
+    en la izquierda: 50 51 52 53 54 55, en la derecha: 30
 
 
 estado 0
@@ -229,242 +194,241 @@ estado 0
 
     TOKEN_ID    desplazar e ir al estado 1
     PR_MAIN     desplazar e ir al estado 2
-    PR_IGUALES  desplazar e ir al estado 3
-    PR_FILTER   desplazar e ir al estado 4
-    PR_WRITE    desplazar e ir al estado 5
-    PR_READ     desplazar e ir al estado 6
-    PR_IF       desplazar e ir al estado 7
-    PR_WHILE    desplazar e ir al estado 8
+    PR_DIM      desplazar e ir al estado 3
+    PR_IGUALES  desplazar e ir al estado 4
+    PR_FILTER   desplazar e ir al estado 5
+    PR_WRITE    desplazar e ir al estado 6
+    PR_READ     desplazar e ir al estado 7
+    PR_IF       desplazar e ir al estado 8
+    PR_WHILE    desplazar e ir al estado 9
 
-    pgm          ir al estado 9
-    programa     ir al estado 10
-    sentencia    ir al estado 11
-    iguales      ir al estado 12
-    filter       ir al estado 13
-    io           ir al estado 14
-    entrada      ir al estado 15
-    salida       ir al estado 16
-    condicional  ir al estado 17
-    iteracion    ir al estado 18
-    asignacion   ir al estado 19
+    pgm          ir al estado 10
+    programa     ir al estado 11
+    sentencia    ir al estado 12
+    iguales      ir al estado 13
+    filter       ir al estado 14
+    io           ir al estado 15
+    entrada      ir al estado 16
+    salida       ir al estado 17
+    condicional  ir al estado 18
+    iteracion    ir al estado 19
+    asignacion   ir al estado 20
 
 
 estado 1
 
    33 asignacion: TOKEN_ID . OP_IGUAL expresion
 
-    OP_IGUAL  desplazar e ir al estado 20
+    OP_IGUAL  desplazar e ir al estado 21
 
 
 estado 2
 
-    2 programa: PR_MAIN . PR_DIM declaracion_variables PR_ENDIM lista_sentencias
-    3         | PR_MAIN . lista_sentencias
+    3 programa: PR_MAIN . lista_sentencias
 
     TOKEN_ID    desplazar e ir al estado 1
-    PR_DIM      desplazar e ir al estado 21
-    PR_IGUALES  desplazar e ir al estado 3
-    PR_FILTER   desplazar e ir al estado 4
-    PR_WRITE    desplazar e ir al estado 5
-    PR_READ     desplazar e ir al estado 6
-    PR_IF       desplazar e ir al estado 7
-    PR_WHILE    desplazar e ir al estado 8
+    PR_IGUALES  desplazar e ir al estado 4
+    PR_FILTER   desplazar e ir al estado 5
+    PR_WRITE    desplazar e ir al estado 6
+    PR_READ     desplazar e ir al estado 7
+    PR_IF       desplazar e ir al estado 8
+    PR_WHILE    desplazar e ir al estado 9
 
     lista_sentencias  ir al estado 22
     sentencia         ir al estado 23
-    iguales           ir al estado 12
-    filter            ir al estado 13
-    io                ir al estado 14
-    entrada           ir al estado 15
-    salida            ir al estado 16
-    condicional       ir al estado 17
-    iteracion         ir al estado 18
-    asignacion        ir al estado 19
+    iguales           ir al estado 13
+    filter            ir al estado 14
+    io                ir al estado 15
+    entrada           ir al estado 16
+    salida            ir al estado 17
+    condicional       ir al estado 18
+    iteracion         ir al estado 19
+    asignacion        ir al estado 20
 
 
 estado 3
 
-   14 iguales: PR_IGUALES . PAR_ABRE expresion COMA COR_ABRE lista_expresiones COR_CIERRA PAR_CIERRA
+    2 programa: PR_DIM . declaracion_variables PR_ENDIM lista_sentencias
 
-    PAR_ABRE  desplazar e ir al estado 24
+    OP_DIM  desplazar e ir al estado 24
+
+    declaracion_variables  ir al estado 25
 
 
 estado 4
 
-   17 filter: PR_FILTER . PAR_ABRE condicion COMA COR_ABRE lista_variables COR_CIERRA PAR_CIERRA
+   14 iguales: PR_IGUALES . PAR_ABRE expresion COMA COR_ABRE lista_expresiones COR_CIERRA PAR_CIERRA
 
-    PAR_ABRE  desplazar e ir al estado 25
+    PAR_ABRE  desplazar e ir al estado 26
 
 
 estado 5
 
-   23 salida: PR_WRITE . TOKEN_ID
-   24       | PR_WRITE . CONST_STR
+   17 filter: PR_FILTER . PAR_ABRE condicion COMA COR_ABRE lista_variables COR_CIERRA PAR_CIERRA
 
-    TOKEN_ID   desplazar e ir al estado 26
-    CONST_STR  desplazar e ir al estado 27
+    PAR_ABRE  desplazar e ir al estado 27
 
 
 estado 6
 
-   22 entrada: PR_READ . TOKEN_ID
+   23 salida: PR_WRITE . TOKEN_ID
+   24       | PR_WRITE . CONST_STR
 
-    TOKEN_ID  desplazar e ir al estado 28
+    TOKEN_ID   desplazar e ir al estado 28
+    CONST_STR  desplazar e ir al estado 29
 
 
 estado 7
 
-   25 condicional: PR_IF . condicion PR_THEN lista_sentencias PR_ENDIF
-   26            | PR_IF . condicion PR_THEN lista_sentencias PR_ELSE lista_sentencias PR_ENDIF
+   22 entrada: PR_READ . TOKEN_ID
 
-    TOKEN_ID     desplazar e ir al estado 29
-    CONST_INT    desplazar e ir al estado 30
-    CONST_STR    desplazar e ir al estado 31
-    CONST_FLOAT  desplazar e ir al estado 32
-    PR_NOT       desplazar e ir al estado 33
-
-    condicion    ir al estado 34
-    comparacion  ir al estado 35
-    expresion    ir al estado 36
-    termino      ir al estado 37
-    factor       ir al estado 38
+    TOKEN_ID  desplazar e ir al estado 30
 
 
 estado 8
 
-   32 iteracion: PR_WHILE . condicion PR_BEGIN lista_sentencias PR_END
+   25 condicional: PR_IF . condicion PR_THEN lista_sentencias PR_ENDIF
+   26            | PR_IF . condicion PR_THEN lista_sentencias PR_ELSE lista_sentencias PR_ENDIF
 
-    TOKEN_ID     desplazar e ir al estado 29
-    CONST_INT    desplazar e ir al estado 30
-    CONST_STR    desplazar e ir al estado 31
-    CONST_FLOAT  desplazar e ir al estado 32
-    PR_NOT       desplazar e ir al estado 33
+    TOKEN_ID     desplazar e ir al estado 31
+    CONST_INT    desplazar e ir al estado 32
+    CONST_STR    desplazar e ir al estado 33
+    CONST_FLOAT  desplazar e ir al estado 34
+    PR_NOT       desplazar e ir al estado 35
 
-    condicion    ir al estado 39
-    comparacion  ir al estado 35
-    expresion    ir al estado 36
-    termino      ir al estado 37
-    factor       ir al estado 38
+    condicion    ir al estado 36
+    comparacion  ir al estado 37
+    expresion    ir al estado 38
+    termino      ir al estado 39
+    factor       ir al estado 40
 
 
 estado 9
 
-    0 $accept: pgm . $end
+   32 iteracion: PR_WHILE . condicion PR_BEGIN lista_sentencias PR_END
 
-    $end  desplazar e ir al estado 40
+    TOKEN_ID     desplazar e ir al estado 31
+    CONST_INT    desplazar e ir al estado 32
+    CONST_STR    desplazar e ir al estado 33
+    CONST_FLOAT  desplazar e ir al estado 34
+    PR_NOT       desplazar e ir al estado 35
+
+    condicion    ir al estado 41
+    comparacion  ir al estado 37
+    expresion    ir al estado 38
+    termino      ir al estado 39
+    factor       ir al estado 40
 
 
 estado 10
+
+    0 $accept: pgm . $end
+
+    $end  desplazar e ir al estado 42
+
+
+estado 11
 
     1 pgm: programa .
 
     $default  reduce usando la regla 1 (pgm)
 
 
-estado 11
+estado 12
 
     4 programa: sentencia . lista_sentencias
     5         | sentencia .
 
     TOKEN_ID    desplazar e ir al estado 1
-    PR_IGUALES  desplazar e ir al estado 3
-    PR_FILTER   desplazar e ir al estado 4
-    PR_WRITE    desplazar e ir al estado 5
-    PR_READ     desplazar e ir al estado 6
-    PR_IF       desplazar e ir al estado 7
-    PR_WHILE    desplazar e ir al estado 8
+    PR_IGUALES  desplazar e ir al estado 4
+    PR_FILTER   desplazar e ir al estado 5
+    PR_WRITE    desplazar e ir al estado 6
+    PR_READ     desplazar e ir al estado 7
+    PR_IF       desplazar e ir al estado 8
+    PR_WHILE    desplazar e ir al estado 9
 
     $default  reduce usando la regla 5 (programa)
 
-    lista_sentencias  ir al estado 41
+    lista_sentencias  ir al estado 43
     sentencia         ir al estado 23
-    iguales           ir al estado 12
-    filter            ir al estado 13
-    io                ir al estado 14
-    entrada           ir al estado 15
-    salida            ir al estado 16
-    condicional       ir al estado 17
-    iteracion         ir al estado 18
-    asignacion        ir al estado 19
+    iguales           ir al estado 13
+    filter            ir al estado 14
+    io                ir al estado 15
+    entrada           ir al estado 16
+    salida            ir al estado 17
+    condicional       ir al estado 18
+    iteracion         ir al estado 19
+    asignacion        ir al estado 20
 
 
-estado 12
+estado 13
 
    12 sentencia: iguales .
 
     $default  reduce usando la regla 12 (sentencia)
 
 
-estado 13
+estado 14
 
    13 sentencia: filter .
 
     $default  reduce usando la regla 13 (sentencia)
 
 
-estado 14
+estado 15
 
    11 sentencia: io .
 
     $default  reduce usando la regla 11 (sentencia)
 
 
-estado 15
+estado 16
 
    20 io: entrada .
 
     $default  reduce usando la regla 20 (io)
 
 
-estado 16
+estado 17
 
    21 io: salida .
 
     $default  reduce usando la regla 21 (io)
 
 
-estado 17
+estado 18
 
     8 sentencia: condicional .
 
     $default  reduce usando la regla 8 (sentencia)
 
 
-estado 18
+estado 19
 
    10 sentencia: iteracion .
 
     $default  reduce usando la regla 10 (sentencia)
 
 
-estado 19
+estado 20
 
     9 sentencia: asignacion .
 
     $default  reduce usando la regla 9 (sentencia)
 
 
-estado 20
+estado 21
 
    33 asignacion: TOKEN_ID OP_IGUAL . expresion
 
-    TOKEN_ID     desplazar e ir al estado 29
-    CONST_INT    desplazar e ir al estado 30
-    CONST_STR    desplazar e ir al estado 31
-    CONST_FLOAT  desplazar e ir al estado 32
+    TOKEN_ID     desplazar e ir al estado 31
+    CONST_INT    desplazar e ir al estado 32
+    CONST_STR    desplazar e ir al estado 33
+    CONST_FLOAT  desplazar e ir al estado 34
 
-    expresion  ir al estado 42
-    termino    ir al estado 37
-    factor     ir al estado 38
-
-
-estado 21
-
-    2 programa: PR_MAIN PR_DIM . declaracion_variables PR_ENDIM lista_sentencias
-
-    OP_DIM  desplazar e ir al estado 43
-
-    declaracion_variables  ir al estado 44
+    expresion  ir al estado 44
+    termino    ir al estado 39
+    factor     ir al estado 40
 
 
 estado 22
@@ -480,263 +444,223 @@ estado 23
     7                 | sentencia . lista_sentencias
 
     TOKEN_ID    desplazar e ir al estado 1
-    PR_IGUALES  desplazar e ir al estado 3
-    PR_FILTER   desplazar e ir al estado 4
-    PR_WRITE    desplazar e ir al estado 5
-    PR_READ     desplazar e ir al estado 6
-    PR_IF       desplazar e ir al estado 7
-    PR_WHILE    desplazar e ir al estado 8
+    PR_IGUALES  desplazar e ir al estado 4
+    PR_FILTER   desplazar e ir al estado 5
+    PR_WRITE    desplazar e ir al estado 6
+    PR_READ     desplazar e ir al estado 7
+    PR_IF       desplazar e ir al estado 8
+    PR_WHILE    desplazar e ir al estado 9
 
     $default  reduce usando la regla 6 (lista_sentencias)
 
     lista_sentencias  ir al estado 45
     sentencia         ir al estado 23
-    iguales           ir al estado 12
-    filter            ir al estado 13
-    io                ir al estado 14
-    entrada           ir al estado 15
-    salida            ir al estado 16
-    condicional       ir al estado 17
-    iteracion         ir al estado 18
-    asignacion        ir al estado 19
+    iguales           ir al estado 13
+    filter            ir al estado 14
+    io                ir al estado 15
+    entrada           ir al estado 16
+    salida            ir al estado 17
+    condicional       ir al estado 18
+    iteracion         ir al estado 19
+    asignacion        ir al estado 20
 
 
 estado 24
 
-   14 iguales: PR_IGUALES PAR_ABRE . expresion COMA COR_ABRE lista_expresiones COR_CIERRA PAR_CIERRA
+   44 declaracion_variables: OP_DIM . COR_ABRE lista_variables_tipos COR_CIERRA
 
-    TOKEN_ID     desplazar e ir al estado 29
-    CONST_INT    desplazar e ir al estado 30
-    CONST_STR    desplazar e ir al estado 31
-    CONST_FLOAT  desplazar e ir al estado 32
-
-    expresion  ir al estado 46
-    termino    ir al estado 37
-    factor     ir al estado 38
+    COR_ABRE  desplazar e ir al estado 46
 
 
 estado 25
 
-   17 filter: PR_FILTER PAR_ABRE . condicion COMA COR_ABRE lista_variables COR_CIERRA PAR_CIERRA
+    2 programa: PR_DIM declaracion_variables . PR_ENDIM lista_sentencias
 
-    TOKEN_ID     desplazar e ir al estado 29
-    CONST_INT    desplazar e ir al estado 30
-    CONST_STR    desplazar e ir al estado 31
-    CONST_FLOAT  desplazar e ir al estado 32
-    PR_NOT       desplazar e ir al estado 33
-
-    condicion    ir al estado 47
-    comparacion  ir al estado 35
-    expresion    ir al estado 36
-    termino      ir al estado 37
-    factor       ir al estado 38
+    PR_ENDIM  desplazar e ir al estado 47
 
 
 estado 26
+
+   14 iguales: PR_IGUALES PAR_ABRE . expresion COMA COR_ABRE lista_expresiones COR_CIERRA PAR_CIERRA
+
+    TOKEN_ID     desplazar e ir al estado 31
+    CONST_INT    desplazar e ir al estado 32
+    CONST_STR    desplazar e ir al estado 33
+    CONST_FLOAT  desplazar e ir al estado 34
+
+    expresion  ir al estado 48
+    termino    ir al estado 39
+    factor     ir al estado 40
+
+
+estado 27
+
+   17 filter: PR_FILTER PAR_ABRE . condicion COMA COR_ABRE lista_variables COR_CIERRA PAR_CIERRA
+
+    TOKEN_ID     desplazar e ir al estado 31
+    CONST_INT    desplazar e ir al estado 32
+    CONST_STR    desplazar e ir al estado 33
+    CONST_FLOAT  desplazar e ir al estado 34
+    PR_NOT       desplazar e ir al estado 35
+
+    condicion    ir al estado 49
+    comparacion  ir al estado 37
+    expresion    ir al estado 38
+    termino      ir al estado 39
+    factor       ir al estado 40
+
+
+estado 28
 
    23 salida: PR_WRITE TOKEN_ID .
 
     $default  reduce usando la regla 23 (salida)
 
 
-estado 27
+estado 29
 
    24 salida: PR_WRITE CONST_STR .
 
     $default  reduce usando la regla 24 (salida)
 
 
-estado 28
+estado 30
 
    22 entrada: PR_READ TOKEN_ID .
 
     $default  reduce usando la regla 22 (entrada)
 
 
-estado 29
+estado 31
 
    43 factor: TOKEN_ID .
 
     $default  reduce usando la regla 43 (factor)
 
 
-estado 30
+estado 32
 
    41 factor: CONST_INT .
 
     $default  reduce usando la regla 41 (factor)
 
 
-estado 31
+estado 33
 
    40 factor: CONST_STR .
 
     $default  reduce usando la regla 40 (factor)
 
 
-estado 32
+estado 34
 
    42 factor: CONST_FLOAT .
 
     $default  reduce usando la regla 42 (factor)
 
 
-estado 33
+estado 35
 
    31 comparacion: PR_NOT . expresion
 
-    TOKEN_ID     desplazar e ir al estado 29
-    CONST_INT    desplazar e ir al estado 30
-    CONST_STR    desplazar e ir al estado 31
-    CONST_FLOAT  desplazar e ir al estado 32
+    TOKEN_ID     desplazar e ir al estado 31
+    CONST_INT    desplazar e ir al estado 32
+    CONST_STR    desplazar e ir al estado 33
+    CONST_FLOAT  desplazar e ir al estado 34
 
-    expresion  ir al estado 48
-    termino    ir al estado 37
-    factor     ir al estado 38
+    expresion  ir al estado 50
+    termino    ir al estado 39
+    factor     ir al estado 40
 
 
-estado 34
+estado 36
 
    25 condicional: PR_IF condicion . PR_THEN lista_sentencias PR_ENDIF
    26            | PR_IF condicion . PR_THEN lista_sentencias PR_ELSE lista_sentencias PR_ENDIF
 
-    PR_THEN  desplazar e ir al estado 49
+    PR_THEN  desplazar e ir al estado 51
 
 
-estado 35
+estado 37
 
    27 condicion: comparacion .
    28          | comparacion . OP_LOG_AND comparacion
    29          | comparacion . OP_LOG_OR comparacion
 
-    OP_LOG_AND  desplazar e ir al estado 50
-    OP_LOG_OR   desplazar e ir al estado 51
+    OP_LOG_AND  desplazar e ir al estado 52
+    OP_LOG_OR   desplazar e ir al estado 53
 
     $default  reduce usando la regla 27 (condicion)
 
 
-estado 36
+estado 38
 
    30 comparacion: expresion . comparador expresion
    35 expresion: expresion . OP_SUMA termino
    36          | expresion . OP_RESTA termino
-   44 factor: expresion .
 
-    OP_SUMA         desplazar e ir al estado 52
-    OP_RESTA        desplazar e ir al estado 53
-    OP_MAYOR        desplazar e ir al estado 54
-    OP_MAYOR_IGUAL  desplazar e ir al estado 55
-    OP_MENOR        desplazar e ir al estado 56
-    OP_MENOR_IGUAL  desplazar e ir al estado 57
-    OP_DISTINTO     desplazar e ir al estado 58
-    OP_IGUAL_IGUAL  desplazar e ir al estado 59
+    OP_SUMA         desplazar e ir al estado 54
+    OP_RESTA        desplazar e ir al estado 55
+    OP_MAYOR        desplazar e ir al estado 56
+    OP_MAYOR_IGUAL  desplazar e ir al estado 57
+    OP_MENOR        desplazar e ir al estado 58
+    OP_MENOR_IGUAL  desplazar e ir al estado 59
+    OP_DISTINTO     desplazar e ir al estado 60
+    OP_IGUAL_IGUAL  desplazar e ir al estado 61
 
-    OP_SUMA         [reduce usando la regla 44 (factor)]
-    OP_RESTA        [reduce usando la regla 44 (factor)]
-    OP_MAYOR        [reduce usando la regla 44 (factor)]
-    OP_MAYOR_IGUAL  [reduce usando la regla 44 (factor)]
-    OP_MENOR        [reduce usando la regla 44 (factor)]
-    OP_MENOR_IGUAL  [reduce usando la regla 44 (factor)]
-    OP_DISTINTO     [reduce usando la regla 44 (factor)]
-    OP_IGUAL_IGUAL  [reduce usando la regla 44 (factor)]
-    $default        reduce usando la regla 44 (factor)
-
-    comparador  ir al estado 60
+    comparador  ir al estado 62
 
 
-estado 37
+estado 39
 
    34 expresion: termino .
    38 termino: termino . OP_DIV factor
    39        | termino . OP_MUL factor
 
-    OP_MUL  desplazar e ir al estado 61
-    OP_DIV  desplazar e ir al estado 62
+    OP_MUL  desplazar e ir al estado 63
+    OP_DIV  desplazar e ir al estado 64
 
-    OP_MUL    [reduce usando la regla 34 (expresion)]
-    OP_DIV    [reduce usando la regla 34 (expresion)]
     $default  reduce usando la regla 34 (expresion)
 
 
-estado 38
+estado 40
 
    37 termino: factor .
 
     $default  reduce usando la regla 37 (termino)
 
 
-estado 39
+estado 41
 
    32 iteracion: PR_WHILE condicion . PR_BEGIN lista_sentencias PR_END
 
-    PR_BEGIN  desplazar e ir al estado 63
+    PR_BEGIN  desplazar e ir al estado 65
 
 
-estado 40
+estado 42
 
     0 $accept: pgm $end .
 
     $default  aceptar
 
 
-estado 41
+estado 43
 
     4 programa: sentencia lista_sentencias .
 
     $default  reduce usando la regla 4 (programa)
 
 
-estado 42
+estado 44
 
    33 asignacion: TOKEN_ID OP_IGUAL expresion .
    35 expresion: expresion . OP_SUMA termino
    36          | expresion . OP_RESTA termino
-   44 factor: expresion .
 
-    OP_SUMA   desplazar e ir al estado 52
-    OP_RESTA  desplazar e ir al estado 53
+    OP_SUMA   desplazar e ir al estado 54
+    OP_RESTA  desplazar e ir al estado 55
 
-    $end        reduce usando la regla 33 (asignacion)
-    $end        [reduce usando la regla 44 (factor)]
-    TOKEN_ID    reduce usando la regla 33 (asignacion)
-    TOKEN_ID    [reduce usando la regla 44 (factor)]
-    PR_IGUALES  reduce usando la regla 33 (asignacion)
-    PR_IGUALES  [reduce usando la regla 44 (factor)]
-    PR_FILTER   reduce usando la regla 33 (asignacion)
-    PR_FILTER   [reduce usando la regla 44 (factor)]
-    PR_WRITE    reduce usando la regla 33 (asignacion)
-    PR_WRITE    [reduce usando la regla 44 (factor)]
-    PR_READ     reduce usando la regla 33 (asignacion)
-    PR_READ     [reduce usando la regla 44 (factor)]
-    PR_IF       reduce usando la regla 33 (asignacion)
-    PR_IF       [reduce usando la regla 44 (factor)]
-    PR_ENDIF    reduce usando la regla 33 (asignacion)
-    PR_ENDIF    [reduce usando la regla 44 (factor)]
-    PR_ELSE     reduce usando la regla 33 (asignacion)
-    PR_ELSE     [reduce usando la regla 44 (factor)]
-    PR_WHILE    reduce usando la regla 33 (asignacion)
-    PR_WHILE    [reduce usando la regla 44 (factor)]
-    PR_END      reduce usando la regla 33 (asignacion)
-    PR_END      [reduce usando la regla 44 (factor)]
-    OP_SUMA     [reduce usando la regla 44 (factor)]
-    OP_RESTA    [reduce usando la regla 44 (factor)]
-    OP_MUL      reduce usando la regla 44 (factor)
-    OP_DIV      reduce usando la regla 44 (factor)
-    $default    reduce usando la regla 33 (asignacion)
-
-
-estado 43
-
-   45 declaracion_variables: OP_DIM . COR_ABRE lista_variables_tipos COR_CIERRA
-
-    COR_ABRE  desplazar e ir al estado 64
-
-
-estado 44
-
-    2 programa: PR_MAIN PR_DIM declaracion_variables . PR_ENDIM lista_sentencias
-
-    PR_ENDIM  desplazar e ir al estado 65
+    $default  reduce usando la regla 33 (asignacion)
 
 
 estado 45
@@ -748,760 +672,492 @@ estado 45
 
 estado 46
 
-   14 iguales: PR_IGUALES PAR_ABRE expresion . COMA COR_ABRE lista_expresiones COR_CIERRA PAR_CIERRA
-   35 expresion: expresion . OP_SUMA termino
-   36          | expresion . OP_RESTA termino
-   44 factor: expresion .
+   44 declaracion_variables: OP_DIM COR_ABRE . lista_variables_tipos COR_CIERRA
 
-    COMA      desplazar e ir al estado 66
-    OP_SUMA   desplazar e ir al estado 52
-    OP_RESTA  desplazar e ir al estado 53
+    TOKEN_ID  desplazar e ir al estado 66
 
-    COMA      [reduce usando la regla 44 (factor)]
-    OP_SUMA   [reduce usando la regla 44 (factor)]
-    OP_RESTA  [reduce usando la regla 44 (factor)]
-    $default  reduce usando la regla 44 (factor)
+    lista_variables_tipos  ir al estado 67
 
 
 estado 47
 
-   17 filter: PR_FILTER PAR_ABRE condicion . COMA COR_ABRE lista_variables COR_CIERRA PAR_CIERRA
+    2 programa: PR_DIM declaracion_variables PR_ENDIM . lista_sentencias
 
-    COMA  desplazar e ir al estado 67
+    TOKEN_ID    desplazar e ir al estado 1
+    PR_IGUALES  desplazar e ir al estado 4
+    PR_FILTER   desplazar e ir al estado 5
+    PR_WRITE    desplazar e ir al estado 6
+    PR_READ     desplazar e ir al estado 7
+    PR_IF       desplazar e ir al estado 8
+    PR_WHILE    desplazar e ir al estado 9
+
+    lista_sentencias  ir al estado 68
+    sentencia         ir al estado 23
+    iguales           ir al estado 13
+    filter            ir al estado 14
+    io                ir al estado 15
+    entrada           ir al estado 16
+    salida            ir al estado 17
+    condicional       ir al estado 18
+    iteracion         ir al estado 19
+    asignacion        ir al estado 20
 
 
 estado 48
 
-   31 comparacion: PR_NOT expresion .
+   14 iguales: PR_IGUALES PAR_ABRE expresion . COMA COR_ABRE lista_expresiones COR_CIERRA PAR_CIERRA
    35 expresion: expresion . OP_SUMA termino
    36          | expresion . OP_RESTA termino
-   44 factor: expresion .
 
-    OP_SUMA   desplazar e ir al estado 52
-    OP_RESTA  desplazar e ir al estado 53
-
-    PR_THEN     reduce usando la regla 31 (comparacion)
-    PR_THEN     [reduce usando la regla 44 (factor)]
-    PR_BEGIN    reduce usando la regla 31 (comparacion)
-    PR_BEGIN    [reduce usando la regla 44 (factor)]
-    COMA        reduce usando la regla 31 (comparacion)
-    COMA        [reduce usando la regla 44 (factor)]
-    OP_LOG_AND  reduce usando la regla 31 (comparacion)
-    OP_LOG_AND  [reduce usando la regla 44 (factor)]
-    OP_LOG_OR   reduce usando la regla 31 (comparacion)
-    OP_LOG_OR   [reduce usando la regla 44 (factor)]
-    OP_SUMA     [reduce usando la regla 44 (factor)]
-    OP_RESTA    [reduce usando la regla 44 (factor)]
-    OP_MUL      reduce usando la regla 44 (factor)
-    OP_DIV      reduce usando la regla 44 (factor)
-    $default    reduce usando la regla 31 (comparacion)
+    COMA      desplazar e ir al estado 69
+    OP_SUMA   desplazar e ir al estado 54
+    OP_RESTA  desplazar e ir al estado 55
 
 
 estado 49
+
+   17 filter: PR_FILTER PAR_ABRE condicion . COMA COR_ABRE lista_variables COR_CIERRA PAR_CIERRA
+
+    COMA  desplazar e ir al estado 70
+
+
+estado 50
+
+   31 comparacion: PR_NOT expresion .
+   35 expresion: expresion . OP_SUMA termino
+   36          | expresion . OP_RESTA termino
+
+    OP_SUMA   desplazar e ir al estado 54
+    OP_RESTA  desplazar e ir al estado 55
+
+    $default  reduce usando la regla 31 (comparacion)
+
+
+estado 51
 
    25 condicional: PR_IF condicion PR_THEN . lista_sentencias PR_ENDIF
    26            | PR_IF condicion PR_THEN . lista_sentencias PR_ELSE lista_sentencias PR_ENDIF
 
     TOKEN_ID    desplazar e ir al estado 1
-    PR_IGUALES  desplazar e ir al estado 3
-    PR_FILTER   desplazar e ir al estado 4
-    PR_WRITE    desplazar e ir al estado 5
-    PR_READ     desplazar e ir al estado 6
-    PR_IF       desplazar e ir al estado 7
-    PR_WHILE    desplazar e ir al estado 8
+    PR_IGUALES  desplazar e ir al estado 4
+    PR_FILTER   desplazar e ir al estado 5
+    PR_WRITE    desplazar e ir al estado 6
+    PR_READ     desplazar e ir al estado 7
+    PR_IF       desplazar e ir al estado 8
+    PR_WHILE    desplazar e ir al estado 9
 
-    lista_sentencias  ir al estado 68
+    lista_sentencias  ir al estado 71
     sentencia         ir al estado 23
-    iguales           ir al estado 12
-    filter            ir al estado 13
-    io                ir al estado 14
-    entrada           ir al estado 15
-    salida            ir al estado 16
-    condicional       ir al estado 17
-    iteracion         ir al estado 18
-    asignacion        ir al estado 19
-
-
-estado 50
-
-   28 condicion: comparacion OP_LOG_AND . comparacion
-
-    TOKEN_ID     desplazar e ir al estado 29
-    CONST_INT    desplazar e ir al estado 30
-    CONST_STR    desplazar e ir al estado 31
-    CONST_FLOAT  desplazar e ir al estado 32
-    PR_NOT       desplazar e ir al estado 33
-
-    comparacion  ir al estado 69
-    expresion    ir al estado 36
-    termino      ir al estado 37
-    factor       ir al estado 38
-
-
-estado 51
-
-   29 condicion: comparacion OP_LOG_OR . comparacion
-
-    TOKEN_ID     desplazar e ir al estado 29
-    CONST_INT    desplazar e ir al estado 30
-    CONST_STR    desplazar e ir al estado 31
-    CONST_FLOAT  desplazar e ir al estado 32
-    PR_NOT       desplazar e ir al estado 33
-
-    comparacion  ir al estado 70
-    expresion    ir al estado 36
-    termino      ir al estado 37
-    factor       ir al estado 38
+    iguales           ir al estado 13
+    filter            ir al estado 14
+    io                ir al estado 15
+    entrada           ir al estado 16
+    salida            ir al estado 17
+    condicional       ir al estado 18
+    iteracion         ir al estado 19
+    asignacion        ir al estado 20
 
 
 estado 52
 
-   35 expresion: expresion OP_SUMA . termino
+   28 condicion: comparacion OP_LOG_AND . comparacion
 
-    TOKEN_ID     desplazar e ir al estado 29
-    CONST_INT    desplazar e ir al estado 30
-    CONST_STR    desplazar e ir al estado 31
-    CONST_FLOAT  desplazar e ir al estado 32
+    TOKEN_ID     desplazar e ir al estado 31
+    CONST_INT    desplazar e ir al estado 32
+    CONST_STR    desplazar e ir al estado 33
+    CONST_FLOAT  desplazar e ir al estado 34
+    PR_NOT       desplazar e ir al estado 35
 
-    expresion  ir al estado 71
-    termino    ir al estado 72
-    factor     ir al estado 38
+    comparacion  ir al estado 72
+    expresion    ir al estado 38
+    termino      ir al estado 39
+    factor       ir al estado 40
 
 
 estado 53
 
-   36 expresion: expresion OP_RESTA . termino
+   29 condicion: comparacion OP_LOG_OR . comparacion
 
-    TOKEN_ID     desplazar e ir al estado 29
-    CONST_INT    desplazar e ir al estado 30
-    CONST_STR    desplazar e ir al estado 31
-    CONST_FLOAT  desplazar e ir al estado 32
+    TOKEN_ID     desplazar e ir al estado 31
+    CONST_INT    desplazar e ir al estado 32
+    CONST_STR    desplazar e ir al estado 33
+    CONST_FLOAT  desplazar e ir al estado 34
+    PR_NOT       desplazar e ir al estado 35
 
-    expresion  ir al estado 71
-    termino    ir al estado 73
-    factor     ir al estado 38
+    comparacion  ir al estado 73
+    expresion    ir al estado 38
+    termino      ir al estado 39
+    factor       ir al estado 40
 
 
 estado 54
 
-   54 comparador: OP_MAYOR .
+   35 expresion: expresion OP_SUMA . termino
 
-    $default  reduce usando la regla 54 (comparador)
+    TOKEN_ID     desplazar e ir al estado 31
+    CONST_INT    desplazar e ir al estado 32
+    CONST_STR    desplazar e ir al estado 33
+    CONST_FLOAT  desplazar e ir al estado 34
+
+    termino  ir al estado 74
+    factor   ir al estado 40
 
 
 estado 55
 
-   57 comparador: OP_MAYOR_IGUAL .
+   36 expresion: expresion OP_RESTA . termino
 
-    $default  reduce usando la regla 57 (comparador)
+    TOKEN_ID     desplazar e ir al estado 31
+    CONST_INT    desplazar e ir al estado 32
+    CONST_STR    desplazar e ir al estado 33
+    CONST_FLOAT  desplazar e ir al estado 34
+
+    termino  ir al estado 75
+    factor   ir al estado 40
 
 
 estado 56
 
-   55 comparador: OP_MENOR .
+   50 comparador: OP_MAYOR .
 
-    $default  reduce usando la regla 55 (comparador)
+    $default  reduce usando la regla 50 (comparador)
 
 
 estado 57
 
-   56 comparador: OP_MENOR_IGUAL .
+   53 comparador: OP_MAYOR_IGUAL .
 
-    $default  reduce usando la regla 56 (comparador)
+    $default  reduce usando la regla 53 (comparador)
 
 
 estado 58
 
-   59 comparador: OP_DISTINTO .
+   51 comparador: OP_MENOR .
 
-    $default  reduce usando la regla 59 (comparador)
+    $default  reduce usando la regla 51 (comparador)
 
 
 estado 59
 
-   58 comparador: OP_IGUAL_IGUAL .
+   52 comparador: OP_MENOR_IGUAL .
 
-    $default  reduce usando la regla 58 (comparador)
+    $default  reduce usando la regla 52 (comparador)
 
 
 estado 60
 
-   30 comparacion: expresion comparador . expresion
+   55 comparador: OP_DISTINTO .
 
-    TOKEN_ID     desplazar e ir al estado 29
-    CONST_INT    desplazar e ir al estado 30
-    CONST_STR    desplazar e ir al estado 31
-    CONST_FLOAT  desplazar e ir al estado 32
-
-    expresion  ir al estado 74
-    termino    ir al estado 37
-    factor     ir al estado 38
+    $default  reduce usando la regla 55 (comparador)
 
 
 estado 61
 
-   39 termino: termino OP_MUL . factor
+   54 comparador: OP_IGUAL_IGUAL .
 
-    TOKEN_ID     desplazar e ir al estado 29
-    CONST_INT    desplazar e ir al estado 30
-    CONST_STR    desplazar e ir al estado 31
-    CONST_FLOAT  desplazar e ir al estado 32
-
-    expresion  ir al estado 71
-    termino    ir al estado 37
-    factor     ir al estado 75
+    $default  reduce usando la regla 54 (comparador)
 
 
 estado 62
 
-   38 termino: termino OP_DIV . factor
+   30 comparacion: expresion comparador . expresion
 
-    TOKEN_ID     desplazar e ir al estado 29
-    CONST_INT    desplazar e ir al estado 30
-    CONST_STR    desplazar e ir al estado 31
-    CONST_FLOAT  desplazar e ir al estado 32
+    TOKEN_ID     desplazar e ir al estado 31
+    CONST_INT    desplazar e ir al estado 32
+    CONST_STR    desplazar e ir al estado 33
+    CONST_FLOAT  desplazar e ir al estado 34
 
-    expresion  ir al estado 71
-    termino    ir al estado 37
-    factor     ir al estado 76
+    expresion  ir al estado 76
+    termino    ir al estado 39
+    factor     ir al estado 40
 
 
 estado 63
 
-   32 iteracion: PR_WHILE condicion PR_BEGIN . lista_sentencias PR_END
+   39 termino: termino OP_MUL . factor
 
-    TOKEN_ID    desplazar e ir al estado 1
-    PR_IGUALES  desplazar e ir al estado 3
-    PR_FILTER   desplazar e ir al estado 4
-    PR_WRITE    desplazar e ir al estado 5
-    PR_READ     desplazar e ir al estado 6
-    PR_IF       desplazar e ir al estado 7
-    PR_WHILE    desplazar e ir al estado 8
+    TOKEN_ID     desplazar e ir al estado 31
+    CONST_INT    desplazar e ir al estado 32
+    CONST_STR    desplazar e ir al estado 33
+    CONST_FLOAT  desplazar e ir al estado 34
 
-    lista_sentencias  ir al estado 77
-    sentencia         ir al estado 23
-    iguales           ir al estado 12
-    filter            ir al estado 13
-    io                ir al estado 14
-    entrada           ir al estado 15
-    salida            ir al estado 16
-    condicional       ir al estado 17
-    iteracion         ir al estado 18
-    asignacion        ir al estado 19
+    factor  ir al estado 77
 
 
 estado 64
 
-   45 declaracion_variables: OP_DIM COR_ABRE . lista_variables_tipos COR_CIERRA
+   38 termino: termino OP_DIV . factor
 
-    TOKEN_ID  desplazar e ir al estado 78
+    TOKEN_ID     desplazar e ir al estado 31
+    CONST_INT    desplazar e ir al estado 32
+    CONST_STR    desplazar e ir al estado 33
+    CONST_FLOAT  desplazar e ir al estado 34
 
-    lista_variables_tipos  ir al estado 79
+    factor  ir al estado 78
 
 
 estado 65
 
-    2 programa: PR_MAIN PR_DIM declaracion_variables PR_ENDIM . lista_sentencias
+   32 iteracion: PR_WHILE condicion PR_BEGIN . lista_sentencias PR_END
 
     TOKEN_ID    desplazar e ir al estado 1
-    PR_IGUALES  desplazar e ir al estado 3
-    PR_FILTER   desplazar e ir al estado 4
-    PR_WRITE    desplazar e ir al estado 5
-    PR_READ     desplazar e ir al estado 6
-    PR_IF       desplazar e ir al estado 7
-    PR_WHILE    desplazar e ir al estado 8
+    PR_IGUALES  desplazar e ir al estado 4
+    PR_FILTER   desplazar e ir al estado 5
+    PR_WRITE    desplazar e ir al estado 6
+    PR_READ     desplazar e ir al estado 7
+    PR_IF       desplazar e ir al estado 8
+    PR_WHILE    desplazar e ir al estado 9
 
-    lista_sentencias  ir al estado 80
+    lista_sentencias  ir al estado 79
     sentencia         ir al estado 23
-    iguales           ir al estado 12
-    filter            ir al estado 13
-    io                ir al estado 14
-    entrada           ir al estado 15
-    salida            ir al estado 16
-    condicional       ir al estado 17
-    iteracion         ir al estado 18
-    asignacion        ir al estado 19
+    iguales           ir al estado 13
+    filter            ir al estado 14
+    io                ir al estado 15
+    entrada           ir al estado 16
+    salida            ir al estado 17
+    condicional       ir al estado 18
+    iteracion         ir al estado 19
+    asignacion        ir al estado 20
 
 
 estado 66
 
-   14 iguales: PR_IGUALES PAR_ABRE expresion COMA . COR_ABRE lista_expresiones COR_CIERRA PAR_CIERRA
+   45 lista_variables_tipos: TOKEN_ID . COR_CIERRA OP_AS COR_ABRE tipo_dato
+   46                      | TOKEN_ID . COMA lista_variables_tipos COMA tipo_dato
 
-    COR_ABRE  desplazar e ir al estado 81
+    COR_CIERRA  desplazar e ir al estado 80
+    COMA        desplazar e ir al estado 81
 
 
 estado 67
 
-   17 filter: PR_FILTER PAR_ABRE condicion COMA . COR_ABRE lista_variables COR_CIERRA PAR_CIERRA
+   44 declaracion_variables: OP_DIM COR_ABRE lista_variables_tipos . COR_CIERRA
 
-    COR_ABRE  desplazar e ir al estado 82
+    COR_CIERRA  desplazar e ir al estado 82
 
 
 estado 68
 
-   25 condicional: PR_IF condicion PR_THEN lista_sentencias . PR_ENDIF
-   26            | PR_IF condicion PR_THEN lista_sentencias . PR_ELSE lista_sentencias PR_ENDIF
+    2 programa: PR_DIM declaracion_variables PR_ENDIM lista_sentencias .
 
-    PR_ENDIF  desplazar e ir al estado 83
-    PR_ELSE   desplazar e ir al estado 84
+    $default  reduce usando la regla 2 (programa)
 
 
 estado 69
+
+   14 iguales: PR_IGUALES PAR_ABRE expresion COMA . COR_ABRE lista_expresiones COR_CIERRA PAR_CIERRA
+
+    COR_ABRE  desplazar e ir al estado 83
+
+
+estado 70
+
+   17 filter: PR_FILTER PAR_ABRE condicion COMA . COR_ABRE lista_variables COR_CIERRA PAR_CIERRA
+
+    COR_ABRE  desplazar e ir al estado 84
+
+
+estado 71
+
+   25 condicional: PR_IF condicion PR_THEN lista_sentencias . PR_ENDIF
+   26            | PR_IF condicion PR_THEN lista_sentencias . PR_ELSE lista_sentencias PR_ENDIF
+
+    PR_ENDIF  desplazar e ir al estado 85
+    PR_ELSE   desplazar e ir al estado 86
+
+
+estado 72
 
    28 condicion: comparacion OP_LOG_AND comparacion .
 
     $default  reduce usando la regla 28 (condicion)
 
 
-estado 70
+estado 73
 
    29 condicion: comparacion OP_LOG_OR comparacion .
 
     $default  reduce usando la regla 29 (condicion)
 
 
-estado 71
-
-   35 expresion: expresion . OP_SUMA termino
-   36          | expresion . OP_RESTA termino
-   44 factor: expresion .
-
-    OP_SUMA   desplazar e ir al estado 52
-    OP_RESTA  desplazar e ir al estado 53
-
-    OP_SUMA   [reduce usando la regla 44 (factor)]
-    OP_RESTA  [reduce usando la regla 44 (factor)]
-    $default  reduce usando la regla 44 (factor)
-
-
-estado 72
-
-   34 expresion: termino .
-   35          | expresion OP_SUMA termino .
-   38 termino: termino . OP_DIV factor
-   39        | termino . OP_MUL factor
-
-    OP_MUL  desplazar e ir al estado 61
-    OP_DIV  desplazar e ir al estado 62
-
-    $end            reduce usando la regla 34 (expresion)
-    $end            [reduce usando la regla 35 (expresion)]
-    TOKEN_ID        reduce usando la regla 34 (expresion)
-    TOKEN_ID        [reduce usando la regla 35 (expresion)]
-    PR_IGUALES      reduce usando la regla 34 (expresion)
-    PR_IGUALES      [reduce usando la regla 35 (expresion)]
-    PR_FILTER       reduce usando la regla 34 (expresion)
-    PR_FILTER       [reduce usando la regla 35 (expresion)]
-    PR_WRITE        reduce usando la regla 34 (expresion)
-    PR_WRITE        [reduce usando la regla 35 (expresion)]
-    PR_READ         reduce usando la regla 34 (expresion)
-    PR_READ         [reduce usando la regla 35 (expresion)]
-    PR_IF           reduce usando la regla 34 (expresion)
-    PR_IF           [reduce usando la regla 35 (expresion)]
-    PR_THEN         reduce usando la regla 34 (expresion)
-    PR_THEN         [reduce usando la regla 35 (expresion)]
-    PR_ENDIF        reduce usando la regla 34 (expresion)
-    PR_ENDIF        [reduce usando la regla 35 (expresion)]
-    PR_ELSE         reduce usando la regla 34 (expresion)
-    PR_ELSE         [reduce usando la regla 35 (expresion)]
-    PR_WHILE        reduce usando la regla 34 (expresion)
-    PR_WHILE        [reduce usando la regla 35 (expresion)]
-    PR_BEGIN        reduce usando la regla 34 (expresion)
-    PR_BEGIN        [reduce usando la regla 35 (expresion)]
-    PR_END          reduce usando la regla 34 (expresion)
-    PR_END          [reduce usando la regla 35 (expresion)]
-    COR_CIERRA      reduce usando la regla 34 (expresion)
-    COR_CIERRA      [reduce usando la regla 35 (expresion)]
-    COMA            reduce usando la regla 34 (expresion)
-    COMA            [reduce usando la regla 35 (expresion)]
-    OP_LOG_AND      reduce usando la regla 34 (expresion)
-    OP_LOG_AND      [reduce usando la regla 35 (expresion)]
-    OP_LOG_OR       reduce usando la regla 34 (expresion)
-    OP_LOG_OR       [reduce usando la regla 35 (expresion)]
-    OP_SUMA         reduce usando la regla 34 (expresion)
-    OP_SUMA         [reduce usando la regla 35 (expresion)]
-    OP_RESTA        reduce usando la regla 34 (expresion)
-    OP_RESTA        [reduce usando la regla 35 (expresion)]
-    OP_MUL          [reduce usando la regla 34 (expresion)]
-    OP_MUL          [reduce usando la regla 35 (expresion)]
-    OP_DIV          [reduce usando la regla 34 (expresion)]
-    OP_DIV          [reduce usando la regla 35 (expresion)]
-    OP_MAYOR        reduce usando la regla 34 (expresion)
-    OP_MAYOR        [reduce usando la regla 35 (expresion)]
-    OP_MAYOR_IGUAL  reduce usando la regla 34 (expresion)
-    OP_MAYOR_IGUAL  [reduce usando la regla 35 (expresion)]
-    OP_MENOR        reduce usando la regla 34 (expresion)
-    OP_MENOR        [reduce usando la regla 35 (expresion)]
-    OP_MENOR_IGUAL  reduce usando la regla 34 (expresion)
-    OP_MENOR_IGUAL  [reduce usando la regla 35 (expresion)]
-    OP_DISTINTO     reduce usando la regla 34 (expresion)
-    OP_DISTINTO     [reduce usando la regla 35 (expresion)]
-    OP_IGUAL_IGUAL  reduce usando la regla 34 (expresion)
-    OP_IGUAL_IGUAL  [reduce usando la regla 35 (expresion)]
-    $default        reduce usando la regla 34 (expresion)
-
-
-estado 73
-
-   34 expresion: termino .
-   36          | expresion OP_RESTA termino .
-   38 termino: termino . OP_DIV factor
-   39        | termino . OP_MUL factor
-
-    OP_MUL  desplazar e ir al estado 61
-    OP_DIV  desplazar e ir al estado 62
-
-    $end            reduce usando la regla 34 (expresion)
-    $end            [reduce usando la regla 36 (expresion)]
-    TOKEN_ID        reduce usando la regla 34 (expresion)
-    TOKEN_ID        [reduce usando la regla 36 (expresion)]
-    PR_IGUALES      reduce usando la regla 34 (expresion)
-    PR_IGUALES      [reduce usando la regla 36 (expresion)]
-    PR_FILTER       reduce usando la regla 34 (expresion)
-    PR_FILTER       [reduce usando la regla 36 (expresion)]
-    PR_WRITE        reduce usando la regla 34 (expresion)
-    PR_WRITE        [reduce usando la regla 36 (expresion)]
-    PR_READ         reduce usando la regla 34 (expresion)
-    PR_READ         [reduce usando la regla 36 (expresion)]
-    PR_IF           reduce usando la regla 34 (expresion)
-    PR_IF           [reduce usando la regla 36 (expresion)]
-    PR_THEN         reduce usando la regla 34 (expresion)
-    PR_THEN         [reduce usando la regla 36 (expresion)]
-    PR_ENDIF        reduce usando la regla 34 (expresion)
-    PR_ENDIF        [reduce usando la regla 36 (expresion)]
-    PR_ELSE         reduce usando la regla 34 (expresion)
-    PR_ELSE         [reduce usando la regla 36 (expresion)]
-    PR_WHILE        reduce usando la regla 34 (expresion)
-    PR_WHILE        [reduce usando la regla 36 (expresion)]
-    PR_BEGIN        reduce usando la regla 34 (expresion)
-    PR_BEGIN        [reduce usando la regla 36 (expresion)]
-    PR_END          reduce usando la regla 34 (expresion)
-    PR_END          [reduce usando la regla 36 (expresion)]
-    COR_CIERRA      reduce usando la regla 34 (expresion)
-    COR_CIERRA      [reduce usando la regla 36 (expresion)]
-    COMA            reduce usando la regla 34 (expresion)
-    COMA            [reduce usando la regla 36 (expresion)]
-    OP_LOG_AND      reduce usando la regla 34 (expresion)
-    OP_LOG_AND      [reduce usando la regla 36 (expresion)]
-    OP_LOG_OR       reduce usando la regla 34 (expresion)
-    OP_LOG_OR       [reduce usando la regla 36 (expresion)]
-    OP_SUMA         reduce usando la regla 34 (expresion)
-    OP_SUMA         [reduce usando la regla 36 (expresion)]
-    OP_RESTA        reduce usando la regla 34 (expresion)
-    OP_RESTA        [reduce usando la regla 36 (expresion)]
-    OP_MUL          [reduce usando la regla 34 (expresion)]
-    OP_MUL          [reduce usando la regla 36 (expresion)]
-    OP_DIV          [reduce usando la regla 34 (expresion)]
-    OP_DIV          [reduce usando la regla 36 (expresion)]
-    OP_MAYOR        reduce usando la regla 34 (expresion)
-    OP_MAYOR        [reduce usando la regla 36 (expresion)]
-    OP_MAYOR_IGUAL  reduce usando la regla 34 (expresion)
-    OP_MAYOR_IGUAL  [reduce usando la regla 36 (expresion)]
-    OP_MENOR        reduce usando la regla 34 (expresion)
-    OP_MENOR        [reduce usando la regla 36 (expresion)]
-    OP_MENOR_IGUAL  reduce usando la regla 34 (expresion)
-    OP_MENOR_IGUAL  [reduce usando la regla 36 (expresion)]
-    OP_DISTINTO     reduce usando la regla 34 (expresion)
-    OP_DISTINTO     [reduce usando la regla 36 (expresion)]
-    OP_IGUAL_IGUAL  reduce usando la regla 34 (expresion)
-    OP_IGUAL_IGUAL  [reduce usando la regla 36 (expresion)]
-    $default        reduce usando la regla 34 (expresion)
-
-
 estado 74
 
-   30 comparacion: expresion comparador expresion .
-   35 expresion: expresion . OP_SUMA termino
-   36          | expresion . OP_RESTA termino
-   44 factor: expresion .
+   35 expresion: expresion OP_SUMA termino .
+   38 termino: termino . OP_DIV factor
+   39        | termino . OP_MUL factor
 
-    OP_SUMA   desplazar e ir al estado 52
-    OP_RESTA  desplazar e ir al estado 53
+    OP_MUL  desplazar e ir al estado 63
+    OP_DIV  desplazar e ir al estado 64
 
-    PR_THEN     reduce usando la regla 30 (comparacion)
-    PR_THEN     [reduce usando la regla 44 (factor)]
-    PR_BEGIN    reduce usando la regla 30 (comparacion)
-    PR_BEGIN    [reduce usando la regla 44 (factor)]
-    COMA        reduce usando la regla 30 (comparacion)
-    COMA        [reduce usando la regla 44 (factor)]
-    OP_LOG_AND  reduce usando la regla 30 (comparacion)
-    OP_LOG_AND  [reduce usando la regla 44 (factor)]
-    OP_LOG_OR   reduce usando la regla 30 (comparacion)
-    OP_LOG_OR   [reduce usando la regla 44 (factor)]
-    OP_SUMA     [reduce usando la regla 44 (factor)]
-    OP_RESTA    [reduce usando la regla 44 (factor)]
-    OP_MUL      reduce usando la regla 44 (factor)
-    OP_DIV      reduce usando la regla 44 (factor)
-    $default    reduce usando la regla 30 (comparacion)
+    $default  reduce usando la regla 35 (expresion)
 
 
 estado 75
 
-   37 termino: factor .
-   39        | termino OP_MUL factor .
+   36 expresion: expresion OP_RESTA termino .
+   38 termino: termino . OP_DIV factor
+   39        | termino . OP_MUL factor
 
-    $end            reduce usando la regla 37 (termino)
-    $end            [reduce usando la regla 39 (termino)]
-    TOKEN_ID        reduce usando la regla 37 (termino)
-    TOKEN_ID        [reduce usando la regla 39 (termino)]
-    PR_IGUALES      reduce usando la regla 37 (termino)
-    PR_IGUALES      [reduce usando la regla 39 (termino)]
-    PR_FILTER       reduce usando la regla 37 (termino)
-    PR_FILTER       [reduce usando la regla 39 (termino)]
-    PR_WRITE        reduce usando la regla 37 (termino)
-    PR_WRITE        [reduce usando la regla 39 (termino)]
-    PR_READ         reduce usando la regla 37 (termino)
-    PR_READ         [reduce usando la regla 39 (termino)]
-    PR_IF           reduce usando la regla 37 (termino)
-    PR_IF           [reduce usando la regla 39 (termino)]
-    PR_THEN         reduce usando la regla 37 (termino)
-    PR_THEN         [reduce usando la regla 39 (termino)]
-    PR_ENDIF        reduce usando la regla 37 (termino)
-    PR_ENDIF        [reduce usando la regla 39 (termino)]
-    PR_ELSE         reduce usando la regla 37 (termino)
-    PR_ELSE         [reduce usando la regla 39 (termino)]
-    PR_WHILE        reduce usando la regla 37 (termino)
-    PR_WHILE        [reduce usando la regla 39 (termino)]
-    PR_BEGIN        reduce usando la regla 37 (termino)
-    PR_BEGIN        [reduce usando la regla 39 (termino)]
-    PR_END          reduce usando la regla 37 (termino)
-    PR_END          [reduce usando la regla 39 (termino)]
-    COR_CIERRA      reduce usando la regla 37 (termino)
-    COR_CIERRA      [reduce usando la regla 39 (termino)]
-    COMA            reduce usando la regla 37 (termino)
-    COMA            [reduce usando la regla 39 (termino)]
-    OP_LOG_AND      reduce usando la regla 37 (termino)
-    OP_LOG_AND      [reduce usando la regla 39 (termino)]
-    OP_LOG_OR       reduce usando la regla 37 (termino)
-    OP_LOG_OR       [reduce usando la regla 39 (termino)]
-    OP_SUMA         reduce usando la regla 37 (termino)
-    OP_SUMA         [reduce usando la regla 39 (termino)]
-    OP_RESTA        reduce usando la regla 37 (termino)
-    OP_RESTA        [reduce usando la regla 39 (termino)]
-    OP_MUL          reduce usando la regla 37 (termino)
-    OP_MUL          [reduce usando la regla 39 (termino)]
-    OP_DIV          reduce usando la regla 37 (termino)
-    OP_DIV          [reduce usando la regla 39 (termino)]
-    OP_MAYOR        reduce usando la regla 37 (termino)
-    OP_MAYOR        [reduce usando la regla 39 (termino)]
-    OP_MAYOR_IGUAL  reduce usando la regla 37 (termino)
-    OP_MAYOR_IGUAL  [reduce usando la regla 39 (termino)]
-    OP_MENOR        reduce usando la regla 37 (termino)
-    OP_MENOR        [reduce usando la regla 39 (termino)]
-    OP_MENOR_IGUAL  reduce usando la regla 37 (termino)
-    OP_MENOR_IGUAL  [reduce usando la regla 39 (termino)]
-    OP_DISTINTO     reduce usando la regla 37 (termino)
-    OP_DISTINTO     [reduce usando la regla 39 (termino)]
-    OP_IGUAL_IGUAL  reduce usando la regla 37 (termino)
-    OP_IGUAL_IGUAL  [reduce usando la regla 39 (termino)]
-    $default        reduce usando la regla 37 (termino)
+    OP_MUL  desplazar e ir al estado 63
+    OP_DIV  desplazar e ir al estado 64
+
+    $default  reduce usando la regla 36 (expresion)
 
 
 estado 76
 
-   37 termino: factor .
-   38        | termino OP_DIV factor .
+   30 comparacion: expresion comparador expresion .
+   35 expresion: expresion . OP_SUMA termino
+   36          | expresion . OP_RESTA termino
 
-    $end            reduce usando la regla 37 (termino)
-    $end            [reduce usando la regla 38 (termino)]
-    TOKEN_ID        reduce usando la regla 37 (termino)
-    TOKEN_ID        [reduce usando la regla 38 (termino)]
-    PR_IGUALES      reduce usando la regla 37 (termino)
-    PR_IGUALES      [reduce usando la regla 38 (termino)]
-    PR_FILTER       reduce usando la regla 37 (termino)
-    PR_FILTER       [reduce usando la regla 38 (termino)]
-    PR_WRITE        reduce usando la regla 37 (termino)
-    PR_WRITE        [reduce usando la regla 38 (termino)]
-    PR_READ         reduce usando la regla 37 (termino)
-    PR_READ         [reduce usando la regla 38 (termino)]
-    PR_IF           reduce usando la regla 37 (termino)
-    PR_IF           [reduce usando la regla 38 (termino)]
-    PR_THEN         reduce usando la regla 37 (termino)
-    PR_THEN         [reduce usando la regla 38 (termino)]
-    PR_ENDIF        reduce usando la regla 37 (termino)
-    PR_ENDIF        [reduce usando la regla 38 (termino)]
-    PR_ELSE         reduce usando la regla 37 (termino)
-    PR_ELSE         [reduce usando la regla 38 (termino)]
-    PR_WHILE        reduce usando la regla 37 (termino)
-    PR_WHILE        [reduce usando la regla 38 (termino)]
-    PR_BEGIN        reduce usando la regla 37 (termino)
-    PR_BEGIN        [reduce usando la regla 38 (termino)]
-    PR_END          reduce usando la regla 37 (termino)
-    PR_END          [reduce usando la regla 38 (termino)]
-    COR_CIERRA      reduce usando la regla 37 (termino)
-    COR_CIERRA      [reduce usando la regla 38 (termino)]
-    COMA            reduce usando la regla 37 (termino)
-    COMA            [reduce usando la regla 38 (termino)]
-    OP_LOG_AND      reduce usando la regla 37 (termino)
-    OP_LOG_AND      [reduce usando la regla 38 (termino)]
-    OP_LOG_OR       reduce usando la regla 37 (termino)
-    OP_LOG_OR       [reduce usando la regla 38 (termino)]
-    OP_SUMA         reduce usando la regla 37 (termino)
-    OP_SUMA         [reduce usando la regla 38 (termino)]
-    OP_RESTA        reduce usando la regla 37 (termino)
-    OP_RESTA        [reduce usando la regla 38 (termino)]
-    OP_MUL          reduce usando la regla 37 (termino)
-    OP_MUL          [reduce usando la regla 38 (termino)]
-    OP_DIV          reduce usando la regla 37 (termino)
-    OP_DIV          [reduce usando la regla 38 (termino)]
-    OP_MAYOR        reduce usando la regla 37 (termino)
-    OP_MAYOR        [reduce usando la regla 38 (termino)]
-    OP_MAYOR_IGUAL  reduce usando la regla 37 (termino)
-    OP_MAYOR_IGUAL  [reduce usando la regla 38 (termino)]
-    OP_MENOR        reduce usando la regla 37 (termino)
-    OP_MENOR        [reduce usando la regla 38 (termino)]
-    OP_MENOR_IGUAL  reduce usando la regla 37 (termino)
-    OP_MENOR_IGUAL  [reduce usando la regla 38 (termino)]
-    OP_DISTINTO     reduce usando la regla 37 (termino)
-    OP_DISTINTO     [reduce usando la regla 38 (termino)]
-    OP_IGUAL_IGUAL  reduce usando la regla 37 (termino)
-    OP_IGUAL_IGUAL  [reduce usando la regla 38 (termino)]
-    $default        reduce usando la regla 37 (termino)
+    OP_SUMA   desplazar e ir al estado 54
+    OP_RESTA  desplazar e ir al estado 55
+
+    $default  reduce usando la regla 30 (comparacion)
 
 
 estado 77
 
-   32 iteracion: PR_WHILE condicion PR_BEGIN lista_sentencias . PR_END
+   39 termino: termino OP_MUL factor .
 
-    PR_END  desplazar e ir al estado 85
+    $default  reduce usando la regla 39 (termino)
 
 
 estado 78
 
-   46 lista_variables_tipos: TOKEN_ID . COR_CIERRA OP_AS COR_ABRE tipo_dato
-   47                      | TOKEN_ID . COMA variables COMA tipo_dato
+   38 termino: termino OP_DIV factor .
 
-    COR_CIERRA  desplazar e ir al estado 86
-    COMA        desplazar e ir al estado 87
+    $default  reduce usando la regla 38 (termino)
 
 
 estado 79
 
-   45 declaracion_variables: OP_DIM COR_ABRE lista_variables_tipos . COR_CIERRA
+   32 iteracion: PR_WHILE condicion PR_BEGIN lista_sentencias . PR_END
 
-    COR_CIERRA  desplazar e ir al estado 88
+    PR_END  desplazar e ir al estado 87
 
 
 estado 80
 
-    2 programa: PR_MAIN PR_DIM declaracion_variables PR_ENDIM lista_sentencias .
+   45 lista_variables_tipos: TOKEN_ID COR_CIERRA . OP_AS COR_ABRE tipo_dato
 
-    $default  reduce usando la regla 2 (programa)
+    OP_AS  desplazar e ir al estado 88
 
 
 estado 81
 
-   14 iguales: PR_IGUALES PAR_ABRE expresion COMA COR_ABRE . lista_expresiones COR_CIERRA PAR_CIERRA
+   46 lista_variables_tipos: TOKEN_ID COMA . lista_variables_tipos COMA tipo_dato
 
-    TOKEN_ID     desplazar e ir al estado 29
-    CONST_INT    desplazar e ir al estado 30
-    CONST_STR    desplazar e ir al estado 31
-    CONST_FLOAT  desplazar e ir al estado 32
+    TOKEN_ID  desplazar e ir al estado 66
 
-    lista_expresiones  ir al estado 89
-    expresion          ir al estado 90
-    termino            ir al estado 37
-    factor             ir al estado 38
+    lista_variables_tipos  ir al estado 89
 
 
 estado 82
 
-   17 filter: PR_FILTER PAR_ABRE condicion COMA COR_ABRE . lista_variables COR_CIERRA PAR_CIERRA
+   44 declaracion_variables: OP_DIM COR_ABRE lista_variables_tipos COR_CIERRA .
 
-    TOKEN_ID  desplazar e ir al estado 91
-
-    lista_variables  ir al estado 92
+    $default  reduce usando la regla 44 (declaracion_variables)
 
 
 estado 83
+
+   14 iguales: PR_IGUALES PAR_ABRE expresion COMA COR_ABRE . lista_expresiones COR_CIERRA PAR_CIERRA
+
+    TOKEN_ID     desplazar e ir al estado 31
+    CONST_INT    desplazar e ir al estado 32
+    CONST_STR    desplazar e ir al estado 33
+    CONST_FLOAT  desplazar e ir al estado 34
+
+    lista_expresiones  ir al estado 90
+    expresion          ir al estado 91
+    termino            ir al estado 39
+    factor             ir al estado 40
+
+
+estado 84
+
+   17 filter: PR_FILTER PAR_ABRE condicion COMA COR_ABRE . lista_variables COR_CIERRA PAR_CIERRA
+
+    TOKEN_ID  desplazar e ir al estado 92
+
+    lista_variables  ir al estado 93
+
+
+estado 85
 
    25 condicional: PR_IF condicion PR_THEN lista_sentencias PR_ENDIF .
 
     $default  reduce usando la regla 25 (condicional)
 
 
-estado 84
+estado 86
 
    26 condicional: PR_IF condicion PR_THEN lista_sentencias PR_ELSE . lista_sentencias PR_ENDIF
 
     TOKEN_ID    desplazar e ir al estado 1
-    PR_IGUALES  desplazar e ir al estado 3
-    PR_FILTER   desplazar e ir al estado 4
-    PR_WRITE    desplazar e ir al estado 5
-    PR_READ     desplazar e ir al estado 6
-    PR_IF       desplazar e ir al estado 7
-    PR_WHILE    desplazar e ir al estado 8
+    PR_IGUALES  desplazar e ir al estado 4
+    PR_FILTER   desplazar e ir al estado 5
+    PR_WRITE    desplazar e ir al estado 6
+    PR_READ     desplazar e ir al estado 7
+    PR_IF       desplazar e ir al estado 8
+    PR_WHILE    desplazar e ir al estado 9
 
-    lista_sentencias  ir al estado 93
+    lista_sentencias  ir al estado 94
     sentencia         ir al estado 23
-    iguales           ir al estado 12
-    filter            ir al estado 13
-    io                ir al estado 14
-    entrada           ir al estado 15
-    salida            ir al estado 16
-    condicional       ir al estado 17
-    iteracion         ir al estado 18
-    asignacion        ir al estado 19
+    iguales           ir al estado 13
+    filter            ir al estado 14
+    io                ir al estado 15
+    entrada           ir al estado 16
+    salida            ir al estado 17
+    condicional       ir al estado 18
+    iteracion         ir al estado 19
+    asignacion        ir al estado 20
 
 
-estado 85
+estado 87
 
    32 iteracion: PR_WHILE condicion PR_BEGIN lista_sentencias PR_END .
 
     $default  reduce usando la regla 32 (iteracion)
 
 
-estado 86
-
-   46 lista_variables_tipos: TOKEN_ID COR_CIERRA . OP_AS COR_ABRE tipo_dato
-
-    OP_AS  desplazar e ir al estado 94
-
-
-estado 87
-
-   47 lista_variables_tipos: TOKEN_ID COMA . variables COMA tipo_dato
-
-    TOKEN_ID  desplazar e ir al estado 95
-
-    variables  ir al estado 96
-
-
 estado 88
 
-   45 declaracion_variables: OP_DIM COR_ABRE lista_variables_tipos COR_CIERRA .
+   45 lista_variables_tipos: TOKEN_ID COR_CIERRA OP_AS . COR_ABRE tipo_dato
 
-    $default  reduce usando la regla 45 (declaracion_variables)
+    COR_ABRE  desplazar e ir al estado 95
 
 
 estado 89
+
+   46 lista_variables_tipos: TOKEN_ID COMA lista_variables_tipos . COMA tipo_dato
+
+    COMA  desplazar e ir al estado 96
+
+
+estado 90
 
    14 iguales: PR_IGUALES PAR_ABRE expresion COMA COR_ABRE lista_expresiones . COR_CIERRA PAR_CIERRA
 
     COR_CIERRA  desplazar e ir al estado 97
 
 
-estado 90
+estado 91
 
    15 lista_expresiones: expresion . COMA lista_expresiones
    16                  | expresion .
    35 expresion: expresion . OP_SUMA termino
    36          | expresion . OP_RESTA termino
-   44 factor: expresion .
 
     COMA      desplazar e ir al estado 98
-    OP_SUMA   desplazar e ir al estado 52
-    OP_RESTA  desplazar e ir al estado 53
+    OP_SUMA   desplazar e ir al estado 54
+    OP_RESTA  desplazar e ir al estado 55
 
-    COR_CIERRA  reduce usando la regla 16 (lista_expresiones)
-    COR_CIERRA  [reduce usando la regla 44 (factor)]
-    COMA        [reduce usando la regla 44 (factor)]
-    OP_SUMA     [reduce usando la regla 44 (factor)]
-    OP_RESTA    [reduce usando la regla 44 (factor)]
-    $default    reduce usando la regla 44 (factor)
+    $default  reduce usando la regla 16 (lista_expresiones)
 
 
-estado 91
+estado 92
 
    18 lista_variables: TOKEN_ID . COMA lista_variables
    19                | TOKEN_ID .
@@ -1511,81 +1167,78 @@ estado 91
     $default  reduce usando la regla 19 (lista_variables)
 
 
-estado 92
+estado 93
 
    17 filter: PR_FILTER PAR_ABRE condicion COMA COR_ABRE lista_variables . COR_CIERRA PAR_CIERRA
 
     COR_CIERRA  desplazar e ir al estado 100
 
 
-estado 93
+estado 94
 
    26 condicional: PR_IF condicion PR_THEN lista_sentencias PR_ELSE lista_sentencias . PR_ENDIF
 
     PR_ENDIF  desplazar e ir al estado 101
 
 
-estado 94
-
-   46 lista_variables_tipos: TOKEN_ID COR_CIERRA OP_AS . COR_ABRE tipo_dato
-
-    COR_ABRE  desplazar e ir al estado 102
-
-
 estado 95
 
-   48 variables: TOKEN_ID .
-   49          | TOKEN_ID . COMA variables
-   50          | TOKEN_ID . COMA variables
+   45 lista_variables_tipos: TOKEN_ID COR_CIERRA OP_AS COR_ABRE . tipo_dato
 
-    COMA  desplazar e ir al estado 103
+    PR_FLOAT   desplazar e ir al estado 102
+    PR_INT     desplazar e ir al estado 103
+    PR_STRING  desplazar e ir al estado 104
 
-    COMA  [reduce usando la regla 48 (variables)]
+    tipo_dato  ir al estado 105
 
 
 estado 96
 
-   47 lista_variables_tipos: TOKEN_ID COMA variables . COMA tipo_dato
+   46 lista_variables_tipos: TOKEN_ID COMA lista_variables_tipos COMA . tipo_dato
 
-    COMA  desplazar e ir al estado 104
+    PR_FLOAT   desplazar e ir al estado 102
+    PR_INT     desplazar e ir al estado 103
+    PR_STRING  desplazar e ir al estado 104
+
+    tipo_dato  ir al estado 106
 
 
 estado 97
 
    14 iguales: PR_IGUALES PAR_ABRE expresion COMA COR_ABRE lista_expresiones COR_CIERRA . PAR_CIERRA
 
-    PAR_CIERRA  desplazar e ir al estado 105
+    PAR_CIERRA  desplazar e ir al estado 107
 
 
 estado 98
 
    15 lista_expresiones: expresion COMA . lista_expresiones
 
-    TOKEN_ID     desplazar e ir al estado 29
-    CONST_INT    desplazar e ir al estado 30
-    CONST_STR    desplazar e ir al estado 31
-    CONST_FLOAT  desplazar e ir al estado 32
+    TOKEN_ID     desplazar e ir al estado 31
+    CONST_INT    desplazar e ir al estado 32
+    CONST_STR    desplazar e ir al estado 33
+    CONST_FLOAT  desplazar e ir al estado 34
 
-    lista_expresiones  ir al estado 106
-    expresion          ir al estado 90
-    termino            ir al estado 37
-    factor             ir al estado 38
+    lista_expresiones  ir al estado 108
+    expresion          ir al estado 91
+    termino            ir al estado 39
+    factor             ir al estado 40
 
 
 estado 99
 
    18 lista_variables: TOKEN_ID COMA . lista_variables
 
-    TOKEN_ID  desplazar e ir al estado 91
+    TOKEN_ID  desplazar e ir al estado 92
 
-    lista_variables  ir al estado 107
+    lista_variables  ir al estado 109
 
 
 estado 100
 
    17 filter: PR_FILTER PAR_ABRE condicion COMA COR_ABRE lista_variables COR_CIERRA . PAR_CIERRA
 
-    PAR_CIERRA  desplazar e ir al estado 108
+    PAR_CIERRA  desplazar e ir al estado 110
 
 
 estado 101
@@ -1597,104 +1250,62 @@ estado 101
 
 estado 102
 
-   46 lista_variables_tipos: TOKEN_ID COR_CIERRA OP_AS COR_ABRE . tipo_dato
+   48 tipo_dato: PR_FLOAT .
 
-    PR_FLOAT   desplazar e ir al estado 109
-    PR_INT     desplazar e ir al estado 110
-    PR_STRING  desplazar e ir al estado 111
-
-    tipo_dato  ir al estado 112
+    $default  reduce usando la regla 48 (tipo_dato)
 
 
 estado 103
 
-   49 variables: TOKEN_ID COMA . variables
-   50          | TOKEN_ID COMA . variables
+   47 tipo_dato: PR_INT .
 
-    TOKEN_ID  desplazar e ir al estado 95
-
-    variables  ir al estado 113
+    $default  reduce usando la regla 47 (tipo_dato)
 
 
 estado 104
 
-   47 lista_variables_tipos: TOKEN_ID COMA variables COMA . tipo_dato
+   49 tipo_dato: PR_STRING .
 
-    PR_FLOAT   desplazar e ir al estado 109
-    PR_INT     desplazar e ir al estado 110
-    PR_STRING  desplazar e ir al estado 111
-
-    tipo_dato  ir al estado 114
+    $default  reduce usando la regla 49 (tipo_dato)
 
 
 estado 105
+
+   45 lista_variables_tipos: TOKEN_ID COR_CIERRA OP_AS COR_ABRE tipo_dato .
+
+    $default  reduce usando la regla 45 (lista_variables_tipos)
+
+
+estado 106
+
+   46 lista_variables_tipos: TOKEN_ID COMA lista_variables_tipos COMA tipo_dato .
+
+    $default  reduce usando la regla 46 (lista_variables_tipos)
+
+
+estado 107
 
    14 iguales: PR_IGUALES PAR_ABRE expresion COMA COR_ABRE lista_expresiones COR_CIERRA PAR_CIERRA .
 
     $default  reduce usando la regla 14 (iguales)
 
 
-estado 106
+estado 108
 
    15 lista_expresiones: expresion COMA lista_expresiones .
 
     $default  reduce usando la regla 15 (lista_expresiones)
 
 
-estado 107
+estado 109
 
    18 lista_variables: TOKEN_ID COMA lista_variables .
 
     $default  reduce usando la regla 18 (lista_variables)
 
 
-estado 108
+estado 110
 
    17 filter: PR_FILTER PAR_ABRE condicion COMA COR_ABRE lista_variables COR_CIERRA PAR_CIERRA .
 
     $default  reduce usando la regla 17 (filter)
-
-
-estado 109
-
-   52 tipo_dato: PR_FLOAT .
-
-    $default  reduce usando la regla 52 (tipo_dato)
-
-
-estado 110
-
-   51 tipo_dato: PR_INT .
-
-    $default  reduce usando la regla 51 (tipo_dato)
-
-
-estado 111
-
-   53 tipo_dato: PR_STRING .
-
-    $default  reduce usando la regla 53 (tipo_dato)
-
-
-estado 112
-
-   46 lista_variables_tipos: TOKEN_ID COR_CIERRA OP_AS COR_ABRE tipo_dato .
-
-    $default  reduce usando la regla 46 (lista_variables_tipos)
-
-
-estado 113
-
-   49 variables: TOKEN_ID COMA variables .
-   50          | TOKEN_ID COMA variables .
-
-    COMA      reduce usando la regla 49 (variables)
-    COMA      [reduce usando la regla 50 (variables)]
-    $default  reduce usando la regla 49 (variables)
-
-
-estado 114
-
-   47 lista_variables_tipos: TOKEN_ID COMA variables COMA tipo_dato .
-
-    $default  reduce usando la regla 47 (lista_variables_tipos)

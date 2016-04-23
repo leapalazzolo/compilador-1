@@ -446,7 +446,7 @@ union yyalloc
 /* YYNNTS -- Number of nonterminals.  */
 #define YYNNTS  25
 /* YYNRULES -- Number of rules.  */
-#define YYNRULES  60
+#define YYNRULES  59
 /* YYNRULES -- Number of states.  */
 #define YYNSTATES  115
 
@@ -503,8 +503,7 @@ static const yytype_uint8 yyprhs[] =
       64,    66,    68,    70,    73,    76,    79,    85,    93,    95,
       99,   103,   107,   110,   116,   120,   122,   126,   130,   132,
      136,   140,   142,   144,   146,   148,   150,   155,   161,   167,
-     169,   173,   177,   179,   181,   183,   185,   187,   189,   191,
-     193
+     169,   173,   175,   177,   179,   181,   183,   185,   187,   189
 };
 
 /* YYRHS -- A `-1'-separated list of the rules' RHS.  */
@@ -527,9 +526,9 @@ static const yytype_int8 yyrhs[] =
        5,    -1,     4,    -1,     6,    -1,     3,    -1,    63,    -1,
       42,    24,    67,    25,    -1,     3,    25,    41,    24,    69,
       -1,     3,    26,    68,    26,    69,    -1,     3,    -1,     3,
-      26,    68,    -1,     3,    26,    68,    -1,    44,    -1,    43,
-      -1,    45,    -1,    34,    -1,    36,    -1,    37,    -1,    35,
-      -1,    39,    -1,    38,    -1
+      26,    68,    -1,    44,    -1,    43,    -1,    45,    -1,    34,
+      -1,    36,    -1,    37,    -1,    35,    -1,    39,    -1,    38,
+      -1
 };
 
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
@@ -540,8 +539,7 @@ static const yytype_uint16 yyrline[] =
      170,   176,   182,   188,   194,   200,   206,   212,   218,   224,
      230,   236,   242,   248,   254,   260,   266,   272,   278,   284,
      290,   296,   302,   308,   314,   320,   326,   332,   332,   338,
-     338,   344,   350,   356,   362,   368,   374,   380,   386,   392,
-     398
+     344,   350,   356,   362,   368,   374,   380,   386,   392,   398
 };
 #endif
 
@@ -588,8 +586,7 @@ static const yytype_uint8 yyr1[] =
       54,    55,    55,    56,    57,    57,    58,    58,    59,    59,
       59,    60,    60,    61,    62,    63,    63,    63,    64,    64,
       64,    65,    65,    65,    65,    65,    66,    67,    67,    68,
-      68,    68,    69,    69,    69,    70,    70,    70,    70,    70,
-      70
+      68,    69,    69,    69,    70,    70,    70,    70,    70,    70
 };
 
 /* YYR2[YYN] -- Number of symbols composing right hand side of rule YYN.  */
@@ -600,8 +597,7 @@ static const yytype_uint8 yyr2[] =
        1,     1,     1,     2,     2,     2,     5,     7,     1,     3,
        3,     3,     2,     5,     3,     1,     3,     3,     1,     3,
        3,     1,     1,     1,     1,     1,     4,     5,     5,     1,
-       3,     3,     1,     1,     1,     1,     1,     1,     1,     1,
-       1
+       3,     1,     1,     1,     1,     1,     1,     1,     1,     1
 };
 
 /* YYDEFACT[STATE-NAME] -- Default rule to reduce with in state
@@ -614,13 +610,13 @@ static const yytype_uint8 yydefact[] =
        0,     0,     4,     7,     0,     0,    24,    25,    23,    44,
       42,    41,    43,     0,     0,    28,    45,    35,    38,     0,
        1,     5,    34,     0,     0,     8,    45,     0,    32,     0,
-       0,     0,     0,     0,    55,    58,    56,    57,    60,    59,
+       0,     0,     0,     0,    54,    57,    55,    56,    59,    58,
        0,     0,     0,     0,     0,     0,     0,     0,     0,    29,
       30,    45,    35,    35,    31,    38,    38,     0,     0,     0,
        3,     0,     0,    26,     0,    33,     0,     0,    46,     0,
       45,    20,     0,     0,     0,     0,     0,     0,     0,     0,
-       0,    27,     0,     0,     0,    15,    16,    19,    18,    53,
-      52,    54,    47,    50,    48
+       0,    27,     0,     0,     0,    15,    16,    19,    18,    52,
+      51,    53,    47,    50,    48
 };
 
 /* YYDEFGOTO[NTERM-NUM].  */
@@ -1983,7 +1979,7 @@ yyreduce:
 }
     break;
 
-  case 50:
+  case 49:
 
 /* Line 1455 of yacc.c  */
 #line 339 "../../src/sintax.y"
@@ -1993,7 +1989,7 @@ yyreduce:
 }
     break;
 
-  case 51:
+  case 50:
 
 /* Line 1455 of yacc.c  */
 #line 345 "../../src/sintax.y"
@@ -2003,7 +1999,7 @@ yyreduce:
 }
     break;
 
-  case 52:
+  case 51:
 
 /* Line 1455 of yacc.c  */
 #line 351 "../../src/sintax.y"
@@ -2013,7 +2009,7 @@ yyreduce:
 }
     break;
 
-  case 53:
+  case 52:
 
 /* Line 1455 of yacc.c  */
 #line 357 "../../src/sintax.y"
@@ -2023,7 +2019,7 @@ yyreduce:
 }
     break;
 
-  case 54:
+  case 53:
 
 /* Line 1455 of yacc.c  */
 #line 363 "../../src/sintax.y"
@@ -2033,7 +2029,7 @@ yyreduce:
 }
     break;
 
-  case 55:
+  case 54:
 
 /* Line 1455 of yacc.c  */
 #line 369 "../../src/sintax.y"
@@ -2043,7 +2039,7 @@ yyreduce:
 }
     break;
 
-  case 56:
+  case 55:
 
 /* Line 1455 of yacc.c  */
 #line 375 "../../src/sintax.y"
@@ -2053,7 +2049,7 @@ yyreduce:
 }
     break;
 
-  case 57:
+  case 56:
 
 /* Line 1455 of yacc.c  */
 #line 381 "../../src/sintax.y"
@@ -2063,7 +2059,7 @@ yyreduce:
 }
     break;
 
-  case 58:
+  case 57:
 
 /* Line 1455 of yacc.c  */
 #line 387 "../../src/sintax.y"
@@ -2073,7 +2069,7 @@ yyreduce:
 }
     break;
 
-  case 59:
+  case 58:
 
 /* Line 1455 of yacc.c  */
 #line 393 "../../src/sintax.y"
@@ -2083,7 +2079,7 @@ yyreduce:
 }
     break;
 
-  case 60:
+  case 59:
 
 /* Line 1455 of yacc.c  */
 #line 399 "../../src/sintax.y"
@@ -2096,7 +2092,7 @@ yyreduce:
 
 
 /* Line 1455 of yacc.c  */
-#line 2100 "y.tab.c"
+#line 2096 "y.tab.c"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);
@@ -2316,11 +2312,20 @@ void finally(FILE *yyin){
 	fclose(yyin);
 }
 
+t_tabla_simbolos tabla_simbolos[2000];
+
+
+
+void agregar_simbolo(char * nombre, int tipo, int valor,char * alias) ;
+void agregar_simbolo(char * nombre, int tipo, int valor,char * alias) ;
+void agregar_simbolo(char * nombre, int tipo, float valor,char * alias) ;
+void agregar_simbolo(char * nombre, int tipo, char * valor,int longitud ,char * alias) ;
+
+
 int main(int argc, char **argv ) {
 	puts("Corriendo el compilador...");
 
 	++argv, --argc; 
-
 
 	if ( argc > 0 ) {
 	     puts("true");

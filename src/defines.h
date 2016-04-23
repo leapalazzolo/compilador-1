@@ -1,3 +1,5 @@
+#ifndef DEFINES_H
+#define DEFINES_H
 #define COTA_ID 30
 #define COTA_REAL 30
 #define COTA_STR 30
@@ -13,16 +15,16 @@
 #define PR_WHILE 10
 #define PR_DO 11
 #define PR_ENDWHILE 12
-#define OPMAS 13
-#define OPMENOS 14
-#define OPMULTI 15
-#define OPDIV 16
-#define MAYOR 17
-#define MAYOR_IGUAL 18
-#define MENOR 19
-#define MENOR_IGUAL 20
-#define DISTINTO 21
-#define IGUAL 22
+#define OP_SUMA 13
+#define OP_RESTA 14
+#define OP_MUL 15
+#define OP_DIV 16
+#define OP_MAYOR 17
+#define OP_MAYOR_IGUAL 18
+#define OP_MENOR 19
+#define OP_MENOR_IGUAL 20
+#define OP_DISTINTO 21
+#define OP_IGUAL_IGUAL 22
 #define OP_AND 23
 #define OP_OR 24
 #define OP_NEGADO 25
@@ -44,13 +46,22 @@
 #define CONST_STR 41
 #define PR_DIM 42
 
+#define TIPO_FLOAT 1
+#define TIPO_INT 2
+#define TIPO_STRING 3
+
+
+
 
 typedef struct
 {
- char *cNombre;
- char *cTipo;
- char *cValor;
- int iLongitud;
- char *cAlias;
-} t_tablaSimbolos;
+ char * nombre;
+ int tipo;
+ char * valor_string;
+ int valor_int;
+ float valor_float;
+ int longitud;
+ char *alias;
+} t_simbolo;
 
+#endif

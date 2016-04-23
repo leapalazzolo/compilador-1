@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "y.tab.h"
+// #include "defines.h"
 
 FILE  *yyin; //Archivo de Entrada
 %}
@@ -65,7 +66,7 @@ pgm : programa
 	puts("-------------------\n");
 };
 
-programa : PR_MAIN PR_DIM declaracion_variables PR_ENDIM lista_sentencias
+programa : /*PR_MAIN*/ PR_DIM declaracion_variables PR_ENDIM lista_sentencias
 {
 	puts("Código con variables\n");
 	puts("-------------------\n");
@@ -317,11 +318,11 @@ factor : TOKEN_ID
 	puts("-------------------\n");
 } 
      
-factor : expresion
-{
-	puts("factor : expresion\n");
-	puts("-------------------\n");
-}         
+// factor : expresion
+// {
+// 	puts("factor : expresion\n");
+// 	puts("-------------------\n");
+// }         
 
 declaracion_variables : OP_DIM COR_ABRE lista_variables_tipos COR_CIERRA
 {
@@ -329,23 +330,31 @@ declaracion_variables : OP_DIM COR_ABRE lista_variables_tipos COR_CIERRA
 	puts("-------------------\n");
 }   
 
-lista_variables_tipos : TOKEN_ID COR_CIERRA OP_AS COR_ABRE tipo_dato | TOKEN_ID COMA variables COMA tipo_dato
+lista_variables_tipos : TOKEN_ID COR_CIERRA OP_AS COR_ABRE tipo_dato 
 {
 	puts("Lista de variables\n");
 	puts("-------------------\n");
 }
 
-variables : TOKEN_ID
+lista_variables_tipos : TOKEN_ID COMA lista_variables_tipos COMA tipo_dato
 {
-	puts("variables : TOKEN_ID\n");
+	puts("Lista de variables\n");
 	puts("-------------------\n");
 }
 
-variables : TOKEN_ID COMA variables
-{
-	puts("variables : TOKEN_ID COMA variables\n");
-	puts("-------------------\n");
-}
+// variables : TOKEN_ID COMA variables
+// {
+// 	puts("variables : TOKEN_ID COMA variables\n");
+// 	puts("-------------------\n");
+// }
+
+
+// variables : TOKEN_ID
+// {
+// 	puts("variables : TOKEN_ID\n");
+// 	puts("-------------------\n");
+// }
+
 
 tipo_dato : PR_INT
 {
@@ -408,11 +417,20 @@ void finally(FILE *yyin){
 	fclose(yyin);
 }
 
+// t_simbolo tabla_simbolos[2000];
+
+
+
+// void agregar_simbolo(char * nombre, int tipo, int valor,char * alias) ;
+// void agregar_simbolo(char * nombre, int tipo, int valor,char * alias) ;
+// void agregar_simbolo(char * nombre, int tipo, float valor,char * alias) ;
+// void agregar_simbolo(char * nombre, int tipo, char * valor,int longitud ,char * alias) ;
+
+
 int main(int argc, char **argv ) {
 	puts("Corriendo el compilador...");
 
 	++argv, --argc; 
-
 
 	if ( argc > 0 ) {
 	     puts("true");
@@ -423,11 +441,11 @@ int main(int argc, char **argv ) {
 
      }
 
-
-     int algo;
-     while(algo = yylex()) {
-		printf("%d ", algo);
-     }
+  //    int algo;
+  //    while(algo = yylex()) {
+		// printf("%d ", algo);
+  //    }
+yyparse();
 
 
 	finally(yyin);

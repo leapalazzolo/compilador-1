@@ -19,15 +19,15 @@ KEYWORD				["if"]
 ID					{LETRA}({LETRA}|{DIGITO}|_|-)*
 LETRA				[a-zA-Z]
 CAR_ESPECIAL		[�,?,�,!]
-OPMULTI				["*"]
-OPDIV				["/"]
-OPMAS				["+"]
-OPMENOS				["-"]
+OP_MUL				["*"]
+OP_DIV				["/"]
+OP_SUMA				["+"]
+OP_RESTA				["-"]
 OPCONCAT			["++"]
-MAYOR				[">"]
-MENOR				["<"]
-MAYOR_IGUAL			[">="]
-MENOR_IGUAL			["<="]
+OP_MAYOR				[">"]
+OP_MENOR				["<"]
+OP_MAYOR_IGUAL			[">="]
+OP_MENOR_IGUAL			["<="]
 ASIGNA				[":="]
 IGUAL				["=="]
 DISTINTO			["!="]
@@ -68,20 +68,20 @@ COMENTARIO          .
 "WHILE"	      	{ return PR_WHILE;}
 "DO"	        { return PR_DO;}
 "ENDWHILE"  	{ return PR_ENDWHILE;}
-"+"				{ return OPMAS;}
-"-"				{ return OPMENOS;}
-"*"				{ return OPMULTI;}
-"/"				{ return OPDIV;}
-">"             { return MAYOR;}
-">="            { return MAYOR_IGUAL;}
-"<"             { return MENOR;}
-"<="            { return MENOR_IGUAL;}
-"!="            { return DISTINTO;}
-"=="            { return IGUAL;}
+"+"				{ return OP_SUMA;}
+"-"				{ return OP_RESTA;}
+"*"				{ return OP_MUL;}
+"/"				{ return OP_DIV;}
+">"             { return OP_MAYOR;}
+">="            { return OP_MAYOR_IGUAL;}
+"<"             { return OP_MENOR;}
+"<="            { return OP_MENOR_IGUAL;}
+"!="            { return OP_DISTINTO;}
+"=="            { return OP_IGUAL_IGUAL;}
 "AND"           { return OP_AND;}
 "OR"            { return OP_OR;}
 "NOT"           { return OP_NEGADO;}
-"="				{ return ASIGNA;}
+":="			{ return ASIGNA;}
 "("				{ return P_ABRE;}
 ")"				{ return P_CIERRA;}
 "["				{ return COR_ABRE;}

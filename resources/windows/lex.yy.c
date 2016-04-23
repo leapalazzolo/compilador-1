@@ -790,52 +790,52 @@ YY_RULE_SETUP
 case 14:
 YY_RULE_SETUP
 #line 71 "../../src/lex.l"
-{ return OPMAS;}
+{ return OP_SUMA;}
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
 #line 72 "../../src/lex.l"
-{ return OPMENOS;}
+{ return OP_RESTA;}
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
 #line 73 "../../src/lex.l"
-{ return OPMULTI;}
+{ return OP_MUL;}
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
 #line 74 "../../src/lex.l"
-{ return OPDIV;}
+{ return OP_DIV;}
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
 #line 75 "../../src/lex.l"
-{ return MAYOR;}
+{ return OP_MAYOR;}
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
 #line 76 "../../src/lex.l"
-{ return MAYOR_IGUAL;}
+{ return OP_MAYOR_IGUAL;}
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
 #line 77 "../../src/lex.l"
-{ return MENOR;}
+{ return OP_MENOR;}
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
 #line 78 "../../src/lex.l"
-{ return MENOR_IGUAL;}
+{ return OP_MENOR_IGUAL;}
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
 #line 79 "../../src/lex.l"
-{ return DISTINTO;}
+{ return OP_DISTINTO;}
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
 #line 80 "../../src/lex.l"
-{ return IGUAL;}
+{ return OP_IGUAL_IGUAL;}
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
