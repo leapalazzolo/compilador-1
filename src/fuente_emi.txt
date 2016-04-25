@@ -1,6 +1,8 @@
-DIM [a,b] AS [INT, STRING];
+DIM [a,b,c] AS [INT, STRING,FLOAT];
 
 a := 3;
+
+c := .99;
 
 b := "esto es una cadena";
 -/ b = "asdasdasdasdasdasdasdasdasdasdasdasdasdasd"; Esto tira error lexico y esta bien, xq supera los 30 caracteres/-

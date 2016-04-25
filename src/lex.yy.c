@@ -471,12 +471,16 @@ char *yytext;
 #include <string.h>
 //#include "y.tab.h"
 #include "defines.h"
-
+#include "structs.h"
+void agregar_simbolo(char * nombre, int tipo, char * valor,char * alias);
 FILE  *yyin;
 char aux[COTA_STR],aux2[COTA_STR];
+int procesar_keyword(char *);
+int procesar_operador(char *);
+int procesar_comparador(char *);
 double f;
 int linecount = 1;
-#line 480 "lex.yy.c"
+#line 484 "lex.yy.c"
 
 /* Macros after this point can all be overridden by user definitions in
  * section 1.
@@ -627,11 +631,11 @@ YY_DECL
 	register char *yy_cp, *yy_bp;
 	register int yy_act;
 
-#line 55 "lex.l"
+#line 59 "lex.l"
 
 
 
-#line 635 "lex.yy.c"
+#line 639 "lex.yy.c"
 
 	if ( yy_init )
 		{
@@ -724,217 +728,215 @@ do_action:	/* This label is used only to access EOF actions. */
 	{ /* beginning of action switch */
 case 1:
 YY_RULE_SETUP
-#line 58 "lex.l"
-{ return PR_DIM;}
+#line 62 "lex.l"
+{ return procesar_keyword(yytext);}
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 59 "lex.l"
-{ return PR_AS;}
+#line 63 "lex.l"
+{ return procesar_keyword(yytext);}
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 60 "lex.l"
-{ return PR_BEGIN;}
+#line 64 "lex.l"
+{ return procesar_keyword(yytext);}
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 61 "lex.l"
-{ return PR_FLOAT;}
+#line 65 "lex.l"
+{ return procesar_keyword(yytext);}
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 62 "lex.l"
-{ return PR_INT;}
+#line 66 "lex.l"
+{ return procesar_keyword(yytext);}
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 63 "lex.l"
-{ return PR_STRING;}
+#line 67 "lex.l"
+{ return procesar_keyword(yytext);}
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 64 "lex.l"
-{ return PR_IF;}
+#line 68 "lex.l"
+{ return procesar_keyword(yytext);}
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 65 "lex.l"
-{ return PR_THEN;}
+#line 69 "lex.l"
+{ return procesar_keyword(yytext);}
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 66 "lex.l"
-{ return PR_ELSE;}
+#line 70 "lex.l"
+{ return procesar_keyword(yytext);}
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 67 "lex.l"
-{ return PR_ENDIF;}
+#line 71 "lex.l"
+{ return procesar_keyword(yytext);}
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 68 "lex.l"
-{ return PR_WHILE;}
+#line 72 "lex.l"
+{ return procesar_keyword(yytext);}
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 69 "lex.l"
-{ return PR_DO;}
+#line 73 "lex.l"
+{ return procesar_keyword(yytext);}
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 70 "lex.l"
-{ return PR_ENDWHILE;}
+#line 74 "lex.l"
+{ return procesar_keyword(yytext);}
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 71 "lex.l"
+#line 75 "lex.l"
 { return OP_SUMA;}
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 72 "lex.l"
+#line 76 "lex.l"
 { return OP_RESTA;}
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 73 "lex.l"
+#line 77 "lex.l"
 { return OP_MUL;}
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 74 "lex.l"
+#line 78 "lex.l"
 { return OP_DIV;}
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 75 "lex.l"
+#line 79 "lex.l"
 { return OP_MAYOR;}
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 76 "lex.l"
+#line 80 "lex.l"
 { return OP_MAYOR_IGUAL;}
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 77 "lex.l"
+#line 81 "lex.l"
 { return OP_MENOR;}
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 78 "lex.l"
+#line 82 "lex.l"
 { return OP_MENOR_IGUAL;}
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 79 "lex.l"
+#line 83 "lex.l"
 { return OP_DISTINTO;}
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 80 "lex.l"
+#line 84 "lex.l"
 { return OP_IGUAL_IGUAL;}
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 81 "lex.l"
+#line 85 "lex.l"
 { return OP_AND;}
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-#line 82 "lex.l"
+#line 86 "lex.l"
 { return OP_OR;}
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
-#line 83 "lex.l"
+#line 87 "lex.l"
 { return OP_NEGADO;}
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
-#line 84 "lex.l"
+#line 88 "lex.l"
 { return ASIGNA;}
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
-#line 85 "lex.l"
+#line 89 "lex.l"
 { return P_ABRE;}
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
-#line 86 "lex.l"
+#line 90 "lex.l"
 { return P_CIERRA;}
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
-#line 87 "lex.l"
+#line 91 "lex.l"
 { return COR_ABRE;}
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
-#line 88 "lex.l"
+#line 92 "lex.l"
 { return COR_CIERRA;}
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
-#line 89 "lex.l"
+#line 93 "lex.l"
 { return PR_GET;}
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
-#line 90 "lex.l"
+#line 94 "lex.l"
 { return PR_PUT;}
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
-#line 91 "lex.l"
+#line 95 "lex.l"
 { return COMA;}
 	YY_BREAK
 case 35:
 YY_RULE_SETUP
-#line 92 "lex.l"
+#line 96 "lex.l"
 { return PUNTO_Y_COMA;}
 	YY_BREAK
 case 36:
 YY_RULE_SETUP
-#line 93 "lex.l"
+#line 97 "lex.l"
 { return OPCONCAT;}
 	YY_BREAK
 case 37:
 YY_RULE_SETUP
-#line 94 "lex.l"
-printf ("comentario \n");
+#line 98 "lex.l"
+// printf ("comentario \n");
 	YY_BREAK
 case 38:
 YY_RULE_SETUP
-#line 95 "lex.l"
-printf("comentario \n");
+#line 99 "lex.l"
+//printf("comentario \n");
 	YY_BREAK
 case 39:
 YY_RULE_SETUP
-#line 97 "lex.l"
+#line 101 "lex.l"
 {
 
-						//yylval.str_val = yytext;
-						if(strlen(yytext)>COTA_ID) {
-								printf("VARIABLE SUPERA MAXIMO CARACTERES\n\t***ERROR - FINALIZANDO LEXICO***\n");
-								exit(1);
-							}
-						else {	
-							strcpy(aux,"_");
-							strcat(aux,yytext);
-							//printf( "Genero aux para TS: (%s)\n",aux);
-							//printf( "Identificador en lexico: %s (%s)\n", yytext,yylval.str_val);
-							//agregarATS(aux,"-",VRBL,0,0);//hay que mandar el id y los datos necesarios para agregar
-							return TOKEN_ID;
-						}
-				}
+		//yylval.str_val = yytext;
+		if(strlen(yytext)>COTA_ID) {
+				printf("VARIABLE SUPERA MAXIMO CARACTERES\n\t***ERROR - FINALIZANDO LEXICO***\n");
+				exit(1);
+			}
+		else {	
+			strcpy(aux,yytext);
+			agregar_simbolo("_ID",TIPO_STRING,aux,NULL);	
+			//agregarATS(aux,"-",VRBL,0,0);//hay que mandar el id y los datos necesarios para agregar
+			return TOKEN_ID;
+		}
+}
 	YY_BREAK
 case 40:
 YY_RULE_SETUP
-#line 115 "lex.l"
+#line 117 "lex.l"
 { 		
 					//yylval.str_val = yytext;
 					if(atoi(yytext)>COTA_ID)
@@ -944,18 +946,17 @@ YY_RULE_SETUP
 						}
 					else
 						{
-							strcpy(aux,"&");
-							strcat(aux,yytext);
+							strcpy(aux,yytext);
 							//printf( "Genero aux para TS: (%s)\n",aux);
 					//		printf( "Identificador en lexico: %s (%s)\n", yytext,yylval.str_val);
-					//		agregarATS(aux,"-",CTE_INT,0,atoi(yytext));
+							agregar_simbolo("&cte",TIPO_INT,aux,NULL);
 							return CONST_INT;
 						}
 				}
 	YY_BREAK
 case 41:
 YY_RULE_SETUP
-#line 133 "lex.l"
+#line 134 "lex.l"
 { 		
 					//yylval.str_val = yytext;
 					strcpy(aux2,yytext);
@@ -967,22 +968,17 @@ YY_RULE_SETUP
 						}
 					else
 						{
-							//setearString(aux2,yytext);
-							strcpy(aux,"@");
-							strcat(aux,aux2);
-							//printf( "Genero aux para TS: (%s)\n",aux);
-							//printf( "Identificador en lexico: %s (%s)\n", yytext,yylval.str_val);
-							//agregarATS(aux,yytext,CTE_STR,strlen(aux2),0);
+							agregar_simbolo("@cte",TIPO_STRING,aux2,NULL);
 							return CONST_STR;
 						}
 				}
 	YY_BREAK
 case 42:
 YY_RULE_SETUP
-#line 154 "lex.l"
+#line 150 "lex.l"
 { 		
 						//yylval.str_val = yytext;
-						f=atof(yytext);
+						strcpy(aux,yytext);
 						if(f>COTA_REAL)
 							{
 								printf("CONST REAL SUPERA COTA\n\t***ERROR - FINALIZANDO LEXICO***\n");
@@ -990,36 +986,32 @@ YY_RULE_SETUP
 							}
 						else
 							{
-								strcpy(aux,"$");
-								strcat(aux,yytext);
-								//printf( "Genero aux para TS: (%s)\n",aux);
-						//		printf( "Identificador en lexico: %s (%s)\n", yytext,yylval.str_val);
-						//		agregarATS(aux,"-",CTE_FLT,0,f);
+								agregar_simbolo("$cte",TIPO_FLOAT,aux,NULL);
 								return CONST_FLOAT;
 							}
 				}
 	YY_BREAK
 case 43:
 YY_RULE_SETUP
-#line 173 "lex.l"
+#line 165 "lex.l"
 ++linecount;
 	YY_BREAK
 case 44:
 YY_RULE_SETUP
-#line 174 "lex.l"
+#line 166 "lex.l"
 
 	YY_BREAK
 case 45:
 YY_RULE_SETUP
-#line 177 "lex.l"
+#line 169 "lex.l"
 { puts("\nCARACTER NO RECONOCIDO"); exit(1);}
 	YY_BREAK
 case 46:
 YY_RULE_SETUP
-#line 179 "lex.l"
+#line 171 "lex.l"
 ECHO;
 	YY_BREAK
-#line 1023 "lex.yy.c"
+#line 1015 "lex.yy.c"
 			case YY_STATE_EOF(INITIAL):
 				yyterminate();
 
@@ -1903,5 +1895,87 @@ int main()
 	return 0;
 	}
 #endif
-#line 179 "lex.l"
+#line 171 "lex.l"
 
+
+// void agregar_simbolo()
+t_simbolo tabla_simbolos[2000];
+int cantidad_simbolos = 0;	
+
+
+int procesar_keyword(char * str) {
+	agregar_simbolo(str,TIPO_PR,NULL,NULL);
+
+	if(!strcmp(str,"IF"))
+		return PR_IF;
+	if(!strcmp(str,"DIM"))
+		return PR_DIM;
+	if(!strcmp(str,"AS"))
+		return PR_AS;
+	if(!strcmp(str,"BEGIN"))
+		return PR_BEGIN;
+	if(!strcmp(str,"FLOAT"))
+		return PR_FLOAT;
+	if(!strcmp(str,"INT"))
+		return PR_INT;
+	if(!strcmp(str,"STRING"))
+		return PR_STRING;
+	if(!strcmp(str,"THEN"))
+		return PR_THEN;
+	if(!strcmp(str,"ELSE"))
+		return PR_ELSE;
+	if(!strcmp(str,"ENDIF"))
+		return PR_ENDIF;
+	if(!strcmp(str,"WHILE"))
+		return PR_WHILE;
+	if(!strcmp(str,"DO"))
+		return PR_DO;
+	if(!strcmp(str,"ENDWHILE"))
+		return PR_ENDWHILE;
+
+	return 0;
+}
+
+int procesar_operador(char * str) {
+}
+
+
+/** Esta funcion te permite agregar un simbolo a la tabla de simbolos.
+	La idea es que se le envie el nombre del simbolo (Si es un id, el nombre
+	de la variable con el  prefijo "_", el tipo de dato es un int definido
+	 en las macro y el valor, en caso de que sea una constante)*/
+void agregar_simbolo(char * nombre, int tipo, char * valor,char * alias) {
+	tabla_simbolos[cantidad_simbolos].nombre = malloc(sizeof(char) * strlen(nombre));
+	strcpy(tabla_simbolos[cantidad_simbolos].nombre,nombre);
+
+
+	if(alias != NULL) {
+		tabla_simbolos[cantidad_simbolos].alias = malloc(sizeof(char) * strlen(alias));
+		strcpy(tabla_simbolos[cantidad_simbolos].alias,alias);	
+	}
+	tabla_simbolos[cantidad_simbolos].tipo = tipo;
+
+	switch(tipo) {
+		case TIPO_FLOAT:
+			tabla_simbolos[cantidad_simbolos].valor_float = atof(valor);
+		break;
+		case TIPO_STRING:
+			if(valor != NULL) {
+				tabla_simbolos[cantidad_simbolos].valor_string = malloc(sizeof(char) * strlen(valor));
+				strcpy(tabla_simbolos[cantidad_simbolos].valor_string,valor);	
+			} else {
+				tabla_simbolos[cantidad_simbolos].valor_string = NULL;
+			}
+		break;
+		case TIPO_INT:
+			tabla_simbolos[cantidad_simbolos].valor_int = atoi(valor);
+		break;
+		case TIPO_PR:
+		break;
+		default:
+		puts("Tipo dato erroneo"); exit(1);
+	}
+	cantidad_simbolos++;
+
+
+}

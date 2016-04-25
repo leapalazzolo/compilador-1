@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "y.tab.h"
+#include "structs.h"
 // #include "defines.h"
 
 FILE  *yyin; //Archivo de Entrada
@@ -412,40 +413,50 @@ comparador : OP_DISTINTO
 
 %%
 
+
+extern t_simbolo tabla_simbolos[2000];
+
+extern int cantidad_simbolos;
+void imprimir_tabla_simbolos();
+void vaciar_tabla_simbolos();
+char * tipo_simbolo_to_string(int tipo);
+
+
 //función para realizar todo lo que haga falta previo a terminar
 void finally(FILE *yyin){
 	fclose(yyin);
+	vaciar_tabla_simbolos();
 }
 
-// t_simbolo tabla_simbolos[2000];
-
-
-
-// void agregar_simbolo(char * nombre, int tipo, int valor,char * alias) ;
-// void agregar_simbolo(char * nombre, int tipo, int valor,char * alias) ;
-// void agregar_simbolo(char * nombre, int tipo, float valor,char * alias) ;
-// void agregar_simbolo(char * nombre, int tipo, char * valor,int longitud ,char * alias) ;
 
 
 int main(int argc, char **argv ) {
-	puts("Corriendo el compilador...");
+	// puts("Corriendo el compilador...");
 
 	++argv, --argc; 
 
 	if ( argc > 0 ) {
-	     puts("true");
 	     yyin = fopen( argv[0], "r" );
      }	else {
-	     puts("false");
 	     yyin = stdin;
 
      }
 
-  //    int algo;
-  //    while(algo = yylex()) {
+     int algo;
+     while(algo = yylex()) {
 		// printf("%d ", algo);
-  //    }
-yyparse();
+     }
+
+     // yylex();
+     // yylex();
+
+     printf("\ncantidad Simbolos: %d\n", cantidad_simbolos);
+     // int i = 0;
+     // for(i = 0 ; i < cantidad_simbolos ; i++) {
+     // 	puts(tabla_simbolos[i].nombre);
+     // }
+     imprimir_tabla_simbolos();	
+// yyparse();
 
 
 	finally(yyin);
@@ -458,4 +469,56 @@ int yyerror(void)
 	system ("Pause");
 	exit (1);
 }
+
+void vaciar_tabla_simbolos(){
+	int i;
+	for (i = 0; i < cantidad_simbolos; ++i)
+	{
+		free(tabla_simbolos[i].nombre);
+		if(tabla_simbolos[i].valor_string != NULL)
+			free(tabla_simbolos[i].valor_string);
+		if(tabla_simbolos[i].alias != NULL)
+			free(tabla_simbolos[i].alias);
+	}
+	cantidad_simbolos = 0;
+}
+
+char * tipo_simbolo_to_string(int tipo){
+	// printf("\n\n\n%d\n\n\n", tipo);
+	switch(tipo) {
+		case TIPO_STRING:
+			return "STRING";
+		case TIPO_FLOAT:
+			return "FLOAT";
+		case TIPO_INT:
+			return "INT";
+		case TIPO_PR:
+			return "PR";
+		default:
+			return "DESCONOCIDO";
+	}
+}
+
+
+void imprimir_tabla_simbolos() {
+	int i;
+	printf("NOMBRE \t\t TIPO \t\t VALOR\n\n");
+	for (i = 0; i < cantidad_simbolos; ++i)
+	{
+		if(tabla_simbolos[i].tipo == TIPO_STRING)
+			printf("%s\t\t%s\t\t%s \n",tabla_simbolos[i].nombre,tipo_simbolo_to_string(tabla_simbolos[i].tipo),tabla_simbolos[i].valor_string == NULL ? "" : tabla_simbolos[i].valor_string);
+	
+		if(tabla_simbolos[i].tipo == TIPO_INT)
+			printf("%s\t\t%s\t\t%d\n",tabla_simbolos[i].nombre,tipo_simbolo_to_string(tabla_simbolos[i].tipo),tabla_simbolos[i].valor_int);
+		
+		if(tabla_simbolos[i].tipo == TIPO_FLOAT)
+			printf("%s\t\t%s\t\t%f\n",tabla_simbolos[i].nombre,tipo_simbolo_to_string(tabla_simbolos[i].tipo),tabla_simbolos[i].valor_float);
+
+		if(tabla_simbolos[i].tipo == TIPO_PR)
+			printf("%s\t\t%s\t\t\n",tabla_simbolos[i].nombre,tipo_simbolo_to_string(tabla_simbolos[i].tipo));
+				
+
+	}
+}
+
 

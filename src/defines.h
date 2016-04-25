@@ -38,30 +38,19 @@
 #define COMA 33
 #define PUNTO_Y_COMA 34
 #define OPCONCAT 35
-#define TOKEN_ID 36
+#define TOKEN_ID 258
 #define CADENA 37
 #define COMENTARIO 38
-#define CONST_INT 39
-#define CONST_FLOAT 40
-#define CONST_STR 41
+#define CONST_INT 259
+#define CONST_FLOAT 261
+#define CONST_STR 260
 #define PR_DIM 42
 
-#define TIPO_FLOAT 1
-#define TIPO_INT 2
-#define TIPO_STRING 3
 
 
 
 
-typedef struct
-{
- char * nombre;
- int tipo;
- char * valor_string;
- int valor_int;
- float valor_float;
- int longitud;
- char *alias;
-} t_simbolo;
+
+
 
 #endif

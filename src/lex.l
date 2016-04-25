@@ -4,9 +4,13 @@
 #include <string.h>
 //#include "y.tab.h"
 #include "defines.h"
-
+#include "structs.h"
+void agregar_simbolo(char * nombre, int tipo, char * valor,char * alias);
 FILE  *yyin;
 char aux[COTA_STR],aux2[COTA_STR];
+int procesar_keyword(char *);
+int procesar_operador(char *);
+int procesar_comparador(char *);
 double f;
 %}
 
@@ -55,19 +59,19 @@ COMENTARIO          .
 %%
 
 
-"DIM"			{ return PR_DIM;}
-"AS"			{ return PR_AS;}
-"BEGIN"			{ return PR_BEGIN;}
-"FLOAT"			{ return PR_FLOAT;}
-"INT"			{ return PR_INT;}
-"STRING"		{ return PR_STRING;}
-"IF"			{ return PR_IF;}
-"THEN"   		{ return PR_THEN;}
-"ELSE"   		{ return PR_ELSE;}
-"ENDIF"	      	{ return PR_ENDIF;}
-"WHILE"	      	{ return PR_WHILE;}
-"DO"	        { return PR_DO;}
-"ENDWHILE"  	{ return PR_ENDWHILE;}
+"DIM"			{ return procesar_keyword(yytext);}
+"AS"			{ return procesar_keyword(yytext);}
+"BEGIN"			{ return procesar_keyword(yytext);}
+"FLOAT"			{ return procesar_keyword(yytext);}
+"INT"			{ return procesar_keyword(yytext);}
+"STRING"		{ return procesar_keyword(yytext);}
+"IF"			{ return procesar_keyword(yytext);}
+"THEN"   		{ return procesar_keyword(yytext);}
+"ELSE"   		{ return procesar_keyword(yytext);}
+"ENDIF"	      	{ return procesar_keyword(yytext);}
+"WHILE"	      	{ return procesar_keyword(yytext);}
+"DO"	        { return procesar_keyword(yytext);}
+"ENDWHILE"  	{ return procesar_keyword(yytext);}
 "+"				{ return OP_SUMA;}
 "-"				{ return OP_RESTA;}
 "*"				{ return OP_MUL;}
@@ -91,25 +95,23 @@ COMENTARIO          .
 ","				{ return COMA;}
 ";"				{ return PUNTO_Y_COMA;}
 "++"			{ return OPCONCAT;}
-"-/"{COMENTARIO}*"/-"  printf ("comentario \n");
-"//"({COMENTARIO})* printf("comentario \n");
+"-/"{COMENTARIO}*"/-" // printf ("comentario \n");
+"//"({COMENTARIO})* //printf("comentario \n");
 
 {ID}			{
 
-						//yylval.str_val = yytext;
-						if(strlen(yytext)>COTA_ID) {
-								printf("VARIABLE SUPERA MAXIMO CARACTERES\n\t***ERROR - FINALIZANDO LEXICO***\n");
-								exit(1);
-							}
-						else {	
-							strcpy(aux,"_");
-							strcat(aux,yytext);
-							//printf( "Genero aux para TS: (%s)\n",aux);
-							//printf( "Identificador en lexico: %s (%s)\n", yytext,yylval.str_val);
-							//agregarATS(aux,"-",VRBL,0,0);//hay que mandar el id y los datos necesarios para agregar
-							return TOKEN_ID;
-						}
-				}
+		//yylval.str_val = yytext;
+		if(strlen(yytext)>COTA_ID) {
+				printf("VARIABLE SUPERA MAXIMO CARACTERES\n\t***ERROR - FINALIZANDO LEXICO***\n");
+				exit(1);
+			}
+		else {	
+			strcpy(aux,yytext);
+			agregar_simbolo("_ID",TIPO_STRING,aux,NULL);	
+			//agregarATS(aux,"-",VRBL,0,0);//hay que mandar el id y los datos necesarios para agregar
+			return TOKEN_ID;
+		}
+}
 
 
 {CONST_INT}		{ 		
@@ -121,11 +123,10 @@ COMENTARIO          .
 						}
 					else
 						{
-							strcpy(aux,"&");
-							strcat(aux,yytext);
+							strcpy(aux,yytext);
 							//printf( "Genero aux para TS: (%s)\n",aux);
 					//		printf( "Identificador en lexico: %s (%s)\n", yytext,yylval.str_val);
-					//		agregarATS(aux,"-",CTE_INT,0,atoi(yytext));
+							agregar_simbolo("&cte",TIPO_INT,aux,NULL);
 							return CONST_INT;
 						}
 				}
@@ -141,19 +142,14 @@ COMENTARIO          .
 						}
 					else
 						{
-							//setearString(aux2,yytext);
-							strcpy(aux,"@");
-							strcat(aux,aux2);
-							//printf( "Genero aux para TS: (%s)\n",aux);
-							//printf( "Identificador en lexico: %s (%s)\n", yytext,yylval.str_val);
-							//agregarATS(aux,yytext,CTE_STR,strlen(aux2),0);
+							agregar_simbolo("@cte",TIPO_STRING,aux2,NULL);
 							return CONST_STR;
 						}
 				}
 				
 {CONST_FLOAT}	{ 		
 						//yylval.str_val = yytext;
-						f=atof(yytext);
+						strcpy(aux,yytext);
 						if(f>COTA_REAL)
 							{
 								printf("CONST REAL SUPERA COTA\n\t***ERROR - FINALIZANDO LEXICO***\n");
@@ -161,11 +157,7 @@ COMENTARIO          .
 							}
 						else
 							{
-								strcpy(aux,"$");
-								strcat(aux,yytext);
-								//printf( "Genero aux para TS: (%s)\n",aux);
-						//		printf( "Identificador en lexico: %s (%s)\n", yytext,yylval.str_val);
-						//		agregarATS(aux,"-",CTE_FLT,0,f);
+								agregar_simbolo("$cte",TIPO_FLOAT,aux,NULL);
 								return CONST_FLOAT;
 							}
 				}
@@ -177,3 +169,85 @@ COMENTARIO          .
 .				{ puts("\nCARACTER NO RECONOCIDO"); exit(1);}
 
 %%
+
+// void agregar_simbolo()
+t_simbolo tabla_simbolos[2000];
+int cantidad_simbolos = 0;	
+
+
+int procesar_keyword(char * str) {
+	agregar_simbolo(str,TIPO_PR,NULL,NULL);
+
+	if(!strcmp(str,"IF"))
+		return PR_IF;
+	if(!strcmp(str,"DIM"))
+		return PR_DIM;
+	if(!strcmp(str,"AS"))
+		return PR_AS;
+	if(!strcmp(str,"BEGIN"))
+		return PR_BEGIN;
+	if(!strcmp(str,"FLOAT"))
+		return PR_FLOAT;
+	if(!strcmp(str,"INT"))
+		return PR_INT;
+	if(!strcmp(str,"STRING"))
+		return PR_STRING;
+	if(!strcmp(str,"THEN"))
+		return PR_THEN;
+	if(!strcmp(str,"ELSE"))
+		return PR_ELSE;
+	if(!strcmp(str,"ENDIF"))
+		return PR_ENDIF;
+	if(!strcmp(str,"WHILE"))
+		return PR_WHILE;
+	if(!strcmp(str,"DO"))
+		return PR_DO;
+	if(!strcmp(str,"ENDWHILE"))
+		return PR_ENDWHILE;
+
+	return 0;
+}
+
+int procesar_operador(char * str) {
+}
+
+
+/** Esta funcion te permite agregar un simbolo a la tabla de simbolos.
+	La idea es que se le envie el nombre del simbolo (Si es un id, el nombre
+	de la variable con el  prefijo "_", el tipo de dato es un int definido
+	 en las macro y el valor, en caso de que sea una constante)*/
+void agregar_simbolo(char * nombre, int tipo, char * valor,char * alias) {
+	tabla_simbolos[cantidad_simbolos].nombre = malloc(sizeof(char) * strlen(nombre));
+	strcpy(tabla_simbolos[cantidad_simbolos].nombre,nombre);
+
+
+	if(alias != NULL) {
+		tabla_simbolos[cantidad_simbolos].alias = malloc(sizeof(char) * strlen(alias));
+		strcpy(tabla_simbolos[cantidad_simbolos].alias,alias);	
+	}
+	tabla_simbolos[cantidad_simbolos].tipo = tipo;
+
+	switch(tipo) {
+		case TIPO_FLOAT:
+			tabla_simbolos[cantidad_simbolos].valor_float = atof(valor);
+		break;
+		case TIPO_STRING:
+			if(valor != NULL) {
+				tabla_simbolos[cantidad_simbolos].valor_string = malloc(sizeof(char) * strlen(valor));
+				strcpy(tabla_simbolos[cantidad_simbolos].valor_string,valor);	
+			} else {
+				tabla_simbolos[cantidad_simbolos].valor_string = NULL;
+			}
+		break;
+		case TIPO_INT:
+			tabla_simbolos[cantidad_simbolos].valor_int = atoi(valor);
+		break;
+		case TIPO_PR:
+		break;
+		default:
+		puts("Tipo dato erroneo"); exit(1);
+	}
+	cantidad_simbolos++;
+
+
+}
