@@ -186,8 +186,6 @@ int procesar_keyword(char * str) {
 		return PR_DIM;
 	if(!strcmp(str,"AS"))
 		return PR_AS;
-	if(!strcmp(str,"BEGIN"))
-		return PR_BEGIN;
 	if(!strcmp(str,"FLOAT"))
 		return PR_FLOAT;
 	if(!strcmp(str,"INT"))

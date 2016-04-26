@@ -21,8 +21,6 @@ char *str_val;
 %token <double>CONST_FLOAT
 
 %token PR_MAIN
-%token PR_DIM
-%token PR_ENDIM
 %token PR_IGUALES
 %token PR_FILTER
 %token PR_WRITE
@@ -33,8 +31,8 @@ char *str_val;
 %token PR_ELSE
 %token PR_NOT
 %token PR_WHILE
-%token PR_BEGIN
-%token PR_END
+%token PR_DO
+%token PR_ENDWHILE
 %token PAR_ABRE
 %token PAR_CIERRA
 %token COR_ABRE
@@ -42,7 +40,6 @@ char *str_val;
 %token COMA
 %token OP_LOG_AND
 %token OP_LOG_OR
-%token OP_LOG_NOT
 %token OP_SUMA
 %token OP_RESTA
 %token OP_MUL
@@ -67,15 +64,15 @@ pgm : programa
 	puts("-------------------\n");
 };
 
-programa : PR_MAIN PR_DIM declaracion_variables PR_ENDIM lista_sentencias
+programa : PR_MAIN declaracion_variables lista_sentencias
 {
-	puts("Código con variables\n");
+	puts("Codigo con variables\n");
 	puts("-------------------\n");
 };
 
 programa : PR_MAIN lista_sentencias
 {
-	puts("Código sin variables\n");
+	puts("Codigo sin variables\n");
 	puts("-------------------\n");
 };
 
@@ -87,7 +84,7 @@ programa : sentencia lista_sentencias
 
 programa : sentencia
 {
-	puts("Última sentencia\n");
+	puts("ultima sentencia\n");
 	puts("-------------------\n");
 };
 
@@ -111,31 +108,31 @@ sentencia : condicional
 
 sentencia : asignacion
 {
-	puts("Asignación\n");
+	puts("Asignacion\n");
 	puts("-------------------\n");
 };
 
 sentencia : iteracion
 {
-	puts("Iteración\n");
+	puts("Iteracion\n");
 	puts("-------------------\n");
 };
 
 sentencia : io
 {
-	puts("Operación de entrada salidas\n");
+	puts("Operacion de entrada salidas\n");
 	puts("-------------------\n");
 };
 
 sentencia : iguales
 {
-	puts("Operación de iguales\n");
+	puts("Operacion de iguales\n");
 	puts("-------------------\n");
 }
 
 sentencia : filter
 {
-	puts("Operación de filters\n");
+	puts("Operacioon de filters\n");
 	puts("-------------------\n");
 }
 
@@ -153,7 +150,7 @@ lista_expresiones : expresion COMA lista_expresiones
 
 lista_expresiones : expresion
 {
-	puts("Última expresión\n");
+	puts("Última expresion\n");
 	puts("-------------------\n");
 }
 
@@ -247,21 +244,21 @@ comparacion : PR_NOT expresion
 	puts("-------------------\n");
 }
 
-iteracion : PR_WHILE condicion PR_BEGIN lista_sentencias PR_END
+iteracion : PR_WHILE condicion PR_DO lista_sentencias PR_ENDWHILE
 {
-	puts("Iteración\n");
+	puts("Iteracion\n");
 	puts("-------------------\n");
 }
 
 asignacion : TOKEN_ID OP_IGUAL expresion
 {
-	puts("Asignación\n");
+	puts("Asignacion\n");
 	puts("-------------------\n");
 }
 
 expresion : termino
 {
-	puts("Asignación\n");
+	puts("Asignacion\n");
 	puts("-------------------\n");
 }
 
@@ -285,13 +282,13 @@ termino : factor
 
 termino : termino OP_DIV factor
 {
-	puts("División\n");
+	puts("Division\n");
 	puts("-------------------\n");
 }
 
 termino : termino OP_MUL factor
 {
-	puts("Multiplicación\n");
+	puts("Multiplicacion\n");
 	puts("-------------------\n");
 }
 
@@ -327,7 +324,7 @@ factor : TOKEN_ID
 
 declaracion_variables : OP_DIM COR_ABRE lista_variables_tipos COR_CIERRA
 {
-	puts("Declaración de variables\n");
+	puts("Declaracion de variables\n");
 	puts("-------------------\n");
 }   
 
@@ -422,7 +419,7 @@ void vaciar_tabla_simbolos();
 char * tipo_simbolo_to_string(int tipo);
 
 
-//función para realizar todo lo que haga falta previo a terminar
+//funcion para realizar todo lo que haga falta previo a terminar
 void finally(FILE *yyin){
 	vaciar_tabla_simbolos();
 	fclose(yyin);
