@@ -67,7 +67,7 @@ pgm : programa
 	puts("-------------------\n");
 };
 
-programa : /*PR_MAIN*/ PR_DIM declaracion_variables PR_ENDIM lista_sentencias
+programa : PR_MAIN PR_DIM declaracion_variables PR_ENDIM lista_sentencias
 {
 	puts("Código con variables\n");
 	puts("-------------------\n");
@@ -424,8 +424,8 @@ char * tipo_simbolo_to_string(int tipo);
 
 //función para realizar todo lo que haga falta previo a terminar
 void finally(FILE *yyin){
-	fclose(yyin);
 	vaciar_tabla_simbolos();
+	fclose(yyin);
 }
 
 
@@ -442,21 +442,7 @@ int main(int argc, char **argv ) {
 
      }
 
-     int algo;
-     while(algo = yylex()) {
-		// printf("%d ", algo);
-     }
-
-     // yylex();
-     // yylex();
-
-     printf("\ncantidad Simbolos: %d\n", cantidad_simbolos);
-     // int i = 0;
-     // for(i = 0 ; i < cantidad_simbolos ; i++) {
-     // 	puts(tabla_simbolos[i].nombre);
-     // }
-     imprimir_tabla_simbolos();	
-// yyparse();
+	 yyparse();
 
 
 	finally(yyin);

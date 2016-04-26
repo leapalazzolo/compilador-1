@@ -58,8 +58,9 @@ COMENTARIO          .
 
 %%
 
-
+"MAIN"			{ return procesar_keyword(yytext);}
 "DIM"			{ return procesar_keyword(yytext);}
+"ENDIM"			{ return procesar_keyword(yytext);}
 "AS"			{ return procesar_keyword(yytext);}
 "BEGIN"			{ return procesar_keyword(yytext);}
 "FLOAT"			{ return procesar_keyword(yytext);}
@@ -180,8 +181,12 @@ int procesar_keyword(char * str) {
 
 	if(!strcmp(str,"IF"))
 		return PR_IF;
+	if(!strcmp(str,"MAIN"))
+		return PR_MAIN;
 	if(!strcmp(str,"DIM"))
 		return PR_DIM;
+	if(!strcmp(str,"DIM"))
+		return PR_ENDIM;
 	if(!strcmp(str,"AS"))
 		return PR_AS;
 	if(!strcmp(str,"BEGIN"))
