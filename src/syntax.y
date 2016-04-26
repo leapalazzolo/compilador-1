@@ -4,6 +4,7 @@
 #include "y.tab.h"
 #include "structs.h"
 // #include "defines.h"
+extern YYSTYPE yylval;
 
 FILE  *yyin; //Archivo de Entrada
 %}
@@ -11,7 +12,7 @@ FILE  *yyin; //Archivo de Entrada
 /* PARA OBTENER LOS VALORES Y PASAR A TS*/
 %union {
 int intval;
-double val;
+float val;
 char *str_val;
 }
 
@@ -51,8 +52,8 @@ char *str_val;
 %token OP_DISTINTO
 %token OP_IGUAL_IGUAL
 %token OP_IGUAL
-%token OP_AS
-%token OP_DIM
+%token PR_AS
+%token PR_DIM
 %token PR_FLOAT
 %token PR_INT
 %token PR_STRING
@@ -252,13 +253,13 @@ iteracion : PR_WHILE condicion PR_DO lista_sentencias PR_ENDWHILE
 
 asignacion : TOKEN_ID OP_IGUAL expresion
 {
-	puts("Asignacion\n");
+	puts("Asignacion -> Token_ID := expresion\n");
 	puts("-------------------\n");
 }
 
 expresion : termino
 {
-	puts("Asignacion\n");
+	puts("Expresion -> termino\n");
 	puts("-------------------\n");
 }
 
@@ -294,18 +295,21 @@ termino : termino OP_MUL factor
 
 factor : CONST_STR
 {
+	printf("%s\n",yylval.str_val);
 	puts("factor : cte\n");
 	puts("-------------------\n");
 }
 
 factor : CONST_INT
 {
+	printf("%d\n",yylval.intval);
 	puts("factor : cte\n");
 	puts("-------------------\n");
 }
 
 factor : CONST_FLOAT
 {
+	printf("%f\n",yylval.val);
 	puts("factor : cte\n");
 	puts("-------------------\n");
 }
@@ -322,13 +326,13 @@ factor : TOKEN_ID
 // 	puts("-------------------\n");
 // }         
 
-declaracion_variables : OP_DIM COR_ABRE lista_variables_tipos COR_CIERRA
+declaracion_variables : PR_DIM COR_ABRE lista_variables_tipos COR_CIERRA
 {
 	puts("Declaracion de variables\n");
 	puts("-------------------\n");
 }   
 
-lista_variables_tipos : TOKEN_ID COR_CIERRA OP_AS COR_ABRE tipo_dato 
+lista_variables_tipos : TOKEN_ID COR_CIERRA PR_AS COR_ABRE tipo_dato 
 {
 	puts("Lista de variables\n");
 	puts("-------------------\n");

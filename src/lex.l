@@ -2,9 +2,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-//#include "y.tab.h"
+#include "y.tab.h"
 #include "defines.h"
 #include "structs.h"
+extern YYSTYPE yylval;
+
 void agregar_simbolo(char * nombre, int tipo, char * valor,char * alias);
 FILE  *yyin;
 char aux[COTA_STR],aux2[COTA_STR];
@@ -12,6 +14,7 @@ int procesar_keyword(char *);
 int procesar_operador(char *);
 int procesar_comparador(char *);
 double f;
+
 %}
 
 	int linecount = 1;
@@ -58,20 +61,22 @@ COMENTARIO          .
 
 %%
 
-"MAIN"			{ return procesar_keyword(yytext);}
-"DIM"			{ return procesar_keyword(yytext);}
-"AS"			{ return procesar_keyword(yytext);}
-"BEGIN"			{ return procesar_keyword(yytext);}
-"FLOAT"			{ return procesar_keyword(yytext);}
-"INT"			{ return procesar_keyword(yytext);}
-"STRING"		{ return procesar_keyword(yytext);}
-"IF"			{ return procesar_keyword(yytext);}
-"THEN"   		{ return procesar_keyword(yytext);}
-"ELSE"   		{ return procesar_keyword(yytext);}
-"ENDIF"	      	{ return procesar_keyword(yytext);}
-"WHILE"	      	{ return procesar_keyword(yytext);}
-"DO"	        { return procesar_keyword(yytext);}
-"ENDWHILE"  	{ return procesar_keyword(yytext);}
+"MAIN"			{ return PR_MAIN;}
+"DIM"			{ return PR_DIM;}
+"AS"			{ return PR_AS;}
+"BEGIN"			{ return PR_DO;}
+"FLOAT"			{ return PR_FLOAT;}
+"INT"			{ return PR_INT;}
+"STRING"		{ return PR_STRING;}
+"IF"			{ return PR_IF;}
+"THEN"   		{ return PR_THEN;}
+"ELSE"   		{ return PR_ELSE;}
+"ENDIF"	      	{ return PR_ENDIF;}
+"WHILE"	      	{ return PR_WHILE;}
+"DO"	        { return PR_DO;}
+"ENDWHILE"  	{ return PR_ENDWHILE;}
+"IGUALES"		{ return PR_IGUALES;}
+"FILTER"		{ return PR_FILTER;}
 "+"				{ return OP_SUMA;}
 "-"				{ return OP_RESTA;}
 "*"				{ return OP_MUL;}
@@ -82,25 +87,25 @@ COMENTARIO          .
 "<="            { return OP_MENOR_IGUAL;}
 "!="            { return OP_DISTINTO;}
 "=="            { return OP_IGUAL_IGUAL;}
-"AND"           { return OP_AND;}
-"OR"            { return OP_OR;}
-"NOT"           { return OP_NEGADO;}
-":="			{ return ASIGNA;}
-"("				{ return P_ABRE;}
-")"				{ return P_CIERRA;}
+"AND"           { return OP_LOG_AND;}
+"OR"            { return OP_LOG_OR;}
+"NOT"           { return PR_NOT;}
+":="			{ return OP_IGUAL;}
+"("				{ return PAR_ABRE;}
+")"				{ return PAR_CIERRA;}
 "["				{ return COR_ABRE;}
 "]"				{ return COR_CIERRA;}
-"READ"			{ return PR_GET;}
-"WRITE"			{ return PR_PUT;}
+"READ"			{ return PR_READ;}
+"WRITE"			{ return PR_WRITE;}
 ","				{ return COMA;}
-";"				{ return PUNTO_Y_COMA;}
-"++"			{ return OPCONCAT;}
+";"				//{ return PUNTO_Y_COMA;}
+"++"			//{ return OPCONCAT;}
 "-/"{COMENTARIO}*"/-" // printf ("comentario \n");
 "//"({COMENTARIO})* //printf("comentario \n");
 
 {ID}			{
 
-		//yylval.str_val = yytext;
+		yylval.str_val =  strdup(yytext);;
 		if(strlen(yytext)>COTA_ID) {
 				printf("VARIABLE SUPERA MAXIMO CARACTERES\n\t***ERROR - FINALIZANDO LEXICO***\n");
 				exit(1);
@@ -115,7 +120,7 @@ COMENTARIO          .
 
 
 {CONST_INT}		{ 		
-					//yylval.str_val = yytext;
+					yylval.intval = atoi(yytext);
 					if(atoi(yytext)>COTA_ID)
 						{
 							printf("CONST ENTERA SUPERA COTA\n\t***ERROR - FINALIZANDO LEXICO***\n");
@@ -132,7 +137,7 @@ COMENTARIO          .
 				}
 				
 "\""{CADENA}*"\""	{ 		
-					//yylval.str_val = yytext;
+					yylval.str_val = strdup(yytext);
 					strcpy(aux2,yytext);
 					if(strlen(aux2)>COTA_STR)
 						{	
@@ -148,7 +153,7 @@ COMENTARIO          .
 				}
 				
 {CONST_FLOAT}	{ 		
-						//yylval.str_val = yytext;
+						yylval.val = atof(yytext);
 						strcpy(aux,yytext);
 						if(f>COTA_REAL)
 							{
@@ -173,40 +178,6 @@ COMENTARIO          .
 // void agregar_simbolo()
 t_simbolo tabla_simbolos[2000];
 int cantidad_simbolos = 0;	
-
-
-int procesar_keyword(char * str) {
-	agregar_simbolo(str,TIPO_PR,NULL,NULL);
-
-	if(!strcmp(str,"IF"))
-		return PR_IF;
-	if(!strcmp(str,"MAIN"))
-		return PR_MAIN;
-	if(!strcmp(str,"DIM"))
-		return PR_DIM;
-	if(!strcmp(str,"AS"))
-		return PR_AS;
-	if(!strcmp(str,"FLOAT"))
-		return PR_FLOAT;
-	if(!strcmp(str,"INT"))
-		return PR_INT;
-	if(!strcmp(str,"STRING"))
-		return PR_STRING;
-	if(!strcmp(str,"THEN"))
-		return PR_THEN;
-	if(!strcmp(str,"ELSE"))
-		return PR_ELSE;
-	if(!strcmp(str,"ENDIF"))
-		return PR_ENDIF;
-	if(!strcmp(str,"WHILE"))
-		return PR_WHILE;
-	if(!strcmp(str,"DO"))
-		return PR_DO;
-	if(!strcmp(str,"ENDWHILE"))
-		return PR_ENDWHILE;
-
-	return 0;
-}
 
 int procesar_operador(char * str) {
 }
