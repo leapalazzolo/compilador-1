@@ -31,7 +31,7 @@ REGLAS SINTACTICAS:
 <condicion> : <comparacion> or <comparacion>
 <comparacion> : <expresion> <comparador> <expresion> | NOT <expresion>
 
-<iteracion> : PR_WHILE <condicion> PR_BEGIN <lista_sentencias> PR_END
+<iteracion> : WHILE <condicion> BEGIN <lista_sentencias> ENDWHILE
 
 <asignacion> : <ID> := <expresion>
 <expresion> : <termino> | <expresion> + <termino> | <expresion> - <termino>

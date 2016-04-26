@@ -156,7 +156,7 @@ COMENTARIO          .
 [ /t] 
 
 
-.				{ puts("\nCARACTER NO RECONOCIDO"); exit(1);}
+.				{ printf("\nCARACTER NO RECONOCIDO: '%s'", strdup(yytext)); exit(1);}
 
 %%
 

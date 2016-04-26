@@ -1,2 +1,17 @@
 MAIN
-a := 4
+-/comentario/-
+a:=4
+WHILE a>4 BEGIN
+a:=5
+ENDWHILE
+IF b==5 AND a==1 THEN
+b:=2
+ENDIF
+IF NOT a==3 THEN
+b:=5
+ENDIF
+c:="sdfsdfkj"
+d:=35.45
+WRITE "hola"
+READ e
+WRITE f

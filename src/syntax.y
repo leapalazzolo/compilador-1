@@ -16,7 +16,9 @@ void agregar_cte_a_TS(int tipo, char * valor_str, int valor_int,float valor_floa
 void error_lexico(char * mensaje);
 int tipos_iguales(char * nombre1, char * nombre2, char * mjs_error, int lineNumber);
 int buscar_en_TS(char * nombre);
-extern linecount;
+extern int linecount;
+
+int yylex();
 
 FILE  *yyin; //Archivo de Entrada
 %}
@@ -243,9 +245,9 @@ comparacion : expresion comparador expresion
 	puts("-------------------\n");
 }
 
-comparacion : PR_NOT expresion
+comparacion : PR_NOT expresion comparador expresion
 {
-	puts("comparacion : PR_NOT expresion\n");
+	puts("comparacion : PR_NOT expresion comparador expresion\n");
 	puts("-------------------\n");
 }
 
@@ -617,7 +619,7 @@ void agregar_cte_a_TS(int tipo, char * valor_str, int valor_int,float valor_floa
 	if(tipo == TIPO_STRING) {
 		strcpy(aux2,"&");
 		strcat(aux2, "str");
-		itoa(cantidad_cte_string,aux,10);
+		//itoa(cantidad_cte_string,aux,10);
 		strcat(aux2,aux);
 		cantidad_cte_string++;
 		agregar_simbolo(aux2,tipo,valor_str,NULL,lineNumber);
@@ -625,7 +627,7 @@ void agregar_cte_a_TS(int tipo, char * valor_str, int valor_int,float valor_floa
 
 	}else if(tipo == TIPO_INT) {
 		strcpy(aux2,"\%");
-		itoa(valor_int,aux,10);
+		//itoa(valor_int,aux,10);
 		strcat(aux2,aux);
 		agregar_simbolo(aux2,tipo,aux,NULL,lineNumber);
 		
