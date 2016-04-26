@@ -65,9 +65,9 @@ COMENTARIO          .
 "DIM"			{ return PR_DIM;}
 "AS"			{ return PR_AS;}
 "BEGIN"			{ return PR_DO;}
-"FLOAT"			{ return PR_FLOAT;}
-"INT"			{ return PR_INT;}
-"STRING"		{ return PR_STRING;}
+"FLOAT"			{ yylval.str_val = strdup(yytext);return PR_FLOAT;}
+"INT"			{ yylval.str_val = strdup(yytext);return PR_INT;}
+"STRING"		{ yylval.str_val = strdup(yytext);return PR_STRING;}
 "IF"			{ return PR_IF;}
 "THEN"   		{ return PR_THEN;}
 "ELSE"   		{ return PR_ELSE;}

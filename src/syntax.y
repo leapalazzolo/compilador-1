@@ -15,11 +15,13 @@ int intval;
 float val;
 char *str_val;
 }
+%start pgm
 
 %token <str_val>TOKEN_ID
 %token <int>CONST_INT
 %token <str_val>CONST_STR
-%token <double>CONST_FLOAT
+%token <float>CONST_FLOAT
+%type <str_val>tipo_dato
 
 %token PR_MAIN
 %token PR_IGUALES
@@ -38,7 +40,7 @@ char *str_val;
 %token PAR_CIERRA
 %token COR_ABRE
 %token COR_CIERRA
-%token COMA
+%token <str_val>COMA
 %token OP_LOG_AND
 %token OP_LOG_OR
 %token OP_SUMA
@@ -54,9 +56,9 @@ char *str_val;
 %token OP_IGUAL
 %token PR_AS
 %token PR_DIM
-%token PR_FLOAT
-%token PR_INT
-%token PR_STRING
+%token <str_val> PR_FLOAT
+%token <str_val> PR_INT
+%token <str_val> PR_STRING
 %%
 
 pgm : programa 
@@ -333,45 +335,42 @@ declaracion_variables : PR_DIM COR_ABRE lista_variables_tipos COR_CIERRA
 }   
 
 lista_variables_tipos : TOKEN_ID COR_CIERRA PR_AS COR_ABRE tipo_dato 
-{
+{	
+	printf("%s %s  \n",$1,$5);
 	puts("Lista de variables\n");
 	puts("-------------------\n");
 }
 
 lista_variables_tipos : TOKEN_ID COMA lista_variables_tipos COMA tipo_dato
 {
+	printf("%s %s  \n",$1,$5);
 	puts("Lista de variables\n");
 	puts("-------------------\n");
 }
 
-// variables : TOKEN_ID COMA variables
-// {
-// 	puts("variables : TOKEN_ID COMA variables\n");
-// 	puts("-------------------\n");
-// }
 
 
-// variables : TOKEN_ID
-// {
-// 	puts("variables : TOKEN_ID\n");
-// 	puts("-------------------\n");
-// }
-
-
-tipo_dato : PR_INT
+tipo_dato : PR_INT 
 {
+	// printf("%s \n",$1);
 	puts("PR_INT\n");
 	puts("-------------------\n");
+	$$=$1;
 }   
 
-tipo_dato : PR_FLOAT
+tipo_dato : PR_FLOAT 
 {
+	// printf("%s \n",$1);
 	puts("PR_FLOAT\n");
 	puts("-------------------\n");
+	$$=$1;
+
 }            
 
-tipo_dato : PR_STRING
+tipo_dato : PR_STRING 
 {
+	// printf("%s \n",$1);
+	$$=$1;
 	puts("PR_STRING\n");
 	puts("-------------------\n");
 } 
