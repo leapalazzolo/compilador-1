@@ -1,10 +1,22 @@
 %{
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "y.tab.h"
 #include "structs.h"
-// #include "defines.h"
+#include "defines.h"
 extern YYSTYPE yylval;
+char prefijo_id[2] = PREFIJO_ID;
+char aux[30];
+char aux2[30];
+int cantidad_cte_string = 0;
+void agregar_simbolo(char * nombre, int tipo, char * valor,char * alias,int lineNumber);
+void agregar_variable_a_TS(char * nombre, char * tipo,int lineNumber);
+void agregar_cte_a_TS(int tipo, char * valor_str, int valor_int,float valor_float,int lineNumber);
+void error_lexico(char * mensaje);
+int tipos_iguales(char * nombre1, char * nombre2, char * mjs_error, int lineNumber);
+int buscar_en_TS(char * nombre);
+extern linecount;
 
 FILE  *yyin; //Archivo de Entrada
 %}
@@ -18,10 +30,12 @@ char *str_val;
 %start pgm
 
 %token <str_val>TOKEN_ID
-%token <int>CONST_INT
+%token <intval>CONST_INT
 %token <str_val>CONST_STR
-%token <float>CONST_FLOAT
+%token <val>CONST_FLOAT
 %type <str_val>tipo_dato
+%type <str_val> expresion
+%type <str_val> termino
 
 %token PR_MAIN
 %token PR_IGUALES
@@ -76,18 +90,6 @@ programa : PR_MAIN declaracion_variables lista_sentencias
 programa : PR_MAIN lista_sentencias
 {
 	puts("Codigo sin variables\n");
-	puts("-------------------\n");
-};
-
-programa : sentencia lista_sentencias
-{
-	puts("Varias sentencias\n");
-	puts("-------------------\n");
-};
-
-programa : sentencia
-{
-	puts("ultima sentencia\n");
 	puts("-------------------\n");
 };
 
@@ -267,18 +269,31 @@ expresion : termino
 
 expresion : expresion OP_SUMA termino 
 {
-	puts("Suma\n");
+	printf("%s %s\n", $1, $3);
+	char mjs_error[60];
+	if(!tipos_iguales($1,$3,mjs_error, linecount)) {
+		puts(mjs_error);
+		exit(1);
+	}
+	puts("expresion : expresion OP_SUMA termino\n");
 	puts("-------------------\n");
 } 
 
 expresion : expresion OP_RESTA termino
 {
+	printf("%s %s\n", $1, $3);
+	char mjs_error[60];
+	if(!tipos_iguales($1,$3,mjs_error, linecount)) {
+		puts(mjs_error);
+		exit(1);
+	}
 	puts("Resta\n");
 	puts("-------------------\n");
 }
 
 termino : factor
 {
+	// printf("%s\n", $1);
 	puts("termino : factor\n");
 	puts("-------------------\n");
 }
@@ -297,6 +312,7 @@ termino : termino OP_MUL factor
 
 factor : CONST_STR
 {
+	agregar_cte_a_TS(TIPO_STRING,$1, 0,0.0,linecount);
 	printf("%s\n",yylval.str_val);
 	puts("factor : cte\n");
 	puts("-------------------\n");
@@ -304,6 +320,8 @@ factor : CONST_STR
 
 factor : CONST_INT
 {
+	// agregar_cte_a_TS($1,"INT");
+	agregar_cte_a_TS(TIPO_INT,NULL, $1,0.0,linecount);
 	printf("%d\n",yylval.intval);
 	puts("factor : cte\n");
 	puts("-------------------\n");
@@ -311,6 +329,8 @@ factor : CONST_INT
 
 factor : CONST_FLOAT
 {
+	// agregar_cte_a_TS($1,"FLOAT");
+	agregar_cte_a_TS(TIPO_FLOAT,NULL, 0,$1,linecount);
 	printf("%f\n",yylval.val);
 	puts("factor : cte\n");
 	puts("-------------------\n");
@@ -334,8 +354,16 @@ declaracion_variables : PR_DIM COR_ABRE lista_variables_tipos COR_CIERRA
 	puts("-------------------\n");
 }   
 
+declaracion_variables : PR_DIM COR_ABRE lista_variables_tipos COR_CIERRA declaracion_variables
+{
+	puts("Declaracion de variables\n");
+	puts("-------------------\n");
+}   
+
 lista_variables_tipos : TOKEN_ID COR_CIERRA PR_AS COR_ABRE tipo_dato 
 {	
+	agregar_variable_a_TS($1,$5,linecount);
+
 	printf("%s %s  \n",$1,$5);
 	puts("Lista de variables\n");
 	puts("-------------------\n");
@@ -343,6 +371,8 @@ lista_variables_tipos : TOKEN_ID COR_CIERRA PR_AS COR_ABRE tipo_dato
 
 lista_variables_tipos : TOKEN_ID COMA lista_variables_tipos COMA tipo_dato
 {
+	agregar_variable_a_TS($1,$5,linecount);
+
 	printf("%s %s  \n",$1,$5);
 	puts("Lista de variables\n");
 	puts("-------------------\n");
@@ -369,6 +399,7 @@ tipo_dato : PR_FLOAT
 
 tipo_dato : PR_STRING 
 {
+
 	// printf("%s \n",$1);
 	$$=$1;
 	puts("PR_STRING\n");
@@ -414,12 +445,12 @@ comparador : OP_DISTINTO
 %%
 
 
-extern t_simbolo tabla_simbolos[2000];
-
-extern int cantidad_simbolos;
+t_simbolo tabla_simbolos[2000];
+int cantidad_simbolos = 0;	
 void imprimir_tabla_simbolos();
 void vaciar_tabla_simbolos();
 char * tipo_simbolo_to_string(int tipo);
+
 
 
 //funcion para realizar todo lo que haga falta previo a terminar
@@ -443,6 +474,7 @@ int main(int argc, char **argv ) {
      }
 
 	 yyparse();
+	 imprimir_tabla_simbolos();
 
 
 	finally(yyin);
@@ -488,23 +520,181 @@ char * tipo_simbolo_to_string(int tipo){
 
 void imprimir_tabla_simbolos() {
 	int i;
-	printf("NOMBRE \t\t TIPO \t\t VALOR\n\n");
+	printf("NOMBRE \t\t\t\t TIPO \t\t\t\t VALOR\t\t\t\t LINEA\n\n");
 	for (i = 0; i < cantidad_simbolos; ++i)
 	{
 		if(tabla_simbolos[i].tipo == TIPO_STRING)
-			printf("%s\t\t%s\t\t%s \n",tabla_simbolos[i].nombre,tipo_simbolo_to_string(tabla_simbolos[i].tipo),tabla_simbolos[i].valor_string == NULL ? "" : tabla_simbolos[i].valor_string);
+			printf("%s\t\t\t\t%s\t\t\t\t%s\t\t\t\t%d \n",tabla_simbolos[i].nombre,tipo_simbolo_to_string(tabla_simbolos[i].tipo),tabla_simbolos[i].valor_string == NULL ? "" : tabla_simbolos[i].valor_string,tabla_simbolos[i].lineNumber);
 	
 		if(tabla_simbolos[i].tipo == TIPO_INT)
-			printf("%s\t\t%s\t\t%d\n",tabla_simbolos[i].nombre,tipo_simbolo_to_string(tabla_simbolos[i].tipo),tabla_simbolos[i].valor_int);
+			printf("%s\t\t\t\t%s\t\t\t\t%d\t\t\t\t%d\n",tabla_simbolos[i].nombre,tipo_simbolo_to_string(tabla_simbolos[i].tipo),tabla_simbolos[i].valor_int,tabla_simbolos[i].lineNumber);
 		
 		if(tabla_simbolos[i].tipo == TIPO_FLOAT)
-			printf("%s\t\t%s\t\t%f\n",tabla_simbolos[i].nombre,tipo_simbolo_to_string(tabla_simbolos[i].tipo),tabla_simbolos[i].valor_float);
+			printf("%s\t\t\t\t%s\t\t\t\t%.2f\t\t\t\t%d\n",tabla_simbolos[i].nombre,tipo_simbolo_to_string(tabla_simbolos[i].tipo),tabla_simbolos[i].valor_float,tabla_simbolos[i].lineNumber);
 
-		if(tabla_simbolos[i].tipo == TIPO_PR)
-			printf("%s\t\t%s\t\t\n",tabla_simbolos[i].nombre,tipo_simbolo_to_string(tabla_simbolos[i].tipo));
+		// if(tabla_simbolos[i].tipo == TIPO_PR)
+		// 	printf("%s\t\t\t\t%s\t\t\t\t\n",tabla_simbolos[i].nombre,tipo_simbolo_to_string(tabla_simbolos[i].tipo));
 				
 
 	}
 }
+
+/** Esta funcion te permite agregar un simbolo a la tabla de simbolos.
+	La idea es que se le envie el nombre del simbolo (Si es un id, el nombre
+	de la variable con el  prefijo "_", el tipo de dato es un int definido
+	 en las macro y el valor, en caso de que sea una constante)*/
+void agregar_simbolo(char * nombre, int tipo, char * valor,char * alias, int lineNumber) {
+	tabla_simbolos[cantidad_simbolos].nombre = malloc(sizeof(char) * strlen(nombre));
+	strcpy(tabla_simbolos[cantidad_simbolos].nombre,nombre);
+
+
+	if(alias != NULL) {
+		tabla_simbolos[cantidad_simbolos].alias = malloc(sizeof(char) * strlen(alias));
+		strcpy(tabla_simbolos[cantidad_simbolos].alias,alias);	
+	}
+	tabla_simbolos[cantidad_simbolos].tipo = tipo;
+	tabla_simbolos[cantidad_simbolos].lineNumber = lineNumber;
+
+	switch(tipo) {
+		case TIPO_FLOAT:
+			tabla_simbolos[cantidad_simbolos].valor_float = atof(valor);
+		break;
+		case TIPO_STRING:
+			if(valor != NULL) {
+				tabla_simbolos[cantidad_simbolos].valor_string = malloc(sizeof(char) * strlen(valor));
+				strcpy(tabla_simbolos[cantidad_simbolos].valor_string,valor);	
+			} else {
+				tabla_simbolos[cantidad_simbolos].valor_string = NULL;
+			}
+		break;
+		case TIPO_INT:
+			tabla_simbolos[cantidad_simbolos].valor_int = atoi(valor);
+		break;
+		case TIPO_PR:
+		break;
+		default:
+		puts("Tipo dato erroneo"); exit(1);
+	}
+	cantidad_simbolos++;
+
+
+}
+
+/* devuelve el indice del simbolo en la tabla. si no lo encuentra
+devuelve -1
+*/
+int buscar_en_TS(char * nombre) {
+	int i;
+	for (i = 0; i < cantidad_simbolos; ++i)
+	{
+		if(strcmp(tabla_simbolos[i].nombre,nombre) == 0) 
+			return i;
+	}
+	return -1;
+}
+
+
+/* Agrega una variable a la TS*/
+void agregar_variable_a_TS(char * nombre, char * tipo_str, int lineNumber) {
+	// printf("agrego %s en linea %d\n",nombre,linecount );
+	strcpy(aux2,"_");
+	strcpy(aux, nombre);
+	strcat(aux2,aux);
+	int index;
+	//si ya existe en TS, tiro error y cierro programa
+	if((index = buscar_en_TS(aux2)) >= 0) {
+		printf(VARIABLE_REPETIDA,nombre,tabla_simbolos[index].lineNumber);
+		exit(1);
+	}
+
+	int tipo = strcmp(tipo_str, "FLOAT") == 0 ? TIPO_FLOAT : strcmp(tipo_str, "INT") == 0 ? TIPO_INT : TIPO_STRING;
+	agregar_simbolo(aux2,tipo,NULL,NULL,lineNumber);
+}
+
+/*Agrega una constante a la TS*/
+void agregar_cte_a_TS(int tipo, char * valor_str, int valor_int,float valor_float, int lineNumber) {
+
+	if(tipo == TIPO_STRING) {
+		strcpy(aux2,"&");
+		strcat(aux2, "str");
+		itoa(cantidad_cte_string,aux,10);
+		strcat(aux2,aux);
+		cantidad_cte_string++;
+		agregar_simbolo(aux2,tipo,valor_str,NULL,lineNumber);
+
+
+	}else if(tipo == TIPO_INT) {
+		strcpy(aux2,"\%");
+		itoa(valor_int,aux,10);
+		strcat(aux2,aux);
+		agregar_simbolo(aux2,tipo,aux,NULL,lineNumber);
+		
+	}else if(tipo == TIPO_FLOAT) {
+		strcpy(aux2,"$");
+		snprintf(aux,30,"%.2f",valor_float);
+		strcat(aux2,aux);
+		agregar_simbolo(aux2,tipo,aux,NULL,lineNumber);
+		
+	}
+
+
+
+}
+
+
+/* 
+Busca en la tabla de simbolos por nombre. Si los encuentra, devuelve 1 si son iguales,
+o 1 si son distintos. Se le puede enviar un buffer de forma opcional para devolver
+un mensaje de error
+*/
+int tipos_iguales(char * nombre1, char * nombre2, char * msj_error,int lineNumber) {
+	char auxiliar[30];
+	char nombre1_[30];
+	char nombre2_[30];
+	strcpy(auxiliar,prefijo_id);
+	strcpy(nombre1_,auxiliar);
+	strcat(nombre1_,nombre1);
+
+	strcpy(auxiliar,prefijo_id);
+	strcpy(nombre2_,auxiliar);
+	strcat(nombre2_,nombre2);
+	int index1 = buscar_en_TS(nombre1_);
+	int index2 = buscar_en_TS(nombre2_);
+
+	puts(nombre1_);
+	puts(nombre2_);
+
+	if(index1 == -1) {
+		printf(VARIABLE_INEXISTENTE, nombre1,linecount);
+		imprimir_tabla_simbolos();
+		exit(1);
+	}
+	if(index2 == -1) {
+		printf(VARIABLE_INEXISTENTE, nombre2,linecount);
+		imprimir_tabla_simbolos();
+		exit(1);
+	}
+
+	int return_value = tabla_simbolos[index1].tipo == tabla_simbolos[index2].tipo;
+
+
+	/* Si me pedian un mensaje de error, lo guardo en la variable*/
+	if(!return_value && msj_error != NULL) {
+		char tipo1[10];
+		tabla_simbolos[index1].tipo == TIPO_STRING ? strcpy(tipo1,"STRING") : tabla_simbolos[index1].tipo == TIPO_FLOAT ? strcpy(tipo1,"FLOAT") : strcpy(tipo1,"INT");		
+		char tipo2[10]; 
+		tabla_simbolos[index2].tipo == TIPO_STRING ? strcpy(tipo2,"STRING") : tabla_simbolos[index2].tipo == TIPO_FLOAT ? strcpy(tipo2,"FLOAT") : strcpy(tipo2,"INT");		
+
+		sprintf(msj_error,VARIABLE_ERROR_TIPOS,tipo1,tipo2, lineNumber);
+	}
+	return tabla_simbolos[index1].tipo == tabla_simbolos[index2].tipo; 
+
+}
+
+
+
+
+
+
 
 

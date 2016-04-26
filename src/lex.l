@@ -7,12 +7,9 @@
 #include "structs.h"
 extern YYSTYPE yylval;
 
-void agregar_simbolo(char * nombre, int tipo, char * valor,char * alias);
 FILE  *yyin;
 char aux[COTA_STR],aux2[COTA_STR];
-int procesar_keyword(char *);
 int procesar_operador(char *);
-int procesar_comparador(char *);
 double f;
 
 %}
@@ -111,9 +108,6 @@ COMENTARIO          .
 				exit(1);
 			}
 		else {	
-			strcpy(aux,yytext);
-			agregar_simbolo("_ID",TIPO_STRING,aux,NULL);	
-			//agregarATS(aux,"-",VRBL,0,0);//hay que mandar el id y los datos necesarios para agregar
 			return TOKEN_ID;
 		}
 }
@@ -128,33 +122,25 @@ COMENTARIO          .
 						}
 					else
 						{
-							strcpy(aux,yytext);
-							//printf( "Genero aux para TS: (%s)\n",aux);
-					//		printf( "Identificador en lexico: %s (%s)\n", yytext,yylval.str_val);
-							agregar_simbolo("&cte",TIPO_INT,aux,NULL);
 							return CONST_INT;
 						}
 				}
 				
 "\""{CADENA}*"\""	{ 		
 					yylval.str_val = strdup(yytext);
-					strcpy(aux2,yytext);
 					if(strlen(aux2)>COTA_STR)
 						{	
 							printf("STRING SUPERA COTA\n\t***ERROR - FINALIZANDO LEXICO***\n");
 							exit(1);
-					
 						}
 					else
 						{
-							agregar_simbolo("@cte",TIPO_STRING,aux2,NULL);
 							return CONST_STR;
 						}
 				}
 				
 {CONST_FLOAT}	{ 		
 						yylval.val = atof(yytext);
-						strcpy(aux,yytext);
 						if(f>COTA_REAL)
 							{
 								printf("CONST REAL SUPERA COTA\n\t***ERROR - FINALIZANDO LEXICO***\n");
@@ -162,7 +148,6 @@ COMENTARIO          .
 							}
 						else
 							{
-								agregar_simbolo("$cte",TIPO_FLOAT,aux,NULL);
 								return CONST_FLOAT;
 							}
 				}
@@ -176,49 +161,7 @@ COMENTARIO          .
 %%
 
 // void agregar_simbolo()
-t_simbolo tabla_simbolos[2000];
-int cantidad_simbolos = 0;	
-
-int procesar_operador(char * str) {
-}
 
 
-/** Esta funcion te permite agregar un simbolo a la tabla de simbolos.
-	La idea es que se le envie el nombre del simbolo (Si es un id, el nombre
-	de la variable con el  prefijo "_", el tipo de dato es un int definido
-	 en las macro y el valor, en caso de que sea una constante)*/
-void agregar_simbolo(char * nombre, int tipo, char * valor,char * alias) {
-	tabla_simbolos[cantidad_simbolos].nombre = malloc(sizeof(char) * strlen(nombre));
-	strcpy(tabla_simbolos[cantidad_simbolos].nombre,nombre);
 
 
-	if(alias != NULL) {
-		tabla_simbolos[cantidad_simbolos].alias = malloc(sizeof(char) * strlen(alias));
-		strcpy(tabla_simbolos[cantidad_simbolos].alias,alias);	
-	}
-	tabla_simbolos[cantidad_simbolos].tipo = tipo;
-
-	switch(tipo) {
-		case TIPO_FLOAT:
-			tabla_simbolos[cantidad_simbolos].valor_float = atof(valor);
-		break;
-		case TIPO_STRING:
-			if(valor != NULL) {
-				tabla_simbolos[cantidad_simbolos].valor_string = malloc(sizeof(char) * strlen(valor));
-				strcpy(tabla_simbolos[cantidad_simbolos].valor_string,valor);	
-			} else {
-				tabla_simbolos[cantidad_simbolos].valor_string = NULL;
-			}
-		break;
-		case TIPO_INT:
-			tabla_simbolos[cantidad_simbolos].valor_int = atoi(valor);
-		break;
-		case TIPO_PR:
-		break;
-		default:
-		puts("Tipo dato erroneo"); exit(1);
-	}
-	cantidad_simbolos++;
-
-
-}

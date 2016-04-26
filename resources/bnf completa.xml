@@ -36,12 +36,10 @@
 <factor> : cte | id | <expresion>
 
 <declaracion_variables> : DIM [ <lista_variables_tipos> ]
+<declaracion_variables> : DIM [ <lista_variables_tipos> ] <declaracion_variables>
 <lista_variables_tipos> : id , <lista_variables_tipos> , <tipo_dato> | id ] AS [ <tipo_dato>
 
-<variable> : id 
-<variables> : id ,
 <tipo_dato> : int | float | string 
-<tipo_datos> : int , | float , | string , 
 <comparador> : > | < | <= | >= | == | !=
 
 KEYWORD				["if"]

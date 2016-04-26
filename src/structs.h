@@ -10,6 +10,7 @@ typedef struct
  float valor_float;
  int longitud;
  char *alias;
+ int lineNumber;
 } t_simbolo;
 
 #define TIPO_FLOAT 1
