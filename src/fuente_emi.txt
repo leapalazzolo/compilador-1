@@ -1,12 +1,11 @@
 MAIN
 DIM [a,b,c] AS [INT, STRING ,FLOAT]
 
-a := 3
-
-c := .99
-
 b := "esto es una cadena"
-a := a + b
+
+c := 3
+
+a := 3.
 
 -/ b = "asdasdasdasdasdasdasdasdasdasdasdasdasdasd"; Esto tira error lexico y esta bien, xq supera los 30 caracteres/-
 -/Esto es un comentario asdasd 123123123 1 //// --- /-

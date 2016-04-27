@@ -5,17 +5,24 @@
 #include "y.tab.h"
 #include "structs.h"
 #include "defines.h"
+
+#define DEBUG 1
 extern YYSTYPE yylval;
 char prefijo_id[2] = PREFIJO_ID;
+char prefijo_int[2] = PREFIJO_INT;
+char prefijo_float[2] = PREFIJO_FLOAT;
+char prefijo_string[2] = PREFIJO_STRING;
 char aux[30];
 char aux2[30];
 int cantidad_cte_string = 0;
 void agregar_simbolo(char * nombre, int tipo, char * valor,char * alias,int lineNumber);
 void agregar_variable_a_TS(char * nombre, char * tipo,int lineNumber);
 void agregar_cte_a_TS(int tipo, char * valor_str, int valor_int,float valor_float,int lineNumber);
+void agregar_cte_a_TS_sin_prefijo(int tipo, char * valor_str, int valor_int,float valor_float,int lineNumber);
 void error_lexico(char * mensaje);
 int tipos_iguales(char * nombre1, char * nombre2, char * mjs_error, int lineNumber);
 int buscar_en_TS(char * nombre);
+void poner_prefijo(char * str, char * prefijo);
 extern int linecount;
 
 int yylex();
@@ -38,6 +45,7 @@ char *str_val;
 %type <str_val>tipo_dato
 %type <str_val> expresion
 %type <str_val> termino
+%type <str_val> factor
 
 %token PR_MAIN
 %token PR_IGUALES
@@ -85,263 +93,370 @@ pgm : programa
 
 programa : PR_MAIN declaracion_variables lista_sentencias
 {
-	puts("Codigo con variables\n");
-	puts("-------------------\n");
+	if(DEBUG){
+		puts("Codigo con variables\n");
+		puts("-------------------\n");
+	}
+
 };
 
 programa : PR_MAIN lista_sentencias
 {
-	puts("Codigo sin variables\n");
-	puts("-------------------\n");
+	if(DEBUG){
+		puts("Codigo sin variables\n");
+		puts("-------------------\n");
+	}
 };
 
 lista_sentencias : sentencia
 {
-	puts("Una sola sentencia\n");
-	puts("-------------------\n");
+	if(DEBUG){
+		puts("Una sola sentencia\n");
+		puts("-------------------\n");
+	}
 };
 
 lista_sentencias : sentencia lista_sentencias
 {
-	puts("Varias sentencias\n");
-	puts("-------------------\n");
+	if(DEBUG) {
+		puts("Varias sentencias\n");
+		puts("-------------------\n");
+	}
+
 };
 
 sentencia : condicional 
 {
-	puts("Condicional\n");
-	puts("-------------------\n");
+	if(DEBUG) {
+		puts("Condicional\n");
+		puts("-------------------\n");		
+	}
+
 };
 
 sentencia : asignacion
 {
-	puts("Asignacion\n");
-	puts("-------------------\n");
+	if(DEBUG) {
+		puts("Asignacion\n");
+		puts("-------------------\n");		
+	}
+
 };
 
 sentencia : iteracion
 {
-	puts("Iteracion\n");
-	puts("-------------------\n");
+	if(DEBUG) {
+		puts("Iteracion\n");
+		puts("-------------------\n");		
+	}
+
 };
 
 sentencia : io
 {
-	puts("Operacion de entrada salidas\n");
-	puts("-------------------\n");
+	if(DEBUG) {
+		puts("Operacion de entrada salidas\n");
+		puts("-------------------\n");		
+	}
+
 };
 
 sentencia : iguales
 {
-	puts("Operacion de iguales\n");
-	puts("-------------------\n");
+	if(DEBUG) {
+		puts("Operacion de iguales\n");
+		puts("-------------------\n");	
+	}
 }
 
 sentencia : filter
 {
-	puts("Operacioon de filters\n");
-	puts("-------------------\n");
+	if(DEBUG) {
+		puts("Operacioon de filters\n");
+		puts("-------------------\n");
+	}
 }
 
 iguales : PR_IGUALES PAR_ABRE expresion COMA COR_ABRE lista_expresiones COR_CIERRA PAR_CIERRA
 {
-	puts("iguales : PR_IGUALES PAR_ABRE expresion COMA COR_ABRElista_expresiones COR_CIERRA PAR_CIERRA\n");
-	puts("-------------------\n");
+	if(DEBUG) {
+		puts("iguales : PR_IGUALES PAR_ABRE expresion COMA COR_ABRElista_expresiones COR_CIERRA PAR_CIERRA\n");
+		puts("-------------------\n");
+	}
 }
 
 lista_expresiones : expresion COMA lista_expresiones
 {
-	puts("Lista de expresiones\n");
-	puts("-------------------\n");
+	if(DEBUG) {
+		puts("Lista de expresiones\n");
+		puts("-------------------\n");		
+	}
 }
 
 lista_expresiones : expresion
 {
-	puts("Última expresion\n");
-	puts("-------------------\n");
+	if(DEBUG) {
+		puts("Última expresion\n");
+		puts("-------------------\n");		
+	}
 }
 
 filter : PR_FILTER PAR_ABRE condicion COMA COR_ABRE lista_variables COR_CIERRA PAR_CIERRA
 {
-	puts("filter : PR_FILTER PAR_ABRE condicion COMA COR_ABRE lista_variables COR_CIERRA PAR_CIERRA\n");
-	puts("-------------------\n");
+	if(DEBUG) {
+		puts("filter : PR_FILTER PAR_ABRE condicion COMA COR_ABRE lista_variables COR_CIERRA PAR_CIERRA\n");
+		puts("-------------------\n");
+	}
 }
 
 lista_variables : TOKEN_ID COMA lista_variables
 {
-	puts("Lista de variables\n");
-	puts("-------------------\n");
+	if(DEBUG) {
+		puts("Lista de variables\n");
+		puts("-------------------\n");		
+	}
 }
 
 lista_variables : TOKEN_ID
 {
-	puts("Última variable\n");
-	puts("-------------------\n");
+	if(DEBUG) {
+		puts("Última variable\n");
+		puts("-------------------\n");
+	}
 }
 
 io : entrada
 {
-	puts("io : entrada\n");
-	puts("-------------------\n");
+	if(DEBUG) {
+		puts("io : entrada\n");
+		puts("-------------------\n");
+	}
+
 }
 
 io : salida
 {
-	puts("io : salida\n");
-	puts("-------------------\n");
+	if(DEBUG) {
+		puts("io : salida\n");
+		puts("-------------------\n");		
+	}
 }
 
 entrada : PR_READ TOKEN_ID
 {
-	puts("entrada : READ id\n");
-	puts("-------------------\n");
+	if(DEBUG) {
+		puts("entrada : READ id\n");
+		puts("-------------------\n");		
+	}
 }
 
 salida : PR_WRITE TOKEN_ID
 {
-	puts("salida : PR_WRITE id\n");
-	puts("-------------------\n");
+	if(DEBUG) {
+		puts("salida : PR_WRITE id\n");
+		puts("-------------------\n");
+	}
 }
 
 salida : PR_WRITE CONST_STR
 {
-	puts("salida : PR_WRITE cte\n");
-	puts("-------------------\n");
+	if(DEBUG) {
+		puts("salida : PR_WRITE cte\n");
+		puts("-------------------\n");	
+	}
 }
 
 condicional : PR_IF condicion PR_THEN lista_sentencias PR_ENDIF
 {
-	puts("Condicional sin ELSE\n");
-	puts("-------------------\n");
+	if(DEBUG) {
+		puts("Condicional sin ELSE\n");
+		puts("-------------------\n");
+	}
 }
 
 condicional : PR_IF condicion PR_THEN lista_sentencias PR_ELSE lista_sentencias PR_ENDIF
 {
-	puts("Condicional con ELSE\n");
-	puts("-------------------\n");
+	if(DEBUG) {
+		puts("Condicional con ELSE\n");
+		puts("-------------------\n");	
+	}
 }
 
 condicion : comparacion
 {
-	puts("condicion : comparacion\n");
-	puts("-------------------\n");
+	if(DEBUG) {
+		puts("condicion : comparacion\n");
+		puts("-------------------\n");
+	}
 }
 
 condicion : comparacion OP_LOG_AND comparacion
 {
-	puts("condicion : comparacion and comparacion\n");
-	puts("-------------------\n");
+	if(DEBUG) {
+		puts("condicion : comparacion and comparacion\n");
+		puts("-------------------\n");		
+	}
 }
 
 condicion : comparacion OP_LOG_OR comparacion
 {
-	puts("condicion : comparacion or comparacion\n");
-	puts("-------------------\n");
+	if(DEBUG) {
+		puts("condicion : comparacion or comparacion\n");
+		puts("-------------------\n");		
+	}
 }
 
 comparacion : expresion comparador expresion
 {
-	puts("comparacion : expresion comparador expresion\n");
-	puts("-------------------\n");
+	if(DEBUG) {
+		puts("comparacion : expresion comparador expresion\n");
+		puts("-------------------\n");
+	}
 }
 
 comparacion : PR_NOT expresion comparador expresion
 {
-	puts("comparacion : PR_NOT expresion comparador expresion\n");
-	puts("-------------------\n");
+	if(DEBUG) {
+		puts("comparacion : PR_NOT expresion comparador expresion\n");
+		puts("-------------------\n");
+	}
 }
 
 iteracion : PR_WHILE condicion PR_DO lista_sentencias PR_ENDWHILE
 {
-	puts("Iteracion\n");
-	puts("-------------------\n");
+	if(DEBUG) {
+		puts("Iteracion\n");
+		puts("-------------------\n");
+	}
 }
 
 asignacion : TOKEN_ID OP_IGUAL expresion
 {
-	puts("Asignacion -> Token_ID := expresion\n");
-	puts("-------------------\n");
+	printf("asignacion %s %s\n",$1,$3 );
+	char mjs_error[60];
+	if(!tipos_iguales($1,$3,mjs_error, linecount)) {
+		puts(mjs_error);
+		exit(1);
+	}
+	if(DEBUG) {
+		puts("Asignacion -> Token_ID := expresion\n");
+		puts("-------------------\n");
+	}
 }
 
 expresion : termino
 {
-	puts("Expresion -> termino\n");
-	puts("-------------------\n");
+	printf("%s\n",$1 );
+	$$=$1;
+	if(DEBUG) {
+		puts("Expresion -> termino\n");
+		puts("-------------------\n");
+	}
 }
 
 expresion : expresion OP_SUMA termino 
 {
-	printf("%s %s\n", $1, $3);
 	char mjs_error[60];
 	if(!tipos_iguales($1,$3,mjs_error, linecount)) {
 		puts(mjs_error);
 		exit(1);
 	}
-	puts("expresion : expresion OP_SUMA termino\n");
-	puts("-------------------\n");
+	if(DEBUG) {
+		printf("%s %s\n", $1, $3);
+		puts("expresion : expresion OP_SUMA termino\n");
+		puts("-------------------\n");
+	}
 } 
 
 expresion : expresion OP_RESTA termino
 {
-	printf("%s %s\n", $1, $3);
 	char mjs_error[60];
 	if(!tipos_iguales($1,$3,mjs_error, linecount)) {
 		puts(mjs_error);
 		exit(1);
 	}
-	puts("Resta\n");
-	puts("-------------------\n");
+	if(DEBUG) {
+		printf("%s %s\n", $1, $3);
+		puts("Resta\n");
+		puts("-------------------\n");
+	}
 }
 
 termino : factor
 {
-	// printf("%s\n", $1);
-	puts("termino : factor\n");
-	puts("-------------------\n");
+	printf(" termino %s\n",$1 );
+	if(DEBUG) {
+		puts("termino : factor\n");
+		puts("-------------------\n");
+	}
 }
 
 termino : termino OP_DIV factor
 {
-	puts("Division\n");
-	puts("-------------------\n");
+	if(DEBUG) {
+		puts("Division\n");
+		puts("-------------------\n");
+	}
 }
 
 termino : termino OP_MUL factor
 {
-	puts("Multiplicacion\n");
-	puts("-------------------\n");
+	// printf("%s\n", $1);
+	if(DEBUG) {
+		puts("termino : termino OP_MUL factor\n");
+		puts("-------------------\n");
+	}
 }
 
 factor : CONST_STR
 {
 	agregar_cte_a_TS(TIPO_STRING,$1, 0,0.0,linecount);
-	printf("%s\n",yylval.str_val);
-	puts("factor : cte\n");
-	puts("-------------------\n");
+	puts($1);
+	$$=$1;
+	if(DEBUG) {
+		printf("%s\n",$1);
+		puts("factor : cte\n");
+		puts("-------------------\n");		
+	}
 }
 
 factor : CONST_INT
 {
-	// agregar_cte_a_TS($1,"INT");
+	// $$ = "INT";
+	char temp[10];
+	sprintf(temp,"%d",$1);
+	$$ = temp;
+	// $$=$1;
 	agregar_cte_a_TS(TIPO_INT,NULL, $1,0.0,linecount);
-	printf("%d\n",yylval.intval);
-	puts("factor : cte\n");
-	puts("-------------------\n");
+	if(DEBUG) {
+		printf("%d\n",$1);
+		puts("factor : cte\n");
+		puts("-------------------\n");		
+	}
+
 }
 
 factor : CONST_FLOAT
 {
-	// agregar_cte_a_TS($1,"FLOAT");
+	char temp[10];
+	sprintf(temp,"%.4f",$1);
+	$$ = temp;
+	// $$=$1;
 	agregar_cte_a_TS(TIPO_FLOAT,NULL, 0,$1,linecount);
-	printf("%f\n",yylval.val);
-	puts("factor : cte\n");
-	puts("-------------------\n");
+	if(DEBUG) {
+		printf("%.4f\n",$1);
+		puts("factor : cte\n");
+		puts("-------------------\n");
+	}
+
 }
 
 factor : TOKEN_ID
 {
-	puts("factor : TOKEN_ID\n");
-	puts("-------------------\n");
+	if(DEBUG) {
+		puts("factor : TOKEN_ID\n");
+		puts("-------------------\n");
+	}
 } 
      
 // factor : expresion
@@ -352,14 +467,18 @@ factor : TOKEN_ID
 
 declaracion_variables : PR_DIM COR_ABRE lista_variables_tipos COR_CIERRA
 {
-	puts("Declaracion de variables\n");
-	puts("-------------------\n");
+	if(DEBUG) {
+		puts("Declaracion de variables\n");
+		puts("-------------------\n");
+	}
 }   
 
 declaracion_variables : PR_DIM COR_ABRE lista_variables_tipos COR_CIERRA declaracion_variables
 {
-	puts("Declaracion de variables\n");
-	puts("-------------------\n");
+	if(DEBUG) {
+		puts("Declaracion de variables\n");
+		puts("-------------------\n");
+	}
 }   
 
 lista_variables_tipos : TOKEN_ID COR_CIERRA PR_AS COR_ABRE tipo_dato 
@@ -367,8 +486,10 @@ lista_variables_tipos : TOKEN_ID COR_CIERRA PR_AS COR_ABRE tipo_dato
 	agregar_variable_a_TS($1,$5,linecount);
 
 	printf("%s %s  \n",$1,$5);
-	puts("Lista de variables\n");
-	puts("-------------------\n");
+	if(DEBUG) {
+		puts("Lista de variables\n");
+		puts("-------------------\n");
+	}
 }
 
 lista_variables_tipos : TOKEN_ID COMA lista_variables_tipos COMA tipo_dato
@@ -376,72 +497,88 @@ lista_variables_tipos : TOKEN_ID COMA lista_variables_tipos COMA tipo_dato
 	agregar_variable_a_TS($1,$5,linecount);
 
 	printf("%s %s  \n",$1,$5);
-	puts("Lista de variables\n");
-	puts("-------------------\n");
+	if(DEBUG){
+		puts("Lista de variables\n");
+		puts("-------------------\n");
+	}
 }
 
 
 
 tipo_dato : PR_INT 
 {
-	// printf("%s \n",$1);
-	puts("PR_INT\n");
-	puts("-------------------\n");
 	$$=$1;
+	if(DEBUG) {
+		puts("PR_INT\n");
+		puts("-------------------\n");	
+	}
 }   
 
 tipo_dato : PR_FLOAT 
 {
-	// printf("%s \n",$1);
-	puts("PR_FLOAT\n");
-	puts("-------------------\n");
 	$$=$1;
-
+	if(DEBUG) { 
+		puts("PR_FLOAT\n");
+		puts("-------------------\n");
+	}
 }            
 
 tipo_dato : PR_STRING 
 {
 
-	// printf("%s \n",$1);
 	$$=$1;
-	puts("PR_STRING\n");
-	puts("-------------------\n");
+	if(DEBUG) {
+		puts("PR_STRING\n");
+		puts("-------------------\n");
+	}
 } 
 
 comparador : OP_MAYOR
 {
-	puts("OP_MAYOR\n");
-	puts("-------------------\n");
+	if(DEBUG) {
+		puts("OP_MAYOR\n");
+		puts("-------------------\n");
+	}
 }   
 
 comparador : OP_MENOR
 {
-	puts("OP_MENOR\n");
-	puts("-------------------\n");
+	if(DEBUG) {
+		puts("OP_MENOR\n");
+		puts("-------------------\n");
+	}
 }   
 
 comparador : OP_MENOR_IGUAL
 {
-	puts("OP_MENOR_IGUAL\n");
-	puts("-------------------\n");
+	if(DEBUG) {
+		puts("OP_MENOR_IGUAL\n");
+		puts("-------------------\n");
+	}
 }      
 
 comparador : OP_MAYOR_IGUAL
 {
-	puts("OP_MAYOR_IGUAL\n");
-	puts("-------------------\n");
+	if(DEBUG) {
+		puts("OP_MAYOR_IGUAL\n");
+		puts("-------------------\n");
+	}
 }    
 
 comparador : OP_IGUAL_IGUAL
 {
-	puts("OP_IGUAL_IGUAL\n");
-	puts("-------------------\n");
+	if(DEBUG) {
+		puts("OP_IGUAL_IGUAL\n");
+		puts("-------------------\n");
+	}
 }
 
 comparador : OP_DISTINTO
 {
-	puts("OP_DISTINTO\n");
-	puts("-------------------\n");
+	if(DEBUG) {
+		puts("OP_DISTINTO\n");
+		puts("-------------------\n");
+	}
 }     
 
 %%
@@ -532,7 +669,7 @@ void imprimir_tabla_simbolos() {
 			printf("%s\t\t\t\t%s\t\t\t\t%d\t\t\t\t%d\n",tabla_simbolos[i].nombre,tipo_simbolo_to_string(tabla_simbolos[i].tipo),tabla_simbolos[i].valor_int,tabla_simbolos[i].lineNumber);
 		
 		if(tabla_simbolos[i].tipo == TIPO_FLOAT)
-			printf("%s\t\t\t\t%s\t\t\t\t%.2f\t\t\t\t%d\n",tabla_simbolos[i].nombre,tipo_simbolo_to_string(tabla_simbolos[i].tipo),tabla_simbolos[i].valor_float,tabla_simbolos[i].lineNumber);
+			printf("%s\t\t\t\t%s\t\t\t\t%.4f\t\t\t\t%d\n",tabla_simbolos[i].nombre,tipo_simbolo_to_string(tabla_simbolos[i].tipo),tabla_simbolos[i].valor_float,tabla_simbolos[i].lineNumber);
 
 		// if(tabla_simbolos[i].tipo == TIPO_PR)
 		// 	printf("%s\t\t\t\t%s\t\t\t\t\n",tabla_simbolos[i].nombre,tipo_simbolo_to_string(tabla_simbolos[i].tipo));
@@ -582,6 +719,19 @@ void agregar_simbolo(char * nombre, int tipo, char * valor,char * alias, int lin
 
 }
 
+
+int buscar_en_TS_sin_prefijo(char * nombre) {
+	char temp[30];
+	int i;
+	for (i = 0; i < cantidad_simbolos; ++i)
+	{
+		strcpy(temp,tabla_simbolos[i].nombre + 1);
+		if(strcmp(temp,nombre) == 0) 
+			return i;
+	}
+	return -1;
+}
+
 /* devuelve el indice del simbolo en la tabla. si no lo encuentra
 devuelve -1
 */
@@ -599,9 +749,8 @@ int buscar_en_TS(char * nombre) {
 /* Agrega una variable a la TS*/
 void agregar_variable_a_TS(char * nombre, char * tipo_str, int lineNumber) {
 	// printf("agrego %s en linea %d\n",nombre,linecount );
-	strcpy(aux2,"_");
-	strcpy(aux, nombre);
-	strcat(aux2,aux);
+	strcpy(aux2,nombre);
+	poner_prefijo(aux2,prefijo_id);
 	int index;
 	//si ya existe en TS, tiro error y cierro programa
 	if((index = buscar_en_TS(aux2)) >= 0) {
@@ -617,30 +766,25 @@ void agregar_variable_a_TS(char * nombre, char * tipo_str, int lineNumber) {
 void agregar_cte_a_TS(int tipo, char * valor_str, int valor_int,float valor_float, int lineNumber) {
 
 	if(tipo == TIPO_STRING) {
-		strcpy(aux2,"&");
-		strcat(aux2, "str");
-		//itoa(cantidad_cte_string,aux,10);
-		strcat(aux2,aux);
+		strcpy(aux2,prefijo_string);
+		strcat(aux2, valor_str);
 		cantidad_cte_string++;
-		agregar_simbolo(aux2,tipo,valor_str,NULL,lineNumber);
+		agregar_simbolo(aux2,tipo,NULL,NULL,lineNumber);
 
 
 	}else if(tipo == TIPO_INT) {
-		strcpy(aux2,"\%");
-		//itoa(valor_int,aux,10);
+		strcpy(aux2,prefijo_int);
+		sprintf(aux,"%d",valor_int);
 		strcat(aux2,aux);
 		agregar_simbolo(aux2,tipo,aux,NULL,lineNumber);
 		
 	}else if(tipo == TIPO_FLOAT) {
-		strcpy(aux2,"$");
-		snprintf(aux,30,"%.2f",valor_float);
+		strcpy(aux2,prefijo_float);
+		snprintf(aux,30,"%.4f",valor_float);
 		strcat(aux2,aux);
 		agregar_simbolo(aux2,tipo,aux,NULL,lineNumber);
 		
 	}
-
-
-
 }
 
 
@@ -650,21 +794,9 @@ o 1 si son distintos. Se le puede enviar un buffer de forma opcional para devolv
 un mensaje de error
 */
 int tipos_iguales(char * nombre1, char * nombre2, char * msj_error,int lineNumber) {
-	char auxiliar[30];
-	char nombre1_[30];
-	char nombre2_[30];
-	strcpy(auxiliar,prefijo_id);
-	strcpy(nombre1_,auxiliar);
-	strcat(nombre1_,nombre1);
 
-	strcpy(auxiliar,prefijo_id);
-	strcpy(nombre2_,auxiliar);
-	strcat(nombre2_,nombre2);
-	int index1 = buscar_en_TS(nombre1_);
-	int index2 = buscar_en_TS(nombre2_);
-
-	puts(nombre1_);
-	puts(nombre2_);
+	int index1 = buscar_en_TS_sin_prefijo(nombre1);
+	int index2 = buscar_en_TS_sin_prefijo(nombre2);
 
 	if(index1 == -1) {
 		printf(VARIABLE_INEXISTENTE, nombre1,linecount);
@@ -690,7 +822,14 @@ int tipos_iguales(char * nombre1, char * nombre2, char * msj_error,int lineNumbe
 		sprintf(msj_error,VARIABLE_ERROR_TIPOS,tipo1,tipo2, lineNumber);
 	}
 	return tabla_simbolos[index1].tipo == tabla_simbolos[index2].tipo; 
+}
 
+void poner_prefijo(char * str, char * prefijo) {
+	char pref[32];
+
+	strcpy(pref, prefijo);
+	strcat(pref,str);
+	strcpy(str,pref);
 }
 
 
