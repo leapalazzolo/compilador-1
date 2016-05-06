@@ -1,4 +1,6 @@
 MAIN
+DIM[a,b,c,d] AS [INT,INT,INT,INT]
+FILTER ( _>4 + r and _<=6.5 , [a,b,c,d])
 -/comentario/-
 a:=4
 WHILE a>4 BEGIN

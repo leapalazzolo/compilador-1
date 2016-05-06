@@ -494,47 +494,31 @@ factor : TOKEN_ID
 // {
 // 	puts("factor : expresion\n");
 // 	puts("-------------------\n");
-// }         
+// }
 
-declaracion_variables : PR_DIM COR_ABRE lista_variables_tipos COR_CIERRA
+declaracion_variables : PR_DIM COR_ABRE declaracion_variables_interna COR_CIERRA
 {
 	if(DEBUG) {
-		puts("Declaracion de variables\n");
+		puts("declaracion_variables : PR_DIM COR_ABRE declaracion_variables_interna COR_CIERRA\n");
 		puts("-------------------\n");
 	}
-}   
+} 
 
-declaracion_variables : PR_DIM COR_ABRE lista_variables_tipos COR_CIERRA declaracion_variables
+declaracion_variables_interna : TOKEN_ID COMA declaracion_variables_interna COMA tipo_dato
 {
 	if(DEBUG) {
-		puts("Declaracion de variables\n");
+		puts("declaracion_variables_interna : TOKEN_ID COMA declaracion_variables_interna COMA tipo_dato\n");
 		puts("-------------------\n");
 	}
-}   
+} 
 
-lista_variables_tipos : TOKEN_ID COR_CIERRA PR_AS COR_ABRE tipo_dato 
-{	
-	agregar_variable_a_TS($1,$5,linecount);
-
-	printf("%s %s  \n",$1,$5);
+declaracion_variables_interna : TOKEN_ID COR_CIERRA PR_AS COR_ABRE tipo_dato
+{
 	if(DEBUG) {
-		puts("Lista de variables\n");
+		puts("declaracion_variables_interna : TOKEN_ID COR_CIERRA PR_AS COR_ABRE tipo_dato\n");
 		puts("-------------------\n");
 	}
 }
-
-lista_variables_tipos : TOKEN_ID COMA lista_variables_tipos COMA tipo_dato
-{
-	agregar_variable_a_TS($1,$5,linecount);
-
-	printf("%s %s  \n",$1,$5);
-	if(DEBUG){
-		puts("Lista de variables\n");
-		puts("-------------------\n");
-	}
-}
-
-
 
 tipo_dato : PR_INT 
 {
