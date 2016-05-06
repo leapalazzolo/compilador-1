@@ -32,6 +32,7 @@ OP_MAYOR				[">"]
 OP_MENOR				["<"]
 OP_MAYOR_IGUAL			[">="]
 OP_MENOR_IGUAL			["<="]
+OP_FILTER			["_"]
 ASIGNA				[":="]
 IGUAL				["=="]
 DISTINTO			["!="]
@@ -95,6 +96,7 @@ COMENTARIO          .
 "READ"			{ return PR_READ;}
 "WRITE"			{ return PR_WRITE;}
 ","				{ return COMA;}
+"_"				{ return OP_FILTER;} 
 ";"				//{ return PUNTO_Y_COMA;}
 "++"			//{ return OPCONCAT;}
 "-/"{COMENTARIO}*"/-" // printf ("comentario \n");

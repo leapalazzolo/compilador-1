@@ -72,6 +72,7 @@ char *str_val;
 %token OP_IGUAL
 %token PR_AS
 %token PR_DIM
+%token OP_FILTER
 %token <str_val> PR_FLOAT
 %token <str_val> PR_INT
 %token <str_val> PR_STRING
@@ -161,9 +162,41 @@ lista_expresiones : expresion
 	puts("-------------------\n");
 }
 
-filter : PR_FILTER PAR_ABRE condicion COMA COR_ABRE lista_variables COR_CIERRA PAR_CIERRA
+filter : PR_FILTER PAR_ABRE condicion_filter COMA COR_ABRE lista_variables COR_CIERRA PAR_CIERRA
 {
 	puts("filter : PR_FILTER PAR_ABRE condicion COMA COR_ABRE lista_variables COR_CIERRA PAR_CIERRA\n");
+	puts("-------------------\n");
+}
+
+condicion_filter : 
+
+condicion_filter : comparacion_filter
+{
+	puts("condicion_filter : comparacion_filter\n");
+	puts("-------------------\n");
+}
+
+condicion_filter : comparacion_filter OP_LOG_AND comparacion_filter
+{
+	puts("condicion_filter : comparacion_filter and comparacion_filter\n");
+	puts("-------------------\n");
+}
+
+condicion_filter : comparacion_filter OP_LOG_OR comparacion_filter
+{
+	puts("condicion_filter : comparacion_filter or comparacion_filter\n");
+	puts("-------------------\n");
+}
+
+comparacion_filter : OP_FILTER comparador expresion
+{
+	puts("comparacion_filter : OP_FILTER comparador expresion\n");
+	puts("-------------------\n");
+}
+
+comparacion_filter : PR_NOT OP_FILTER comparador expresion
+{
+	puts("comparacion_filter : PR_NOT OP_FILTER comparador expresion\n");
 	puts("-------------------\n");
 }
 
