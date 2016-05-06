@@ -5,6 +5,10 @@
 #define COTA_STR 30
 
 #define PREFIJO_ID "_"
+#define PREFIJO_INT "\%"
+#define PREFIJO_FLOAT "$"
+#define PREFIJO_STRING "&"
+
 
 #define VARIABLE_REPETIDA "Ya existe una variable con el nombre %s en la linea %d\n"
 #define VARIABLE_INEXISTENTE "La variable %s no esta definida. Primera aparicion en la linea %d\n"
