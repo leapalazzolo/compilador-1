@@ -210,8 +210,6 @@ filter : PR_FILTER PAR_ABRE condicion_filter COMA COR_ABRE lista_variables COR_C
 	}
 }
 
-condicion_filter : 
-
 condicion_filter : comparacion_filter
 {
 	puts("condicion_filter : comparacion_filter\n");
