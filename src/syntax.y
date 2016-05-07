@@ -611,8 +611,8 @@ declaracion_variables : PR_DIM COR_ABRE declaracion_variables_interna COR_CIERRA
 
 declaracion_variables : PR_DIM COR_ABRE declaracion_variables_interna COR_CIERRA PUNTO_Y_COMA declaracion_variables 
 {
-	puts("aa");
-
+	puts("declaracion_variables : PR_DIM COR_ABRE declaracion_variables_interna COR_CIERRA\n");
+	puts("-------------------\n");
 }
 
 
@@ -623,7 +623,6 @@ declaracion_variables_interna : TOKEN_ID COMA declaracion_variables_interna COMA
 	strcpy(temp_variables[variables_a_agregar],$1);
 	strcpy(temp_tipo_dato[variables_a_agregar],$5);
 	variables_a_agregar++;
-	// agregar_variable_a_TS($1,$5,linecount);
 	if(DEBUG) {
 		puts("declaracion_variables_interna : TOKEN_ID COMA declaracion_variables_interna COMA tipo_dato\n");
 		puts("-------------------\n");
@@ -650,7 +649,6 @@ declaracion_variables_interna : TOKEN_ID COR_CIERRA PR_AS COR_ABRE tipo_dato
 
 
 
-	// agregar_variable_a_TS($1,$5,linecount);
 	puts("c");
 	printf("leo %s %s\n", $1,$5);
 	if(DEBUG) {
