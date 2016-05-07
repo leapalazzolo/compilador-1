@@ -117,7 +117,7 @@ COMENTARIO          .
 
 {CONST_INT}		{ 		
 					yylval.intval = atoi(yytext);
-					if(atoi(yytext)>COTA_ID)
+					if(atoi(yytext)>MAX_INT)
 						{
 							printf("CONST ENTERA SUPERA COTA\n\t***ERROR - FINALIZANDO LEXICO***\n");
 							exit(1);
@@ -158,7 +158,7 @@ COMENTARIO          .
 [ /t] 
 
 
-.				{ printf("\nCARACTER NO RECONOCIDO: '%s'", strdup(yytext)); exit(1);}
+.				{ printf("\nCARACTER NO RECONOCIDO: '%s' en la linea %d", strdup(yytext), linecount); exit(1);}
 
 %%
 

@@ -965,7 +965,7 @@ YY_RULE_SETUP
 #line 118 "lex.l"
 { 		
 					yylval.intval = atoi(yytext);
-					if(atoi(yytext)>COTA_ID)
+					if(atoi(yytext)>MAX_INT)
 						{
 							printf("CONST ENTERA SUPERA COTA\n\t***ERROR - FINALIZANDO LEXICO***\n");
 							exit(1);
@@ -1021,7 +1021,7 @@ YY_RULE_SETUP
 case 49:
 YY_RULE_SETUP
 #line 161 "lex.l"
-{ printf("\nCARACTER NO RECONOCIDO: '%s'", strdup(yytext)); exit(1);}
+{ printf("\nCARACTER NO RECONOCIDO: '%s' en la linea %d", strdup(yytext), linecount); exit(1);}
 	YY_BREAK
 case 50:
 YY_RULE_SETUP
