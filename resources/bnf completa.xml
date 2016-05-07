@@ -30,10 +30,14 @@
 
 <iteracion> : while <condicion> begin <lista_sentencias> end
 
+<expresion_str> : <factor_str> | <factor_str> ++ <factor_str>
+<factor_str> : cte | id
+<asignacion> : id := <expresion_str>
+
 <asignacion> : id := <expresion>
 <expresion> : <termino> | <expresion> + <termino> | <expresion> - <termino>
 <termino> : <factor> | <termino> / <factor> | <termino> * <factor>
-<factor> : cte | id | <expresion>
+<factor> : cte | id 
 
 <declaracion_variables> : DIM [ <lista_variables_tipos> ]
 <declaracion_variables> : DIM [ <lista_variables_tipos> ] <declaracion_variables>

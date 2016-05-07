@@ -97,8 +97,8 @@ COMENTARIO          .
 "WRITE"			{ return PR_WRITE;}
 ","				{ return COMA;}
 "_"				{ return OP_FILTER;} 
-";"				//{ return PUNTO_Y_COMA;}
-"++"			//{ return OPCONCAT;}
+";"				{ return PUNTO_Y_COMA;}
+"++"			{ return OP_CONCAT;}
 "-/"{COMENTARIO}*"/-" // printf ("comentario \n");
 "//"({COMENTARIO})* //printf("comentario \n");
 

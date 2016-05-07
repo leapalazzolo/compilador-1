@@ -1,11 +1,13 @@
 MAIN
-DIM [a,b,c] AS [INT, STRING ,FLOAT]
+DIM [a,b,c] AS [INT, STRING ,FLOAT];
+DIM [d,e,f] AS [INT, STRING ,STRING];
+DIM [g,h,i] AS [INT, STRING ,STRING];
 
-b := "esto es una cadena"
+b := "esto es una cadena";
 
-c := 3
+c := 3.
 
-a := 3.
+a := 3
 
 -/ b = "asdasdasdasdasdasdasdasdasdasdasdasdasdasd"; Esto tira error lexico y esta bien, xq supera los 30 caracteres/-
 -/Esto es un comentario asdasd 123123123 1 //// --- /-

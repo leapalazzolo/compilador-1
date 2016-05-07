@@ -4,7 +4,9 @@
 #include <stdlib.h>
 
 typedef struct {
-	int a;
+	char nombre[30];
+	char tipo[10];
+	int esFinDeclaracion;
 } t_info;
 
 typedef struct  t_nodo{

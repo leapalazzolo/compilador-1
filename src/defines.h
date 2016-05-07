@@ -3,6 +3,7 @@
 #define COTA_ID 30
 #define COTA_REAL 30
 #define COTA_STR 30
+#define MAX_VARIABLES 50
 
 #define PREFIJO_ID "_"
 #define PREFIJO_INT "\%"

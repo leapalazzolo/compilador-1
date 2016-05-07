@@ -68,7 +68,7 @@ t_info * sacar_de_pila(t_pila** p_pila) {
 
 void vaciar_pila(t_pila ** p_pila) {
 	while(pila_vacia(p_pila) == 0){
-		sacar_de_pila(p_pila);
+		free(sacar_de_pila(p_pila));
 	}
 }
 

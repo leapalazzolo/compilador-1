@@ -12,6 +12,9 @@ char prefijo_id[2] = PREFIJO_ID;
 char prefijo_int[2] = PREFIJO_INT;
 char prefijo_float[2] = PREFIJO_FLOAT;
 char prefijo_string[2] = PREFIJO_STRING;
+char temp_variables[MAX_VARIABLES][30];
+char temp_tipo_dato[MAX_VARIABLES][10];
+int variables_a_agregar= 0;
 char aux[30];
 char aux2[30];
 int cantidad_cte_string = 0;
@@ -46,6 +49,7 @@ char *str_val;
 %type <str_val> expresion
 %type <str_val> termino
 %type <str_val> factor
+%type <str_val> factor_str
 
 %token PR_MAIN
 %token PR_IGUALES
@@ -84,6 +88,8 @@ char *str_val;
 %token <str_val> PR_FLOAT
 %token <str_val> PR_INT
 %token <str_val> PR_STRING
+%token OP_CONCAT
+%token PUNTO_Y_COMA
 %%
 
 pgm : programa 
@@ -135,7 +141,7 @@ sentencia : condicional
 
 };
 
-sentencia : asignacion
+sentencia : asignacion 
 {
 	if(DEBUG) {
 		puts("Asignacion\n");
@@ -153,7 +159,7 @@ sentencia : iteracion
 
 };
 
-sentencia : io
+sentencia : io PUNTO_Y_COMA
 {
 	if(DEBUG) {
 		puts("Operacion de entrada salidas\n");
@@ -162,7 +168,7 @@ sentencia : io
 
 };
 
-sentencia : iguales
+sentencia : iguales PUNTO_Y_COMA
 {
 	if(DEBUG) {
 		puts("Operacion de iguales\n");
@@ -170,7 +176,7 @@ sentencia : iguales
 	}
 }
 
-sentencia : filter
+sentencia : filter PUNTO_Y_COMA
 {
 	if(DEBUG) {
 		puts("Operacioon de filters\n");
@@ -178,7 +184,7 @@ sentencia : filter
 	}
 }
 
-iguales : PR_IGUALES PAR_ABRE expresion COMA COR_ABRE lista_expresiones COR_CIERRA PAR_CIERRA
+iguales : PR_IGUALES PAR_ABRE expresion COMA COR_ABRE lista_expresiones COR_CIERRA PAR_CIERRA 
 {
 	if(DEBUG) {
 		puts("iguales : PR_IGUALES PAR_ABRE expresion COMA COR_ABRElista_expresiones COR_CIERRA PAR_CIERRA\n");
@@ -439,7 +445,47 @@ termino : termino OP_MUL factor
 	}
 }
 
-factor : CONST_STR
+// factor : CONST_STR
+// {
+// 	agregar_cte_a_TS(TIPO_STRING,$1, 0,0.0,linecount);
+// 	puts($1);
+// 	$$=$1;
+// 	if(DEBUG) {
+// 		printf("%s\n",$1);
+// 		puts("factor : cte\n");
+// 		puts("-------------------\n");		
+// 	}
+// }
+
+asignacion : TOKEN_ID OP_IGUAL expresion_str PUNTO_Y_COMA
+{
+	if(DEBUG) {
+		// printf("%s\n",$1);
+		puts("asignacion : id := expresion_str \n");
+		puts("-------------------\n");		
+	}
+}
+
+
+expresion_str : factor_str OP_CONCAT factor_str 
+{
+	if(DEBUG) {
+		// printf("%s\n",$1);
+		puts("expresion_str : factor_str OP_CONCAT factor_str \n");
+		puts("-------------------\n");		
+	}
+}
+
+asignacion : TOKEN_ID OP_IGUAL factor_str PUNTO_Y_COMA
+{
+	if(DEBUG) {
+		// printf("%s\n",$1);
+		puts("expresion_str : factor_str\n");
+		puts("-------------------\n");		
+	}
+}
+
+factor_str : CONST_STR
 {
 	agregar_cte_a_TS(TIPO_STRING,$1, 0,0.0,linecount);
 	puts($1);
@@ -449,7 +495,20 @@ factor : CONST_STR
 		puts("factor : cte\n");
 		puts("-------------------\n");		
 	}
-}
+} 
+
+factor_str : TOKEN_ID
+{
+	$$=$1;
+	if(DEBUG) {
+		printf("%s\n",$1);
+		puts("factor : cte\n");
+		puts("-------------------\n");		
+	}
+} 
+
+
+
 
 factor : CONST_INT
 {
@@ -496,16 +555,40 @@ factor : TOKEN_ID
 // 	puts("-------------------\n");
 // }
 
-declaracion_variables : PR_DIM COR_ABRE declaracion_variables_interna COR_CIERRA
+declaracion_variables : PR_DIM COR_ABRE declaracion_variables_interna COR_CIERRA PUNTO_Y_COMA 
+
 {
+	int i;
+	puts("a");
+
+	for (i = 0; i < variables_a_agregar; ++i)
+	{
+		printf("agregando %s %s\n", temp_variables[i],temp_tipo_dato[variables_a_agregar -1 - i]);
+		agregar_variable_a_TS(temp_variables[i],temp_tipo_dato[variables_a_agregar - 1- i], linecount);
+	}
+	variables_a_agregar = 0;
+
 	if(DEBUG) {
 		puts("declaracion_variables : PR_DIM COR_ABRE declaracion_variables_interna COR_CIERRA\n");
 		puts("-------------------\n");
 	}
 } 
 
+declaracion_variables : PR_DIM COR_ABRE declaracion_variables_interna COR_CIERRA PUNTO_Y_COMA declaracion_variables 
+{
+	puts("aa");
+
+}
+
+
 declaracion_variables_interna : TOKEN_ID COMA declaracion_variables_interna COMA tipo_dato
 {
+	puts("b");
+	printf("leo %s %s\n", $1,$5);
+	strcpy(temp_variables[variables_a_agregar],$1);
+	strcpy(temp_tipo_dato[variables_a_agregar],$5);
+	variables_a_agregar++;
+	// agregar_variable_a_TS($1,$5,linecount);
 	if(DEBUG) {
 		puts("declaracion_variables_interna : TOKEN_ID COMA declaracion_variables_interna COMA tipo_dato\n");
 		puts("-------------------\n");
@@ -514,6 +597,27 @@ declaracion_variables_interna : TOKEN_ID COMA declaracion_variables_interna COMA
 
 declaracion_variables_interna : TOKEN_ID COR_CIERRA PR_AS COR_ABRE tipo_dato
 {
+
+
+	int i;
+
+	for (i = 0; i < variables_a_agregar; ++i)
+	{
+		printf("agregando %s %s\n", temp_variables[i],temp_tipo_dato[variables_a_agregar -1 - i]);
+		agregar_variable_a_TS(temp_variables[i],temp_tipo_dato[variables_a_agregar - 1- i], linecount);
+	}
+	variables_a_agregar = 0;
+
+
+	strcpy(temp_variables[variables_a_agregar],$1);
+	strcpy(temp_tipo_dato[variables_a_agregar],$5);
+	variables_a_agregar++;
+
+
+
+	// agregar_variable_a_TS($1,$5,linecount);
+	puts("c");
+	printf("leo %s %s\n", $1,$5);
 	if(DEBUG) {
 		puts("declaracion_variables_interna : TOKEN_ID COR_CIERRA PR_AS COR_ABRE tipo_dato\n");
 		puts("-------------------\n");
@@ -836,6 +940,7 @@ int tipos_iguales(char * nombre1, char * nombre2, char * msj_error,int lineNumbe
 
 		sprintf(msj_error,VARIABLE_ERROR_TIPOS,tipo1,tipo2, lineNumber);
 	}
+	// return 1;
 	return tabla_simbolos[index1].tipo == tabla_simbolos[index2].tipo; 
 }
 
