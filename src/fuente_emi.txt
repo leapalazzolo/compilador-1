@@ -1,7 +1,7 @@
 MAIN
-DIM [a,b,c] AS [INT, STRING ,FLOAT];
-DIM [d,e,f] AS [INT, STRING ,STRING];
-DIM [g,h,i] AS [INT, STRING ,STRING];
+DIM [a,b,c] AS [INT,STRING,FLOAT];
+DIM [d,e,f] AS [INT,STRING,STRING];
+DIM [g,h,i] AS [INT,STRING,STRING];
 
 b := "esto es una cadena";
 b:= "cadena" ++ b;

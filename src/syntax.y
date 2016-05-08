@@ -638,7 +638,7 @@ declaracion_variables_interna : TOKEN_ID COR_CIERRA PR_AS COR_ABRE tipo_dato
 	for (i = 0; i < variables_a_agregar; ++i)
 	{
 		printf("agregando %s %s\n", temp_variables[i],temp_tipo_dato[variables_a_agregar -1 - i]);
-		agregar_variable_a_TS(temp_variables[i],temp_tipo_dato[variables_a_agregar - 1- i], linecount);
+		agregar_variable_a_TS(temp_variables[i],temp_tipo_dato[variables_a_agregar - 1 - i], linecount);
 	}
 	variables_a_agregar = 0;
 
@@ -842,6 +842,7 @@ void imprimir_tabla_simbolos() {
 	de la variable con el  prefijo "_", el tipo de dato es un int definido
 	 en las macro y el valor, en caso de que sea una constante)*/
 void agregar_simbolo(char * nombre, int tipo, char * valor,char * alias, int lineNumber) {
+int n;
 	tabla_simbolos[cantidad_simbolos].nombre = malloc(sizeof(char) * strlen(nombre));
 	strcpy(tabla_simbolos[cantidad_simbolos].nombre,nombre);
 
@@ -852,9 +853,9 @@ void agregar_simbolo(char * nombre, int tipo, char * valor,char * alias, int lin
 	}
 	tabla_simbolos[cantidad_simbolos].tipo = tipo;
 	tabla_simbolos[cantidad_simbolos].lineNumber = lineNumber;
-
 	switch(tipo) {
 		case TIPO_FLOAT:
+			valor="0";
 			tabla_simbolos[cantidad_simbolos].valor_float = atof(valor);
 		break;
 		case TIPO_STRING:
@@ -866,6 +867,7 @@ void agregar_simbolo(char * nombre, int tipo, char * valor,char * alias, int lin
 			}
 		break;
 		case TIPO_INT:
+			valor="0";
 			tabla_simbolos[cantidad_simbolos].valor_int = atoi(valor);
 		break;
 		case TIPO_PR:
