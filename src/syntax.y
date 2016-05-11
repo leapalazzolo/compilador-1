@@ -721,7 +721,7 @@ declaracion_variables_interna : TOKEN_ID COR_CIERRA PR_AS COR_ABRE tipo_dato
 
 tipo_dato : PR_INT 
 {
-	strcpy(nodo_tipo_dato->info->a,"int");
+	nodo_tipo_dato->info = crear_info("int");
 	$$=$1;
 	if(DEBUG) {
 		puts("PR_INT\n");
@@ -731,7 +731,7 @@ tipo_dato : PR_INT
 
 tipo_dato : PR_FLOAT 
 {
-	strcpy(nodo_tipo_dato->info->a,"float");
+	nodo_tipo_dato->info = crear_info("float");
 	$$=$1;
 	if(DEBUG) { 
 		puts("PR_FLOAT\n");
@@ -741,7 +741,7 @@ tipo_dato : PR_FLOAT
 
 tipo_dato : PR_STRING 
 {
-	strcpy(nodo_tipo_dato->info->a,"string");
+	nodo_tipo_dato->info = crear_info("string");
 	$$=$1;
 	if(DEBUG) {
 		puts("PR_STRING\n");
@@ -751,7 +751,7 @@ tipo_dato : PR_STRING
 
 comparador : OP_MAYOR
 {
-	strcpy(nodo_comparador->info->a,">");
+	nodo_comparador->info = crear_info(">");
 	if(DEBUG) {
 		puts("OP_MAYOR\n");
 		puts("-------------------\n");
@@ -760,7 +760,7 @@ comparador : OP_MAYOR
 
 comparador : OP_MENOR
 {
-	strcpy(nodo_comparador->info->a,"<");
+	nodo_comparador->info = crear_info("<");
 	if(DEBUG) {
 		puts("OP_MENOR\n");
 		puts("-------------------\n");
@@ -769,7 +769,7 @@ comparador : OP_MENOR
 
 comparador : OP_MENOR_IGUAL
 {
-	strcpy(nodo_comparador->info->a,"<=");
+	nodo_comparador->info = crear_info("<=");
 	if(DEBUG) {
 		puts("OP_MENOR_IGUAL\n");
 		puts("-------------------\n");
@@ -778,7 +778,7 @@ comparador : OP_MENOR_IGUAL
 
 comparador : OP_MAYOR_IGUAL
 {
-	strcpy(nodo_comparador->info->a,">=");
+	nodo_comparador->info = crear_info(">=");
 	if(DEBUG) {
 		puts("OP_MAYOR_IGUAL\n");
 		puts("-------------------\n");
@@ -787,7 +787,7 @@ comparador : OP_MAYOR_IGUAL
 
 comparador : OP_IGUAL_IGUAL
 {
-	strcpy(nodo_comparador->info->a,"==");
+	nodo_comparador->info = crear_info("==");
 	if(DEBUG) {
 		puts("OP_IGUAL_IGUAL\n");
 		puts("-------------------\n");
@@ -796,7 +796,7 @@ comparador : OP_IGUAL_IGUAL
 
 comparador : OP_DISTINTO
 {
-	strcpy(nodo_comparador->info->a,"!=");
+	nodo_comparador->info = crear_info("!=");
 	if(DEBUG) {
 		puts("OP_DISTINTO\n");
 		puts("-------------------\n");
