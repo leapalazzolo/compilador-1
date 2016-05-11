@@ -2,7 +2,6 @@ NOMBRE 				 TIPO 				 VALOR				 LINEA
 
 _c				INT				0				4
 _b				STRING								4 
-&"esto es una cadena"				STRING								4 
-%3				INT				0				5
-%3				INT				0				5
-%4				INT				0				5
+%3				INT				0				4
+%3				INT				0				4
+%4				INT				0				4
