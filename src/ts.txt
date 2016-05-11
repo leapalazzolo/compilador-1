@@ -1,41 +1,8 @@
 NOMBRE 				 TIPO 				 VALOR				 LINEA
 
-_c				FLOAT				0.0000				3
-_b				STRING								3 
-_a				INT				0				3
-_f				STRING								4 
-_e				STRING								4 
-_d				INT				0				4
-_i				STRING								6 
-_h				STRING								6 
-_g				INT				0				6
-&"esto es una cadena"				STRING								6 
-&"cadena"				STRING								7 
-$3.0000				FLOAT				0.0000				8
-%3				INT				0				10
-%666				INT				0				10
-%1				INT				0				11
-%1				INT				0				11
-%3				INT				0				13
-%666				INT				0				13
-%4				INT				0				16
-%2				INT				0				16
-%3				INT				0				18
-%666				INT				0				18
-%4				INT				0				22
-%2				INT				0				22
-%3				INT				0				24
-%666				INT				0				24
-&"HOLA MUNDO"				STRING								26 
-%3				INT				0				31
-%666				INT				0				31
-&"HOLA MUNDO"				STRING								33 
-%3				INT				0				38
-%666				INT				0				38
-&"HOLA MUNDO"				STRING								40 
-%3				INT				0				45
-%666				INT				0				45
-&"HOLA MUNDO"				STRING								47 
-%3				INT				0				50
-%2				INT				0				50
-%4				INT				0				52
+_c				INT				0				4
+_b				STRING								4 
+&"esto es una cadena"				STRING								4 
+%3				INT				0				5
+%3				INT				0				5
+%4				INT				0				5

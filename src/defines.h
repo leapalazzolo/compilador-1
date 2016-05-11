@@ -6,6 +6,9 @@
 #define MAX_VARIABLES 50
 #define MAX_INT 65535
 
+#define PATH_TABLA_SIMBOLOS "ts.txt"
+#define ERROR_ABRIR_TABLA_SIMBOLOS "No se pudo crear la tabla de simbolos. Verifique que tenga permisos de escritura"
+
 #define PREFIJO_ID "_"
 #define PREFIJO_INT "\%"
 #define PREFIJO_FLOAT "$"

@@ -4,8 +4,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+
 typedef struct {
-	int a;
+	char a[20];
 } t_info;
 
 typedef struct  t_nodo_arbol{
@@ -21,7 +22,8 @@ typedef struct {
 // typedef t_func ;
 
 void crear_arbol(t_arbol **);
-t_nodo_arbol * crear_nodo_arbol(t_info*);
+t_nodo_arbol * crear_nodo_arbol(t_info * info, t_nodo_arbol * p_nodo_izq, t_nodo_arbol * p_nodo_der);
+t_nodo_arbol * crear_hoja(t_info*);
 void insertar_hijo_izquierdo(t_nodo_arbol * p_nodo, t_info * info);
 void insertar_hijo_derecho(t_nodo_arbol * p_nodo, t_info * info);
 void visitar(t_nodo_arbol *);

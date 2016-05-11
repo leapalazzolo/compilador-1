@@ -5,6 +5,7 @@
 #include "y.tab.h"
 #include "structs.h"
 #include "defines.h"
+#include "arbol.h"
 
 #define DEBUG 1
 extern YYSTYPE yylval;
@@ -14,6 +15,7 @@ char prefijo_float[2] = PREFIJO_FLOAT;
 char prefijo_string[2] = PREFIJO_STRING;
 char temp_variables[MAX_VARIABLES][30];
 char temp_tipo_dato[MAX_VARIABLES][10];
+t_info * crear_info(char *);
 int variables_a_agregar= 0;
 char aux[30];
 char aux2[30];
@@ -29,6 +31,13 @@ int tipos_iguales(char * nombre1, char * nombre2, char * mjs_error, int lineNumb
 int traer_tipo(char * nombre);
 void poner_prefijo(char * str, char * prefijo);
 extern int linecount;
+
+t_arbol * arbol_ejecucion;
+t_nodo_arbol * nodo_factor;
+t_nodo_arbol * nodo_termino;
+t_nodo_arbol * nodo_expresion;
+t_nodo_arbol * nodo_asignacion;
+
 
 int yylex();
 
@@ -348,6 +357,7 @@ condicion : comparacion OP_LOG_OR comparacion
 comparacion : expresion comparador expresion
 {
 	char mjs_error[60];
+	/* comparo que para operar entre terminos, ambos tengan el mismo tipo de datos*/ 
 	if(!tipos_iguales($1,$3,mjs_error,linecount)) 
 	{
 		puts(mjs_error);
@@ -379,27 +389,32 @@ iteracion : PR_WHILE PAR_ABRE condicion PAR_CIERRA PR_DO lista_sentencias PR_END
 asignacion : TOKEN_ID OP_IGUAL expresion 
 {
 	// printf("asignacion %s %s\n",$1,$3 );
+	/* comparo que para operar entre terminos, ambos tengan el mismo tipo de datos*/ 
 	char mjs_error[60];
 	if(!tipos_iguales($1,$3,mjs_error, linecount)) {
 		puts(mjs_error);
 		exit(1);
 	}
+	/* guardo la asignacion en el arbol de ejecucion */
+	nodo_asignacion = crear_nodo_arbol(crear_info(":="),crear_hoja(crear_info($1)),nodo_expresion);
 	if(DEBUG) {
 		puts("Asignacion -> Token_ID := expresion\n");
 		puts("-------------------\n");
 	}
 }
 
-expresion :factor OP_CONCAT factor 
+expresion :termino OP_CONCAT factor 
 {
 	printf("expresion %s %s\n",$1,$3 );
 
+	/* comparo que para operar entre terminos, ambos tengan el mismo tipo de datos*/ 
 	char mjs_error[60];
 	if(!tipos_iguales($1,$3,mjs_error, linecount)) {
 		puts(mjs_error);
 		exit(1);
 	}
 
+	/* Verifico que no este concatenando flotantes*/
 	int tipo = traer_tipo($3);
 	if(tipo == TIPO_FLOAT) {
 		char aux_float[10];
@@ -411,6 +426,7 @@ expresion :factor OP_CONCAT factor
 		exit(1);
 	}
 
+	/* Verifico que no este concatenando enteros*/
 	if(tipo == TIPO_INT) {
 		char aux_int[10];
 		char aux_int2[10];
@@ -420,7 +436,13 @@ expresion :factor OP_CONCAT factor
 		puts(mjs_error);
 		exit(1);
 	}
+	// puts(nodo_termino->info->a);
+	// puts(nodo_factor->info->a);
 
+	printf("%d %d\n", nodo_termino,nodo_factor );
+
+	/* guardo la expresion en el arbol de ejecucion */
+	nodo_expresion = crear_nodo_arbol(crear_info("++"),nodo_termino,nodo_factor);
 	if(DEBUG) {
 		puts("expresion : factor OP_CONCAT factor ");
 		puts("-------------------\n");
@@ -431,6 +453,9 @@ expresion : termino
 {
 	printf("%s\n",$1 );
 	$$=$1;
+	
+	/* guardo la expresion en el arbol de ejecucion */
+	nodo_expresion = nodo_termino;
 	if(DEBUG) {
 		puts("Expresion -> termino\n");
 		puts("-------------------\n");
@@ -439,11 +464,13 @@ expresion : termino
 
 expresion : expresion OP_SUMA termino  
 {
+	/* comparo que para operar entre terminos, ambos tengan el mismo tipo de datos*/ 
 	char mjs_error[60];
 	if(!tipos_iguales($1,$3,mjs_error, linecount)) {
 		puts(mjs_error);
 		exit(1);
 	}
+	/* Verifico que no este sumando strings*/
 	int tipo = traer_tipo($3);
 	if(tipo == TIPO_STRING) {
 		sprintf(mjs_error,OPERACION_INVALIDA_TIPOS,"SUMA",$1,$3,"STRING",linecount);
@@ -451,6 +478,8 @@ expresion : expresion OP_SUMA termino
 		exit(1);
 	}
 
+	/* guardo la expresion en el arbol de ejecucion */
+	nodo_expresion = crear_nodo_arbol(crear_info("+"),nodo_expresion,nodo_termino);
 	if(DEBUG) {
 		printf("%s %s\n", $1, $3);
 		puts("expresion : expresion OP_SUMA termino\n");
@@ -460,11 +489,13 @@ expresion : expresion OP_SUMA termino
 
 expresion : expresion OP_RESTA termino 
 {
+	/* comparo que para operar entre terminos, ambos tengan el mismo tipo de datos*/ 
 	char mjs_error[60];
 	if(!tipos_iguales($1,$3,mjs_error, linecount)) {
 		puts(mjs_error);
 		exit(1);
 	}
+	/* Verifico que no este restando strings*/
 	int tipo = traer_tipo($3);
 	if(tipo == TIPO_STRING) {
 		sprintf(mjs_error,OPERACION_INVALIDA_TIPOS,"RESTA",$1,$3,"STRING",linecount);
@@ -472,6 +503,8 @@ expresion : expresion OP_RESTA termino
 		exit(1);
 	}
 
+	/* guardo la expresion en el arbol de ejecucion */
+	nodo_expresion = crear_nodo_arbol(crear_info("-"),nodo_expresion,nodo_termino);
 	if(DEBUG) {
 		printf("%s %s\n", $1, $3);
 		puts("Resta\n");
@@ -481,7 +514,10 @@ expresion : expresion OP_RESTA termino
 
 termino : factor
 {
-	printf(" termino %s\n",$1 );
+
+	/*guardo el termino en el arbol de ejecucion*/
+	nodo_termino = nodo_factor;
+	printf("%s\n",$1 );
 	if(DEBUG) {
 		puts("termino : factor\n");
 		puts("-------------------\n");
@@ -491,18 +527,23 @@ termino : factor
 termino : termino OP_DIV factor
 {
 	printf("%s %s\n", $1,$3);
+	/* comparo que para operar entre terminos, ambos tengan el mismo tipo de datos*/ 
 	char mjs_error[60];
 	if(!tipos_iguales($1,$3,mjs_error, linecount)) {
 		puts(mjs_error);
 		exit(1);
 	}
-	int tipo = traer_tipo($3);
 
+	/* Verifico que no este dividiendo strings*/
+	int tipo = traer_tipo($3);
 	if(tipo == TIPO_STRING) {
 		sprintf(mjs_error,OPERACION_INVALIDA_TIPOS,"DIVISION",$1,$3,"STRING",linecount);
 		puts(mjs_error);
 		exit(1);
 	}
+
+	/*guardo el termino en el arbol de ejecucion*/
+	nodo_termino = crear_nodo_arbol(crear_info("/"),nodo_termino,nodo_factor);
 
 	if(DEBUG) {
 		puts("termino : termino OP_DIV factor\n");
@@ -513,12 +554,14 @@ termino : termino OP_DIV factor
 termino : termino OP_MUL factor
 {
 	printf("%s %s\n", $1,$3);
+	/* comparo que para operar entre terminos, ambos tengan el mismo tipo de datos*/ 
 	char mjs_error[60];
 	if(!tipos_iguales($1,$3,mjs_error, linecount)) {
 		puts(mjs_error);
 		exit(1);
 	}
 
+	/* Verifico que no este multiplicando strings*/
 	int tipo = traer_tipo($3);
 	if(tipo == TIPO_STRING) {
 		sprintf(mjs_error,OPERACION_INVALIDA_TIPOS,"MULTIPLICACION",$1,$3,"STRING",linecount);
@@ -526,7 +569,9 @@ termino : termino OP_MUL factor
 		exit(1);
 	}
 
-	// printf("%s\n", $1);
+	/*guardo el termino en el arbol de ejecucion*/
+	nodo_termino = crear_nodo_arbol(crear_info("*"),nodo_termino,nodo_factor);
+
 	if(DEBUG) {
 		puts("termino : termino OP_MUL factor\n");
 		puts("-------------------\n");
@@ -535,11 +580,16 @@ termino : termino OP_MUL factor
 
 factor : CONST_STR
 {
+	/* agrego la constante a la tabla de simbolos */
 	agregar_cte_a_TS(TIPO_STRING,$1, 0,0.0,linecount);
-	puts($1);
 	$$=$1;
+
+	/*guardo el termino en el arbol de ejecucion*/
+	nodo_factor = crear_hoja(crear_info($1));
+
+	puts($1);
 	if(DEBUG) {
-		printf("%s\n",$1);
+		// printf("%s\n",$1);
 		puts("factor : cte\n");
 		puts("-------------------\n");		
 	}
@@ -547,12 +597,15 @@ factor : CONST_STR
 
 factor : CONST_INT
 {
-	// $$ = "INT";
+	/* agrego la constante a la tabla de simbolos, pero para hacerlo, primero
+	tengo que castearla a string */
 	char temp[10];
 	sprintf(temp,"%d",$1);
 	$$ = temp;
-	// $$=$1;
 	agregar_cte_a_TS(TIPO_INT,NULL, $1,0.0,linecount);
+
+	/*guardo el termino en el arbol de ejecucion*/
+	nodo_factor = crear_hoja(crear_info(temp));
 	if(DEBUG) {
 		printf("%d\n",$1);
 		puts("factor : cte\n");
@@ -563,11 +616,16 @@ factor : CONST_INT
 
 factor : CONST_FLOAT
 {
+	/* agrego la constante a la tabla de simbolos, pero para hacerlo, primero
+	tengo que castearla a string */
 	char temp[10];
 	sprintf(temp,"%.4f",$1);
 	$$ = temp;
-	// $$=$1;
 	agregar_cte_a_TS(TIPO_FLOAT,NULL, 0,$1,linecount);
+
+	/*guardo el termino en el arbol de ejecucion*/
+	nodo_factor = crear_hoja(crear_info(temp));
+
 	if(DEBUG) {
 		printf("%.4f\n",$1);
 		puts("factor : cte\n");
@@ -578,6 +636,8 @@ factor : CONST_FLOAT
 
 factor : TOKEN_ID
 {
+	/*guardo el termino en el arbol de ejecucion*/
+	nodo_factor = crear_hoja(crear_info($1));
 	if(DEBUG) {
 		puts("factor : TOKEN_ID\n");
 		puts("-------------------\n");
@@ -594,11 +654,11 @@ declaracion_variables : PR_DIM COR_ABRE declaracion_variables_interna COR_CIERRA
 
 {
 	int i;
-	puts("a");
-
+	/*agrego las variables a la tabla de simbolos, recorro en forma de cola y pila
+	los vectores que cree anteriormente para invertir el orden de los tipos de datos*/
 	for (i = 0; i < variables_a_agregar; ++i)
 	{
-		printf("agregando %s %s\n", temp_variables[i],temp_tipo_dato[variables_a_agregar -1 - i]);
+		// printf("agregando %s %s\n", temp_variables[i],temp_tipo_dato[variables_a_agregar -1 - i]);
 		agregar_variable_a_TS(temp_variables[i],temp_tipo_dato[variables_a_agregar - 1- i], linecount);
 	}
 	variables_a_agregar = 0;
@@ -618,8 +678,7 @@ declaracion_variables : PR_DIM COR_ABRE declaracion_variables_interna COR_CIERRA
 
 declaracion_variables_interna : TOKEN_ID COMA declaracion_variables_interna COMA tipo_dato
 {
-	puts("b");
-	printf("leo %s %s\n", $1,$5);
+	/* Agrego de forma temporal los datos leidos, para luego procesarlos */
 	strcpy(temp_variables[variables_a_agregar],$1);
 	strcpy(temp_tipo_dato[variables_a_agregar],$5);
 	variables_a_agregar++;
@@ -634,7 +693,8 @@ declaracion_variables_interna : TOKEN_ID COR_CIERRA PR_AS COR_ABRE tipo_dato
 
 
 	int i;
-
+	/*agrego las variables a la tabla de simbolos, recorro en forma de cola y pila
+	los vectores que cree anteriormente para invertir el orden de los tipos de datos*/
 	for (i = 0; i < variables_a_agregar; ++i)
 	{
 		printf("agregando %s %s\n", temp_variables[i],temp_tipo_dato[variables_a_agregar -1 - i]);
@@ -642,15 +702,13 @@ declaracion_variables_interna : TOKEN_ID COR_CIERRA PR_AS COR_ABRE tipo_dato
 	}
 	variables_a_agregar = 0;
 
-
+	/* Agrego de forma temporal los datos leidos, para luego procesarlos */
 	strcpy(temp_variables[variables_a_agregar],$1);
 	strcpy(temp_tipo_dato[variables_a_agregar],$5);
 	variables_a_agregar++;
 
 
 
-	puts("c");
-	printf("leo %s %s\n", $1,$5);
 	if(DEBUG) {
 		puts("declaracion_variables_interna : TOKEN_ID COR_CIERRA PR_AS COR_ABRE tipo_dato\n");
 		puts("-------------------\n");
@@ -747,6 +805,7 @@ char * tipo_simbolo_to_string(int tipo);
 //funcion para realizar todo lo que haga falta previo a terminar
 void finally(FILE *yyin){
 	vaciar_tabla_simbolos();
+	vaciar_arbol(&arbol_ejecucion);
 	fclose(yyin);
 }
 
@@ -758,15 +817,19 @@ int main(int argc, char **argv ) {
 	++argv, --argc; 
 
 	if ( argc > 0 ) {
-	     yyin = fopen( argv[0], "r" );
-     }	else {
-	     yyin = stdin;
+	    yyin = fopen( argv[0], "r" );
+    }	else {
+	    yyin = stdin;
 
-     }
+    }
 
-	 yyparse();
-	 imprimir_tabla_simbolos();
+    crear_arbol(&arbol_ejecucion);
 
+	yyparse();
+	imprimir_tabla_simbolos();
+	arbol_ejecucion->p_nodo = nodo_asignacion;
+
+	recorrer_en_orden(nodo_asignacion,&visitar);
 
 	finally(yyin);
 	return EXIT_SUCCESS;
@@ -779,6 +842,7 @@ int yyerror(void)
 	exit (1);
 }
 
+/* borra todo el contenido de la tabla de simbolos, generalmente para ser borrado */
 void vaciar_tabla_simbolos(){
 	int i;
 	for (i = 0; i < cantidad_simbolos; ++i)
@@ -792,6 +856,8 @@ void vaciar_tabla_simbolos(){
 	cantidad_simbolos = 0;
 }
 
+/* le envias una de las constantes definidas en define.h y te devuelve un equivalente en string
+seria como hacerle un toString al tipo de dato entero */
 char * tipo_simbolo_to_string(int tipo){
 	// printf("\n\n\n%d\n\n\n", tipo);
 	switch(tipo) {
@@ -808,12 +874,12 @@ char * tipo_simbolo_to_string(int tipo){
 	}
 }
 
-
+/* imprime la tabla de simbolos a un archivo txt*/
 void imprimir_tabla_simbolos() {
-	FILE *f = fopen("ts.txt", "w");
+	FILE *f = fopen(PATH_TABLA_SIMBOLOS, "w");
 	if (f == NULL)
 	{
-	    printf("Error abriendo archivo ts.txt\n");
+	    puts(ERROR_ABRIR_TABLA_SIMBOLOS);
 	    exit(1);
 	}
 	int i;
@@ -880,7 +946,8 @@ int n;
 
 }
 
-
+/* Busca una variable en la TS sin tener en cuenta sus prefijos y devuelve
+el indice. si no lo encuentra, devuelve -1;*/
 int buscar_en_TS_sin_prefijo(char * nombre, char * mjs_error, int lineNumber) {
 	char temp[30];
 	int i;
@@ -952,6 +1019,7 @@ void agregar_cte_a_TS(int tipo, char * valor_str, int valor_int,float valor_floa
 	}
 }
 
+/*Busca un simbolo en la TS por su nombre, y te devuelve su tipo */
 int traer_tipo(char * nombre) {
 	int index = buscar_en_TS_sin_prefijo(nombre, NULL,0);
 	return tabla_simbolos[index].tipo;
@@ -988,6 +1056,7 @@ int tipos_iguales(char * nombre1, char * nombre2, char * msj_error,int lineNumbe
 	return tabla_simbolos[index1].tipo == tabla_simbolos[index2].tipo; 
 }
 
+/* Esta funcion le pone un prefijo a una string base*/
 void poner_prefijo(char * str, char * prefijo) {
 	char pref[32];
 
@@ -996,6 +1065,13 @@ void poner_prefijo(char * str, char * prefijo) {
 	strcpy(str,pref);
 }
 
+/* Esta funcion crea un t_info a partir de una string, para agregarla
+directamente a un nodo de arbol */
+t_info * crear_info(char * str) {
+	t_info * p_info = (t_info *) malloc(sizeof(t_info));
+	strcpy(p_info->a,str);
+	return p_info;
+}
 
 
 

@@ -14,7 +14,7 @@
 // 	crear_arbol(&arbol);
 
 
-// 	arbol->p_nodo = crear_nodo_arbol(&a[2]);
+// 	arbol->p_nodo = crear_hoja(&a[2]);
 
 // 	insertar_hijo_izquierdo(arbol->p_nodo,&a[1]);
 // 	insertar_hijo_derecho(arbol->p_nodo,&a[6]);
@@ -36,30 +36,36 @@ void crear_arbol(t_arbol ** p_arbol){
 	//*p_arbol = NULL;
 	if(*p_arbol == NULL) {
 		*p_arbol = (t_arbol*) malloc(sizeof(t_arbol));
+		(*p_arbol)->p_nodo =NULL;
 	}
 
 }
 
-
-t_nodo_arbol * crear_nodo_arbol(t_info * info) {
+t_nodo_arbol * crear_nodo_arbol(t_info * info, t_nodo_arbol * p_nodo_izq, t_nodo_arbol * p_nodo_der) {
 
 	t_nodo_arbol * p_nodo = (t_nodo_arbol * ) malloc(sizeof(t_nodo_arbol));
 	p_nodo->info= info;
-	p_nodo->nodo_der = NULL;
-	p_nodo->nodo_izq = NULL;
+	p_nodo->nodo_der = p_nodo_izq;
+	p_nodo->nodo_izq = p_nodo_der;
 
 	return p_nodo;
 
 }
 
+
+t_nodo_arbol * crear_hoja(t_info * info) {
+
+	return crear_nodo_arbol(info,NULL,NULL);
+}
+
 void insertar_hijo_izquierdo(t_nodo_arbol * p_nodo, t_info * info){
 	if(p_nodo != NULL) 
-		p_nodo->nodo_izq = crear_nodo_arbol(info);
+		p_nodo->nodo_izq = crear_hoja(info);
 }
 
 void insertar_hijo_derecho(t_nodo_arbol * p_nodo, t_info * info){
 	if(p_nodo != NULL) 
-		p_nodo->nodo_der = crear_nodo_arbol(info);
+		p_nodo->nodo_der = crear_hoja(info);
 }
 
 void recorrer_en_preorden(t_nodo_arbol * p_nodo,void (*f)(t_nodo_arbol*)) {
@@ -86,14 +92,18 @@ void recorrer_en_postorden(t_nodo_arbol * p_nodo,void (*f)(t_nodo_arbol*)) {
 
 void visitar(t_nodo_arbol * p_nodo){
 	if(p_nodo != NULL) {
-		printf("Visitando el nodo: %d \n", p_nodo );
+		printf("Visitando el nodo: %s \n", p_nodo->info->a );
 	}
 }
 
 void borrar_nodo_arbol(t_nodo_arbol * p_nodo){
 
-	if(p_nodo != NULL) 
+	if(p_nodo != NULL) {
+		if(p_nodo->info != NULL)
+			free(p_nodo->info);	
 		free(p_nodo);
+
+	}
 }
 
 void vaciar_arbol(t_arbol ** p_arbol) {

@@ -13,6 +13,7 @@ typedef struct
  int lineNumber;
 } t_simbolo;
 
+
 #define TIPO_FLOAT 1
 #define TIPO_INT 2
 #define TIPO_STRING 3
