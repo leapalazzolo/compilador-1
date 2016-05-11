@@ -40,7 +40,14 @@ t_nodo_arbol * nodo_asignacion;
 t_nodo_arbol * nodo_comparacion;
 t_nodo_arbol * nodo_comparador;
 t_nodo_arbol * nodo_tipo_dato;
-
+t_nodo_arbol * nodo_pgm;
+t_nodo_arbol * nodo_programa;
+t_nodo_arbol * nodo_main;
+t_nodo_arbol * nodo_sentencia;
+t_nodo_arbol * nodo_lista_sentencias;
+t_nodo_arbol * nodo_nueva_sentencia;
+t_nodo_arbol * nodo_iteracion;
+t_nodo_arbol * nodo_condicional;
 
 int yylex();
 
@@ -108,6 +115,7 @@ char *str_val;
 
 pgm : programa 
 {
+	nodo_pgm = nodo_programa;
 	puts("COMPILACION EXITOSA\n");
 	puts("-------------------\n");
 };
@@ -123,6 +131,7 @@ programa : PR_MAIN declaracion_variables lista_sentencias
 
 programa : PR_MAIN lista_sentencias
 {
+	nodo_programa = crear_nodo_arbol(nodo_main,nodo_sentencia,nodo_lista_sentencias);
 	if(DEBUG){
 		puts("Codigo sin variables\n");
 		puts("-------------------\n");
@@ -131,6 +140,7 @@ programa : PR_MAIN lista_sentencias
 
 lista_sentencias : sentencia
 {
+	nodo_lista_sentencias = nodo_sentencia;
 	if(DEBUG){
 		puts("Una sola sentencia\n");
 		puts("-------------------\n");
@@ -139,6 +149,7 @@ lista_sentencias : sentencia
 
 lista_sentencias : sentencia lista_sentencias
 {
+	nodo_lista_sentencias = crear_nodo_arbol(nodo_nueva_sentencia,nodo_sentencia,nodo_lista_sentencias);
 	if(DEBUG) {
 		puts("Varias sentencias\n");
 		puts("-------------------\n");
@@ -148,6 +159,7 @@ lista_sentencias : sentencia lista_sentencias
 
 sentencia : condicional 
 {
+	nodo_sentencia=nodo_condicional;
 	if(DEBUG) {
 		puts("Condicional\n");
 		puts("-------------------\n");		
@@ -157,6 +169,7 @@ sentencia : condicional
 
 sentencia : asignacion PUNTO_Y_COMA
 {
+	nodo_sentencia=nodo_asignacion;
 	if(DEBUG) {
 		puts("Asignacion\n");
 		puts("-------------------\n");		
@@ -166,6 +179,7 @@ sentencia : asignacion PUNTO_Y_COMA
 
 sentencia : iteracion
 {
+	nodo_sentencia=nodo_iteracion;
 	if(DEBUG) {
 		puts("Iteracion\n");
 		puts("-------------------\n");		
