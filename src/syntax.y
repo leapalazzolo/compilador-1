@@ -30,6 +30,9 @@ void error_lexico(char * mensaje);
 int tipos_iguales(char * nombre1, char * nombre2, char * mjs_error, int lineNumber);
 int traer_tipo(char * nombre);
 void poner_prefijo(char * str, char * prefijo);
+int print_t(t_nodo_arbol *tree);
+int _print_t(t_nodo_arbol *tree, int is_left, int offset, int depth, char s[20][255]);
+void imprimir_arbol(t_nodo_arbol *n);
 extern int linecount;
 
 t_arbol * arbol_ejecucion;
@@ -37,17 +40,19 @@ t_nodo_arbol * nodo_factor;
 t_nodo_arbol * nodo_termino;
 t_nodo_arbol * nodo_expresion;
 t_nodo_arbol * nodo_asignacion;
+t_nodo_arbol * nodo_condicion;
 t_nodo_arbol * nodo_comparacion;
-t_nodo_arbol * nodo_comparador;
-t_nodo_arbol * nodo_tipo_dato;
 t_nodo_arbol * nodo_pgm;
 t_nodo_arbol * nodo_programa;
-t_nodo_arbol * nodo_main;
 t_nodo_arbol * nodo_sentencia;
-t_nodo_arbol * nodo_lista_sentencias;
-t_nodo_arbol * nodo_nueva_sentencia;
-t_nodo_arbol * nodo_iteracion;
+t_nodo_arbol * nodo_sentencias;
+t_nodo_arbol * nodo_comparador;
 t_nodo_arbol * nodo_condicional;
+t_nodo_arbol * nodo_iteracion;
+t_nodo_arbol * nodo_io;
+t_nodo_arbol * nodo_iguales;
+t_nodo_arbol * nodo_filter;
+
 
 int yylex();
 
@@ -131,7 +136,6 @@ programa : PR_MAIN declaracion_variables lista_sentencias
 
 programa : PR_MAIN lista_sentencias
 {
-	nodo_programa = crear_nodo_arbol(nodo_main,nodo_sentencia,nodo_lista_sentencias);
 	if(DEBUG){
 		puts("Codigo sin variables\n");
 		puts("-------------------\n");
@@ -140,7 +144,7 @@ programa : PR_MAIN lista_sentencias
 
 lista_sentencias : sentencia
 {
-	nodo_lista_sentencias = nodo_sentencia;
+	nodo_sentencias = nodo_sentencia;
 	if(DEBUG){
 		puts("Una sola sentencia\n");
 		puts("-------------------\n");
@@ -149,7 +153,7 @@ lista_sentencias : sentencia
 
 lista_sentencias : sentencia lista_sentencias
 {
-	nodo_lista_sentencias = crear_nodo_arbol(nodo_nueva_sentencia,nodo_sentencia,nodo_lista_sentencias);
+	nodo_asignacion = crear_nodo_arbol(crear_info("NUEVA"),nodo_sentencias,nodo_sentencia);
 	if(DEBUG) {
 		puts("Varias sentencias\n");
 		puts("-------------------\n");
@@ -159,7 +163,7 @@ lista_sentencias : sentencia lista_sentencias
 
 sentencia : condicional 
 {
-	nodo_sentencia=nodo_condicional;
+	nodo_sentencia = nodo_condicional;
 	if(DEBUG) {
 		puts("Condicional\n");
 		puts("-------------------\n");		
@@ -169,7 +173,7 @@ sentencia : condicional
 
 sentencia : asignacion PUNTO_Y_COMA
 {
-	nodo_sentencia=nodo_asignacion;
+	nodo_sentencia = nodo_asignacion;
 	if(DEBUG) {
 		puts("Asignacion\n");
 		puts("-------------------\n");		
@@ -179,7 +183,7 @@ sentencia : asignacion PUNTO_Y_COMA
 
 sentencia : iteracion
 {
-	nodo_sentencia=nodo_iteracion;
+	nodo_sentencia = nodo_iteracion;
 	if(DEBUG) {
 		puts("Iteracion\n");
 		puts("-------------------\n");		
@@ -189,6 +193,7 @@ sentencia : iteracion
 
 sentencia : io
 {
+	nodo_sentencia = nodo_io;
 	if(DEBUG) {
 		puts("Operacion de entrada salidas\n");
 		puts("-------------------\n");		
@@ -198,6 +203,7 @@ sentencia : io
 
 sentencia : iguales PUNTO_Y_COMA
 {
+	nodo_sentencia = nodo_iguales;
 	if(DEBUG) {
 		puts("Operacion de iguales\n");
 		puts("-------------------\n");	
@@ -206,6 +212,7 @@ sentencia : iguales PUNTO_Y_COMA
 
 sentencia : filter PUNTO_Y_COMA
 {
+	nodo_sentencia = nodo_filter;
 	if(DEBUG) {
 		puts("Operacioon de filters\n");
 		puts("-------------------\n");
@@ -349,6 +356,7 @@ condicional : PR_IF PAR_ABRE condicion PAR_CIERRA PR_THEN lista_sentencias PR_EL
 
 condicion : comparacion
 {
+	nodo_condicion = nodo_comparacion;
 	if(DEBUG) {
 		puts("condicion : comparacion\n");
 		puts("-------------------\n");
@@ -380,8 +388,7 @@ comparacion : expresion comparador expresion
 		puts(mjs_error);
 		exit(1);
 	}
-	
-	nodo_comparacion = crear_nodo_arbol(nodo_comparador,nodo_expresion,nodo_expresion);
+
 	if(DEBUG) {
 		puts("comparacion : expresion comparador expresion\n");
 		puts("-------------------\n");
@@ -709,7 +716,7 @@ declaracion_variables_interna : TOKEN_ID COMA declaracion_variables_interna COMA
 declaracion_variables_interna : TOKEN_ID COR_CIERRA PR_AS COR_ABRE tipo_dato
 {
 
-
+	
 	int i;
 	/*agrego las variables a la tabla de simbolos, recorro en forma de cola y pila
 	los vectores que cree anteriormente para invertir el orden de los tipos de datos*/
@@ -735,7 +742,6 @@ declaracion_variables_interna : TOKEN_ID COR_CIERRA PR_AS COR_ABRE tipo_dato
 
 tipo_dato : PR_INT 
 {
-	nodo_tipo_dato->info = crear_info("int");
 	$$=$1;
 	if(DEBUG) {
 		puts("PR_INT\n");
@@ -745,7 +751,6 @@ tipo_dato : PR_INT
 
 tipo_dato : PR_FLOAT 
 {
-	nodo_tipo_dato->info = crear_info("float");
 	$$=$1;
 	if(DEBUG) { 
 		puts("PR_FLOAT\n");
@@ -755,7 +760,6 @@ tipo_dato : PR_FLOAT
 
 tipo_dato : PR_STRING 
 {
-	nodo_tipo_dato->info = crear_info("string");
 	$$=$1;
 	if(DEBUG) {
 		puts("PR_STRING\n");
@@ -765,7 +769,7 @@ tipo_dato : PR_STRING
 
 comparador : OP_MAYOR
 {
-	nodo_comparador->info = crear_info(">");
+	strcpy(nodo_comparador->info->a, ">");
 	if(DEBUG) {
 		puts("OP_MAYOR\n");
 		puts("-------------------\n");
@@ -774,7 +778,7 @@ comparador : OP_MAYOR
 
 comparador : OP_MENOR
 {
-	nodo_comparador->info = crear_info("<");
+	strcpy(nodo_comparador->info->a, "<");
 	if(DEBUG) {
 		puts("OP_MENOR\n");
 		puts("-------------------\n");
@@ -783,7 +787,7 @@ comparador : OP_MENOR
 
 comparador : OP_MENOR_IGUAL
 {
-	nodo_comparador->info = crear_info("<=");
+	strcpy(nodo_comparador->info->a, "<=");
 	if(DEBUG) {
 		puts("OP_MENOR_IGUAL\n");
 		puts("-------------------\n");
@@ -792,7 +796,7 @@ comparador : OP_MENOR_IGUAL
 
 comparador : OP_MAYOR_IGUAL
 {
-	nodo_comparador->info = crear_info(">=");
+	strcpy(nodo_comparador->info->a, ">=");
 	if(DEBUG) {
 		puts("OP_MAYOR_IGUAL\n");
 		puts("-------------------\n");
@@ -801,7 +805,7 @@ comparador : OP_MAYOR_IGUAL
 
 comparador : OP_IGUAL_IGUAL
 {
-	nodo_comparador->info = crear_info("==");
+	strcpy(nodo_comparador->info->a, "==");
 	if(DEBUG) {
 		puts("OP_IGUAL_IGUAL\n");
 		puts("-------------------\n");
@@ -810,7 +814,7 @@ comparador : OP_IGUAL_IGUAL
 
 comparador : OP_DISTINTO
 {
-	nodo_comparador->info = crear_info("!=");
+	strcpy(nodo_comparador->info->a, "!=");
 	if(DEBUG) {
 		puts("OP_DISTINTO\n");
 		puts("-------------------\n");
@@ -853,9 +857,13 @@ int main(int argc, char **argv ) {
 
 	yyparse();
 	imprimir_tabla_simbolos();
-	arbol_ejecucion->p_nodo = nodo_asignacion;
+	arbol_ejecucion->p_nodo = nodo_sentencias;
 
 	recorrer_en_orden(nodo_asignacion,&visitar);
+	
+	print_t(arbol_ejecucion->p_nodo);
+	
+	imprimir_arbol(arbol_ejecucion->p_nodo);
 
 	finally(yyin);
 	return EXIT_SUCCESS;
@@ -1102,6 +1110,78 @@ t_info * crear_info(char * str) {
 
 
 
+int _print_t(t_nodo_arbol *tree, int is_left, int offset, int depth, char s[20][255])
+{
+    char b[20];
+    int width = 5;
 
+    if (!tree) return 0;
 
+    sprintf(b, "(%s)", tree->info->a);
+
+    int left  = _print_t(tree->nodo_izq,  1, offset,                depth + 1, s);
+    int right = _print_t(tree->nodo_der, 0, offset + left + width, depth + 1, s);
+
+#ifdef COMPACT
+    for (int i = 0; i < width; i++)
+        s[depth][offset + left + i] = b[i];
+
+    if (depth && is_left) {
+
+        for (int i = 0; i < width + right; i++)
+            s[depth - 1][offset + left + width/2 + i] = '-';
+
+        s[depth - 1][offset + left + width/2] = '.';
+
+    } else if (depth && !is_left) {
+
+        for (int i = 0; i < left + width; i++)
+            s[depth - 1][offset - width/2 + i] = '-';
+
+        s[depth - 1][offset + left + width/2] = '.';
+    }
+#else
+    for (int i = 0; i < width; i++)
+        s[2 * depth][offset + left + i] = b[i];
+
+    if (depth && is_left) {
+
+        for (int i = 0; i < width + right; i++)
+            s[2 * depth - 1][offset + left + width/2 + i] = '-';
+
+        s[2 * depth - 1][offset + left + width/2] = '+';
+        s[2 * depth - 1][offset + left + width + right + width/2] = '+';
+
+    } else if (depth && !is_left) {
+
+        for (int i = 0; i < left + width; i++)
+            s[2 * depth - 1][offset - width/2 + i] = '-';
+
+        s[2 * depth - 1][offset + left + width/2] = '+';
+        s[2 * depth - 1][offset - width/2 - 1] = '+';
+    }
+#endif
+
+    return left + width + right;
+}
+
+int print_t(t_nodo_arbol *tree)
+{
+    char s[20][255];
+    for (int i = 0; i < 20; i++)
+        sprintf(s[i], "%80s", " ");
+
+    _print_t(tree, 0, 0, 0, s);
+
+    for (int i = 0; i < 20; i++)
+        printf("%s\n", s[i]);
+}
+
+void imprimir_arbol(t_nodo_arbol *n){
+	printf("%s\n", n->info->a);
+	if(n->nodo_izq != NULL)
+		imprimir_arbol(n->nodo_izq);
+	if(n->nodo_der != NULL)
+		imprimir_arbol(n->nodo_der);
+}
 
