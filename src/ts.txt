@@ -5,3 +5,10 @@ _b				STRING								4
 %3				INT				0				4
 %3				INT				0				4
 %4				INT				0				4
+%8				INT				0				5
+%9				INT				0				5
+%1				INT				0				6
+%2				INT				0				6
+%6				INT				0				7
+%7				INT				0				7
+%3				INT				0				8

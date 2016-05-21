@@ -1,26 +1,17 @@
-#ifndef PILA_H
-#define PILA_H
+#ifndef ARBOL_H
+#define ARBOL_H
 
 #include <stdio.h>
 #include <stdlib.h>
+#include "structs.h"
 
 
-typedef struct {
-	char a[20];
-} t_info;
 
-typedef struct  t_nodo_arbol{
-	t_info * info;
-	struct t_nodo_arbol * nodo_der;
-	struct t_nodo_arbol * nodo_izq;
-} t_nodo_arbol;
 
-typedef struct {
-	t_nodo_arbol * p_nodo;
-} t_arbol;
 
 // typedef t_func ;
 
+void unir_nodo_arbol(t_nodo_arbol * padre,  t_nodo_arbol * p_nodo_izq, t_nodo_arbol * p_nodo_der);
 void crear_arbol(t_arbol **);
 t_nodo_arbol * crear_nodo_arbol(t_info * info, t_nodo_arbol * p_nodo_izq, t_nodo_arbol * p_nodo_der);
 t_nodo_arbol * crear_hoja(t_info*);
@@ -32,6 +23,7 @@ void recorrer_en_orden(t_nodo_arbol * p_nodo,void (*f)(t_nodo_arbol*));
 void recorrer_en_postorden(t_nodo_arbol * p_nodo,void (*f)(t_nodo_arbol*));
 void borrar_nodo_arbol(t_nodo_arbol *);
 void vaciar_arbol(t_arbol**);
+t_nodo_arbol * obtener_raiz(t_nodo_arbol * p_nodo);
 // t_info * sacar_de_pila(t_pila **);
 // t_info * frente_de_pila(t_pila **);
 // void vaciar_pila();

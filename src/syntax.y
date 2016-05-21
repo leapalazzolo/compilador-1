@@ -6,6 +6,7 @@
 #include "structs.h"
 #include "defines.h"
 #include "arbol.h"
+#include "pila.h"
 
 #define DEBUG 1
 extern YYSTYPE yylval;
@@ -35,8 +36,12 @@ int _print_t(t_nodo_arbol *tree, int is_left, int offset, int depth, char * s, i
 void imprimir_arbol(t_nodo_arbol *n);
 void copiar_sin_finalizador(char * dest,char * orig); 
 void reemplazar(char * cad, char old,char new, int size) ;
+t_info_sentencias * crear_info_sentencias(t_nodo_arbol * p_nodo) ;
+
 
 extern int linecount;
+
+t_pila * pila_sentencias;
 
 t_arbol * arbol_ejecucion;
 t_nodo_arbol * nodo_factor;
@@ -55,6 +60,7 @@ t_nodo_arbol * nodo_iteracion;
 t_nodo_arbol * nodo_io;
 t_nodo_arbol * nodo_iguales;
 t_nodo_arbol * nodo_filter;
+t_nodo_arbol * nodo_declaracion_variable;
 
 
 int yylex();
@@ -130,6 +136,9 @@ pgm : programa
 
 programa : PR_MAIN declaracion_variables lista_sentencias
 {
+
+	// nodo_declaracion_variable = nodo_sentencias;
+
 	if(DEBUG){
 		puts("Codigo con variables\n");
 		puts("-------------------\n");
@@ -145,9 +154,23 @@ programa : PR_MAIN lista_sentencias
 	}
 };
 
+sentencia : asignacion PUNTO_Y_COMA
+{
+	nodo_sentencia = crear_nodo_arbol(crear_info(";"),nodo_asignacion,NULL);
+	insertar_en_pila(&pila_sentencias,crear_info_sentencias(nodo_sentencia));
+
+	if(DEBUG) {
+		puts("Asignacion\n");
+		puts("-------------------\n");		
+	}
+
+};
+
+
 lista_sentencias : sentencia
 {
-	nodo_sentencias = nodo_sentencia;
+	t_info_sentencias * sentencia_apilada = sacar_de_pila(&pila_sentencias);
+	nodo_sentencias = sentencia_apilada->a;
 	if(DEBUG){
 		puts("Una sola sentencia\n");
 		puts("-------------------\n");
@@ -156,7 +179,13 @@ lista_sentencias : sentencia
 
 lista_sentencias : sentencia lista_sentencias
 {
-	nodo_asignacion = crear_nodo_arbol(crear_info("NUEVA"),nodo_sentencias,nodo_sentencia);
+	// nodo_sentencias = nodo_sentencia;
+	// nodo_sentencias->nodo_der = nodo_sentencia;
+	t_info_sentencias * sentencia_apilada = sacar_de_pila(&pila_sentencias);
+	nodo_sentencias->nodo_der = sentencia_apilada->a;
+	nodo_sentencias = sentencia_apilada->a;
+
+	// nodo_sentencias = crear_nodo_arbol(crear_info("NUEVA"),nodo_sentencias,sentencia_apilada->a);
 	if(DEBUG) {
 		puts("Varias sentencias\n");
 		puts("-------------------\n");
@@ -166,7 +195,7 @@ lista_sentencias : sentencia lista_sentencias
 
 sentencia : condicional 
 {
-	nodo_sentencia = nodo_condicional;
+	// nodo_sentencia = nodo_condicional;
 	if(DEBUG) {
 		puts("Condicional\n");
 		puts("-------------------\n");		
@@ -174,15 +203,6 @@ sentencia : condicional
 
 };
 
-sentencia : asignacion PUNTO_Y_COMA
-{
-	nodo_sentencia = nodo_asignacion;
-	if(DEBUG) {
-		puts("Asignacion\n");
-		puts("-------------------\n");		
-	}
-
-};
 
 sentencia : iteracion
 {
@@ -838,7 +858,7 @@ char * tipo_simbolo_to_string(int tipo);
 //funcion para realizar todo lo que haga falta previo a terminar
 void finally(FILE *yyin){
 	vaciar_tabla_simbolos();
-	vaciar_arbol(&arbol_ejecucion);
+	// vaciar_arbol(&arbol_ejecucion);
 	fclose(yyin);
 }
 
@@ -855,18 +875,25 @@ int main(int argc, char **argv ) {
 	    yyin = stdin;
 
     }
-
+    crear_pila(&pila_sentencias);
     crear_arbol(&arbol_ejecucion);
 
 	yyparse();
 	imprimir_tabla_simbolos();
-	arbol_ejecucion->p_nodo = nodo_sentencias;
+	// arbol_ejecucion->p_nodo = obtener_raiz(nodo_sentencias);
+	arbol_ejecucion->p_nodo = obtener_raiz(nodo_factor);
 
-	// recorrer_en_orden(nodo_asignacion,&visitar);
+	recorrer_en_orden(arbol_ejecucion->p_nodo,&visitar);
 	
 	print_t(arbol_ejecucion->p_nodo);
 	
-	//imprimir_arbol(arbol_ejecucion->p_nodo);
+	// imprimir_arbol(arbol_ejecucion->p_nodo);
+
+	printf("la pila esta vacia? %d\n", pila_vacia(&pila_sentencias) );
+	// if(!pila_vacia)
+	// {
+	// 	t_nodo_arbol
+	// }
 
 	finally(yyin);
 	return EXIT_SUCCESS;
@@ -1104,9 +1131,17 @@ void poner_prefijo(char * str, char * prefijo) {
 
 /* Esta funcion crea un t_info a partir de una string, para agregarla
 directamente a un nodo de arbol */
-t_info * crear_info(char * str) {
+t_info * crear_info(char * str) 
+{
 	t_info * p_info = (t_info *) malloc(sizeof(t_info));
 	strcpy(p_info->a,str);
+	return p_info;
+}
+
+t_info_sentencias * crear_info_sentencias(t_nodo_arbol * p_nodo) 
+{
+	t_info_sentencias * p_info = (t_info_sentencias *) malloc(sizeof(t_info_sentencias));
+	p_info->a = p_nodo;
 	return p_info;
 }
 

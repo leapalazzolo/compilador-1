@@ -7,11 +7,12 @@ Gramática
     2 programa: PR_MAIN declaracion_variables lista_sentencias
     3         | PR_MAIN lista_sentencias
 
-    4 lista_sentencias: sentencia
-    5                 | sentencia lista_sentencias
+    4 sentencia: asignacion PUNTO_Y_COMA
 
-    6 sentencia: condicional
-    7          | asignacion PUNTO_Y_COMA
+    5 lista_sentencias: sentencia
+    6                 | sentencia lista_sentencias
+
+    7 sentencia: condicional
     8          | iteracion
     9          | io
    10          | iguales PUNTO_Y_COMA
@@ -134,7 +135,7 @@ PR_FLOAT (296) 53
 PR_INT (297) 52
 PR_STRING (298) 54
 OP_CONCAT (299) 37
-PUNTO_Y_COMA (300) 7 10 11 48 49
+PUNTO_Y_COMA (300) 4 10 11 48 49
 
 
 No terminales con las reglas donde aparecen
@@ -145,10 +146,10 @@ pgm (47)
     en la izquierda: 1, en la derecha: 0
 programa (48)
     en la izquierda: 2 3, en la derecha: 1
-lista_sentencias (49)
-    en la izquierda: 4 5, en la derecha: 2 3 5 28 29 35
-sentencia (50)
-    en la izquierda: 6 7 8 9 10 11, en la derecha: 4 5
+sentencia (49)
+    en la izquierda: 4 7 8 9 10 11, en la derecha: 5 6
+lista_sentencias (50)
+    en la izquierda: 5 6, en la derecha: 2 3 6 28 29 35
 iguales (51)
     en la izquierda: 12, en la derecha: 10
 lista_expresiones (52)
@@ -168,7 +169,7 @@ entrada (58)
 salida (59)
     en la izquierda: 26 27, en la derecha: 24
 condicional (60)
-    en la izquierda: 28 29, en la derecha: 6
+    en la izquierda: 28 29, en la derecha: 7
 condicion (61)
     en la izquierda: 30 31 32, en la derecha: 28 29 35
 comparacion (62)
@@ -176,7 +177,7 @@ comparacion (62)
 iteracion (63)
     en la izquierda: 35, en la derecha: 8
 asignacion (64)
-    en la izquierda: 36, en la derecha: 7
+    en la izquierda: 36, en la derecha: 4
 expresion (65)
     en la izquierda: 37 38 39 40, en la derecha: 12 13 14 19 20 33
     34 36 39 40
@@ -218,8 +219,8 @@ estado 1
     PR_WHILE    desplazar e ir al estado 10
     PR_DIM      desplazar e ir al estado 11
 
-    lista_sentencias       ir al estado 12
-    sentencia              ir al estado 13
+    sentencia              ir al estado 12
+    lista_sentencias       ir al estado 13
     iguales                ir al estado 14
     filter                 ir al estado 15
     io                     ir al estado 16
@@ -307,15 +308,8 @@ estado 11
 
 estado 12
 
-    3 programa: PR_MAIN lista_sentencias .
-
-    $default  reduce usando la regla 3 (programa)
-
-
-estado 13
-
-    4 lista_sentencias: sentencia .
-    5                 | sentencia . lista_sentencias
+    5 lista_sentencias: sentencia .
+    6                 | sentencia . lista_sentencias
 
     TOKEN_ID    desplazar e ir al estado 4
     PR_IGUALES  desplazar e ir al estado 5
@@ -325,10 +319,10 @@ estado 13
     PR_IF       desplazar e ir al estado 9
     PR_WHILE    desplazar e ir al estado 10
 
-    $default  reduce usando la regla 4 (lista_sentencias)
+    $default  reduce usando la regla 5 (lista_sentencias)
 
+    sentencia         ir al estado 12
     lista_sentencias  ir al estado 33
-    sentencia         ir al estado 13
     iguales           ir al estado 14
     filter            ir al estado 15
     io                ir al estado 16
@@ -337,6 +331,13 @@ estado 13
     condicional       ir al estado 19
     iteracion         ir al estado 20
     asignacion        ir al estado 21
+
+
+estado 13
+
+    3 programa: PR_MAIN lista_sentencias .
+
+    $default  reduce usando la regla 3 (programa)
 
 
 estado 14
@@ -376,9 +377,9 @@ estado 18
 
 estado 19
 
-    6 sentencia: condicional .
+    7 sentencia: condicional .
 
-    $default  reduce usando la regla 6 (sentencia)
+    $default  reduce usando la regla 7 (sentencia)
 
 
 estado 20
@@ -390,7 +391,7 @@ estado 20
 
 estado 21
 
-    7 sentencia: asignacion . PUNTO_Y_COMA
+    4 sentencia: asignacion . PUNTO_Y_COMA
 
     PUNTO_Y_COMA  desplazar e ir al estado 36
 
@@ -407,8 +408,8 @@ estado 22
     PR_IF       desplazar e ir al estado 9
     PR_WHILE    desplazar e ir al estado 10
 
+    sentencia         ir al estado 12
     lista_sentencias  ir al estado 37
-    sentencia         ir al estado 13
     iguales           ir al estado 14
     filter            ir al estado 15
     io                ir al estado 16
@@ -533,9 +534,9 @@ estado 32
 
 estado 33
 
-    5 lista_sentencias: sentencia lista_sentencias .
+    6 lista_sentencias: sentencia lista_sentencias .
 
-    $default  reduce usando la regla 5 (lista_sentencias)
+    $default  reduce usando la regla 6 (lista_sentencias)
 
 
 estado 34
@@ -554,9 +555,9 @@ estado 35
 
 estado 36
 
-    7 sentencia: asignacion PUNTO_Y_COMA .
+    4 sentencia: asignacion PUNTO_Y_COMA .
 
-    $default  reduce usando la regla 7 (sentencia)
+    $default  reduce usando la regla 4 (sentencia)
 
 
 estado 37
@@ -1139,8 +1140,8 @@ estado 94
     PR_IF       desplazar e ir al estado 9
     PR_WHILE    desplazar e ir al estado 10
 
+    sentencia         ir al estado 12
     lista_sentencias  ir al estado 107
-    sentencia         ir al estado 13
     iguales           ir al estado 14
     filter            ir al estado 15
     io                ir al estado 16
@@ -1189,8 +1190,8 @@ estado 98
     PR_IF       desplazar e ir al estado 9
     PR_WHILE    desplazar e ir al estado 10
 
+    sentencia         ir al estado 12
     lista_sentencias  ir al estado 108
-    sentencia         ir al estado 13
     iguales           ir al estado 14
     filter            ir al estado 15
     io                ir al estado 16
@@ -1379,8 +1380,8 @@ estado 117
     PR_IF       desplazar e ir al estado 9
     PR_WHILE    desplazar e ir al estado 10
 
+    sentencia         ir al estado 12
     lista_sentencias  ir al estado 128
-    sentencia         ir al estado 13
     iguales           ir al estado 14
     filter            ir al estado 15
     io                ir al estado 16
