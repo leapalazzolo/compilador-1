@@ -31,8 +31,11 @@ int tipos_iguales(char * nombre1, char * nombre2, char * mjs_error, int lineNumb
 int traer_tipo(char * nombre);
 void poner_prefijo(char * str, char * prefijo);
 int print_t(t_nodo_arbol *tree);
-int _print_t(t_nodo_arbol *tree, int is_left, int offset, int depth, char s[20][255]);
+int _print_t(t_nodo_arbol *tree, int is_left, int offset, int depth, char * s, int max);
 void imprimir_arbol(t_nodo_arbol *n);
+void copiar_sin_finalizador(char * dest,char * orig); 
+void reemplazar(char * cad, char old,char new, int size) ;
+
 extern int linecount;
 
 t_arbol * arbol_ejecucion;
@@ -859,11 +862,11 @@ int main(int argc, char **argv ) {
 	imprimir_tabla_simbolos();
 	arbol_ejecucion->p_nodo = nodo_sentencias;
 
-	recorrer_en_orden(nodo_asignacion,&visitar);
+	// recorrer_en_orden(nodo_asignacion,&visitar);
 	
 	print_t(arbol_ejecucion->p_nodo);
 	
-	imprimir_arbol(arbol_ejecucion->p_nodo);
+	//imprimir_arbol(arbol_ejecucion->p_nodo);
 
 	finally(yyin);
 	return EXIT_SUCCESS;
@@ -1110,8 +1113,9 @@ t_info * crear_info(char * str) {
 
 
 
-int _print_t(t_nodo_arbol *tree, int is_left, int offset, int depth, char s[20][255])
+int _print_t(t_nodo_arbol *tree, int is_left, int offset, int depth, char * s, int max)
 {
+    int i;
     char b[20];
     int width = 5;
 
@@ -1119,62 +1123,51 @@ int _print_t(t_nodo_arbol *tree, int is_left, int offset, int depth, char s[20][
 
     sprintf(b, "(%s)", tree->info->a);
 
-    int left  = _print_t(tree->nodo_izq,  1, offset,                depth + 1, s);
-    int right = _print_t(tree->nodo_der, 0, offset + left + width, depth + 1, s);
+    int left  = _print_t(tree->nodo_izq,  1, offset,                depth + 1, s,max);
+    int right = _print_t(tree->nodo_der, 0, offset + left + width, depth + 1, s,max);
 
-#ifdef COMPACT
-    for (int i = 0; i < width; i++)
-        s[depth][offset + left + i] = b[i];
 
-    if (depth && is_left) {
+    // printf("%s is_left %d offset %d depth %d width %d b %s \n ", tree->info->a,
+    //  is_left,offset,depth,width,b);
 
-        for (int i = 0; i < width + right; i++)
-            s[depth - 1][offset + left + width/2 + i] = '-';
-
-        s[depth - 1][offset + left + width/2] = '.';
-
-    } else if (depth && !is_left) {
-
-        for (int i = 0; i < left + width; i++)
-            s[depth - 1][offset - width/2 + i] = '-';
-
-        s[depth - 1][offset + left + width/2] = '.';
-    }
-#else
-    for (int i = 0; i < width; i++)
-        s[2 * depth][offset + left + i] = b[i];
+    	copiar_sin_finalizador(s + (2 * depth)*max + offset + left,b);
 
     if (depth && is_left) {
 
-        for (int i = 0; i < width + right; i++)
-            s[2 * depth - 1][offset + left + width/2 + i] = '-';
-
-        s[2 * depth - 1][offset + left + width/2] = '+';
-        s[2 * depth - 1][offset + left + width + right + width/2] = '+';
+        for (i = 0; i < width + right; i++)
+        	copiar_sin_finalizador(s + (2 * depth - 1)*max  + offset + left + width/2 + i,"-"); 
+    	copiar_sin_finalizador(s + (2 * depth - 1)*max  + offset + left + width/2 ,"+"); 
+    	copiar_sin_finalizador(s + (2 * depth - 1)*max  + offset + left + width + right + width/2 ,"+"); 
 
     } else if (depth && !is_left) {
-
-        for (int i = 0; i < left + width; i++)
-            s[2 * depth - 1][offset - width/2 + i] = '-';
-
-        s[2 * depth - 1][offset + left + width/2] = '+';
-        s[2 * depth - 1][offset - width/2 - 1] = '+';
+        for (i = 0; i < left + width; i++)
+    		copiar_sin_finalizador(s + (2 * depth - 1)*max  + offset - width/2 + i ,"-"); 
+		copiar_sin_finalizador(s + (2 * depth - 1)*max  + offset + left + width/2 ,"+"); 
+		// copiar_sin_finalizador(s + (2 * depth - 1)*max  + offset - width/2 ,"+"); 
     }
-#endif
 
     return left + width + right;
 }
 
 int print_t(t_nodo_arbol *tree)
 {
-    char s[20][255];
-    for (int i = 0; i < 20; i++)
-        sprintf(s[i], "%80s", " ");
+	int i;
+    // char s[20][255];
+    char * s = (char *) malloc(sizeof(char) * RENGLONES_IMPRESION_ARBOL * CARACTERES_RENGLON_ARBOL);
 
-    _print_t(tree, 0, 0, 0, s);
+    for (i = 0; i < RENGLONES_IMPRESION_ARBOL * CARACTERES_RENGLON_ARBOL; i++)
+    {
+    	if(i == 0 || i % (CARACTERES_RENGLON_ARBOL - 1))
+    		sprintf(s + i, "%c", ' ');
+    	else
+    		sprintf(s + i, "%c", '\0');
+    }
 
-    for (int i = 0; i < 20; i++)
-        printf("%s\n", s[i]);
+
+    _print_t(tree, 0, 0, 0, s,CARACTERES_RENGLON_ARBOL);
+
+    for (i = 0; i < RENGLONES_IMPRESION_ARBOL; i++)
+        printf("%s\n", s + i*CARACTERES_RENGLON_ARBOL);
 }
 
 void imprimir_arbol(t_nodo_arbol *n){
@@ -1185,3 +1178,25 @@ void imprimir_arbol(t_nodo_arbol *n){
 		imprimir_arbol(n->nodo_der);
 }
 
+
+void reemplazar(char * cad, char old,char new, int size) 
+{
+	int i;
+	for(i = 0; i < size; i++)
+	{
+		if(*(cad + i) == old)
+			*(cad + i) = new;
+	}
+}
+
+
+void copiar_sin_finalizador(char * dest,char * orig) 
+{
+	
+	while(*orig && *dest)
+	{
+		*dest = *orig;
+		orig++;
+		dest++;		
+	}
+}

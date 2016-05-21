@@ -5,6 +5,8 @@
 #define COTA_STR 30
 #define MAX_VARIABLES 50
 #define MAX_INT 65535
+#define RENGLONES_IMPRESION_ARBOL 20
+#define CARACTERES_RENGLON_ARBOL 150
 
 #define PATH_TABLA_SIMBOLOS "ts.txt"
 #define ERROR_ABRIR_TABLA_SIMBOLOS "No se pudo crear la tabla de simbolos. Verifique que tenga permisos de escritura"
