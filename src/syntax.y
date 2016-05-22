@@ -377,6 +377,8 @@ salida : PR_WRITE TOKEN_ID
 		puts("salida : PR_WRITE id\n");
 		puts("-------------------\n");
 	}
+	// char msj_error[50];
+	// buscar_en_TS_sin_prefijo($2,msj_error,linecount);
 }
 
 salida : PR_WRITE CONST_STR
@@ -745,6 +747,7 @@ factor : CONST_STR
 		puts("factor : cte\n");
 		puts("-------------------\n");		
 	}
+
 	/* agrego la constante a la tabla de simbolos */
 	agregar_cte_a_TS(TIPO_STRING,$1, 0,0.0,linecount);
 	$$=$1;

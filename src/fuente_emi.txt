@@ -1,7 +1,7 @@
 MAIN
 DIM [b,c,d] AS [STRING,INT,INT];
 
-c := 3 + 4 * 5 + c * 2;
+WRITE HOLA;
 
 
 -/ b = "asdasdasdasdasdasdasdasdasdasdasdasdasdasd"; Esto tira error lexico y esta bien, xq supera los 30 caracteres/-

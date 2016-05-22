@@ -3,7 +3,4 @@ NOMBRE 				 TIPO 				 VALOR				 LINEA
 _d				INT				0				4
 _c				INT				0				4
 _b				STRING								4 
-%3				INT				0				4
-%4				INT				0				4
-%5				INT				0				4
-%2				INT				0				4
+&"hola" ++ "ahora"				STRING								4 
