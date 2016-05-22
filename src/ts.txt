@@ -3,17 +3,15 @@ NOMBRE 				 TIPO 				 VALOR				 LINEA
 _d				INT				0				4
 _c				INT				0				4
 _b				STRING								4 
-%3				INT				0				4
-%3				INT				0				4
 %1				INT				0				4
 %1				INT				0				4
-%1				INT				0				6
-%1				INT				0				6
-%2				INT				0				6
+%2				INT				0				4
+%3				INT				0				6
+%2				INT				0				7
 %1				INT				0				8
-%3				INT				0				10
-%8				INT				0				10
-%2				INT				0				11
+%1				INT				0				12
+%1				INT				0				12
 %2				INT				0				12
-%2				INT				0				13
-%3				INT				0				16
+%3				INT				0				14
+%2				INT				0				15
+%1				INT				0				16

@@ -79,7 +79,7 @@
 #include "arbol.h"
 #include "pila.h"
 
-#define DEBUG 0
+#define DEBUG 1
 extern YYSTYPE yylval;
 char prefijo_id[2] = PREFIJO_ID;
 char prefijo_int[2] = PREFIJO_INT;
@@ -137,6 +137,7 @@ t_nodo_arbol * nodo_declaracion_variable;
 
 t_nodo_arbol * nodo_sentencias_then;
 t_nodo_arbol * nodo_sentencias_else;
+t_nodo_arbol * nodo_do;
 
 
 
@@ -149,7 +150,7 @@ FILE  *yyin; //Archivo de Entrada
 
 
 /* Line 189 of yacc.c  */
-#line 153 "y.tab.c"
+#line 154 "y.tab.c"
 
 /* Enabling traces.  */
 #ifndef YYDEBUG
@@ -274,7 +275,7 @@ typedef union YYSTYPE
 {
 
 /* Line 214 of yacc.c  */
-#line 81 "syntax.y"
+#line 82 "syntax.y"
 
 int intval;
 float val;
@@ -283,7 +284,7 @@ char *str_val;
 
 
 /* Line 214 of yacc.c  */
-#line 287 "y.tab.c"
+#line 288 "y.tab.c"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
@@ -295,7 +296,7 @@ char *str_val;
 
 
 /* Line 264 of yacc.c  */
-#line 299 "y.tab.c"
+#line 300 "y.tab.c"
 
 #ifdef short
 # undef short
@@ -608,13 +609,13 @@ static const yytype_int8 yyrhs[] =
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
 static const yytype_uint16 yyrline[] =
 {
-       0,   142,   142,   149,   161,   169,   184,   195,   213,   229,
-     238,   248,   257,   266,   274,   282,   290,   298,   304,   310,
-     316,   322,   328,   336,   344,   353,   361,   369,   377,   385,
-     398,   413,   422,   431,   443,   459,   474,   494,   505,   513,
-     532,   579,   594,   620,   647,   659,   685,   713,   731,   749,
-     767,   783,   801,   808,   820,   842,   851,   860,   869,   878,
-     887,   898,   907,   916
+       0,   143,   143,   150,   162,   170,   185,   196,   213,   229,
+     242,   252,   261,   270,   278,   286,   294,   302,   308,   314,
+     320,   326,   332,   340,   348,   357,   365,   373,   381,   389,
+     402,   417,   426,   435,   447,   463,   478,   498,   509,   524,
+     543,   590,   605,   631,   658,   670,   696,   724,   742,   760,
+     778,   794,   812,   819,   831,   853,   862,   871,   880,   889,
+     898,   909,   918,   927
 };
 #endif
 
@@ -1608,7 +1609,7 @@ yyreduce:
         case 2:
 
 /* Line 1455 of yacc.c  */
-#line 143 "syntax.y"
+#line 144 "syntax.y"
     {
 	nodo_pgm = nodo_programa;
 	puts("COMPILACION EXITOSA\n");
@@ -1619,7 +1620,7 @@ yyreduce:
   case 3:
 
 /* Line 1455 of yacc.c  */
-#line 150 "syntax.y"
+#line 151 "syntax.y"
     {
 
 	// nodo_declaracion_variable = nodo_sentencias;
@@ -1635,7 +1636,7 @@ yyreduce:
   case 4:
 
 /* Line 1455 of yacc.c  */
-#line 162 "syntax.y"
+#line 163 "syntax.y"
     {
 	if(DEBUG){
 		puts("Codigo sin variables\n");
@@ -1647,7 +1648,7 @@ yyreduce:
   case 5:
 
 /* Line 1455 of yacc.c  */
-#line 170 "syntax.y"
+#line 171 "syntax.y"
     {
 	if(DEBUG) {
 		puts("Asignacion\n");
@@ -1665,7 +1666,7 @@ yyreduce:
   case 6:
 
 /* Line 1455 of yacc.c  */
-#line 185 "syntax.y"
+#line 186 "syntax.y"
     {
 	// if(DEBUG){
 		puts("Una sola sentencia\n");
@@ -1680,7 +1681,7 @@ yyreduce:
   case 7:
 
 /* Line 1455 of yacc.c  */
-#line 196 "syntax.y"
+#line 197 "syntax.y"
     {
 	// if(DEBUG) {
 		puts("Varias sentencias\n");
@@ -1693,7 +1694,6 @@ yyreduce:
 	nodo_sentencias->nodo_der->padre = nodo_sentencias;
 	nodo_sentencias = sentencia_apilada->a;
 
-	print_t(obtener_raiz(nodo_sentencias));
 
 	// nodo_sentencias = crear_nodo_arbol(crear_info("NUEVA"),nodo_sentencias,sentencia_apilada->a);
 }
@@ -1724,17 +1724,21 @@ yyreduce:
 #line 230 "syntax.y"
     {
 	if(DEBUG) {
-		puts("Iteracion\n");
+		puts("sentencia : iteracion\n");
 		puts("-------------------\n");		
 	}
-	nodo_sentencia = nodo_iteracion;
+
+	nodo_sentencia = crear_nodo_arbol(crear_info(";"),nodo_iteracion,NULL);
+	insertar_en_pila(&pila_sentencias,crear_info_sentencias(nodo_sentencia));
+	// print_t(nodo_sentencia);
+	// nodo_sentencia = nodo_iteracion;
 }
     break;
 
   case 10:
 
 /* Line 1455 of yacc.c  */
-#line 239 "syntax.y"
+#line 243 "syntax.y"
     {
 	if(DEBUG) {
 		puts("Operacion de entrada salidas\n");
@@ -1748,7 +1752,7 @@ yyreduce:
   case 11:
 
 /* Line 1455 of yacc.c  */
-#line 249 "syntax.y"
+#line 253 "syntax.y"
     {
 	if(DEBUG) {
 		puts("Operacion de iguales\n");
@@ -1761,7 +1765,7 @@ yyreduce:
   case 12:
 
 /* Line 1455 of yacc.c  */
-#line 258 "syntax.y"
+#line 262 "syntax.y"
     {
 	if(DEBUG) {
 		puts("Operacioon de filters\n");
@@ -1774,7 +1778,7 @@ yyreduce:
   case 13:
 
 /* Line 1455 of yacc.c  */
-#line 267 "syntax.y"
+#line 271 "syntax.y"
     {
 	if(DEBUG) {
 		puts("iguales : PR_IGUALES PAR_ABRE expresion COMA COR_ABRElista_expresiones COR_CIERRA PAR_CIERRA\n");
@@ -1786,7 +1790,7 @@ yyreduce:
   case 14:
 
 /* Line 1455 of yacc.c  */
-#line 275 "syntax.y"
+#line 279 "syntax.y"
     {
 	if(DEBUG) {
 		puts("Lista de expresiones\n");
@@ -1798,7 +1802,7 @@ yyreduce:
   case 15:
 
 /* Line 1455 of yacc.c  */
-#line 283 "syntax.y"
+#line 287 "syntax.y"
     {
 	if(DEBUG) {
 		puts("Última expresion\n");
@@ -1810,7 +1814,7 @@ yyreduce:
   case 16:
 
 /* Line 1455 of yacc.c  */
-#line 291 "syntax.y"
+#line 295 "syntax.y"
     {
 	if(DEBUG) {
 		puts("filter : PR_FILTER PAR_ABRE condicion COMA COR_ABRE lista_variables COR_CIERRA PAR_CIERRA\n");
@@ -1822,7 +1826,7 @@ yyreduce:
   case 17:
 
 /* Line 1455 of yacc.c  */
-#line 299 "syntax.y"
+#line 303 "syntax.y"
     {
 	puts("condicion_filter : comparacion_filter\n");
 	puts("-------------------\n");
@@ -1832,7 +1836,7 @@ yyreduce:
   case 18:
 
 /* Line 1455 of yacc.c  */
-#line 305 "syntax.y"
+#line 309 "syntax.y"
     {
 	puts("condicion_filter : comparacion_filter and comparacion_filter\n");
 	puts("-------------------\n");
@@ -1842,7 +1846,7 @@ yyreduce:
   case 19:
 
 /* Line 1455 of yacc.c  */
-#line 311 "syntax.y"
+#line 315 "syntax.y"
     {
 	puts("condicion_filter : comparacion_filter or comparacion_filter\n");
 	puts("-------------------\n");
@@ -1852,7 +1856,7 @@ yyreduce:
   case 20:
 
 /* Line 1455 of yacc.c  */
-#line 317 "syntax.y"
+#line 321 "syntax.y"
     {
 	puts("comparacion_filter : OP_FILTER comparador expresion\n");
 	puts("-------------------\n");
@@ -1862,7 +1866,7 @@ yyreduce:
   case 21:
 
 /* Line 1455 of yacc.c  */
-#line 323 "syntax.y"
+#line 327 "syntax.y"
     {
 	puts("comparacion_filter : PR_NOT OP_FILTER comparador expresion\n");
 	puts("-------------------\n");
@@ -1872,7 +1876,7 @@ yyreduce:
   case 22:
 
 /* Line 1455 of yacc.c  */
-#line 329 "syntax.y"
+#line 333 "syntax.y"
     {
 	if(DEBUG) {
 		puts("Lista de variables\n");
@@ -1884,7 +1888,7 @@ yyreduce:
   case 23:
 
 /* Line 1455 of yacc.c  */
-#line 337 "syntax.y"
+#line 341 "syntax.y"
     {
 	if(DEBUG) {
 		puts("Última variable\n");
@@ -1896,7 +1900,7 @@ yyreduce:
   case 24:
 
 /* Line 1455 of yacc.c  */
-#line 345 "syntax.y"
+#line 349 "syntax.y"
     {
 	if(DEBUG) {
 		puts("io : entrada\n");
@@ -1909,7 +1913,7 @@ yyreduce:
   case 25:
 
 /* Line 1455 of yacc.c  */
-#line 354 "syntax.y"
+#line 358 "syntax.y"
     {
 	if(DEBUG) {
 		puts("io : salida\n");
@@ -1921,7 +1925,7 @@ yyreduce:
   case 26:
 
 /* Line 1455 of yacc.c  */
-#line 362 "syntax.y"
+#line 366 "syntax.y"
     {
 	if(DEBUG) {
 		puts("entrada : READ id\n");
@@ -1933,7 +1937,7 @@ yyreduce:
   case 27:
 
 /* Line 1455 of yacc.c  */
-#line 370 "syntax.y"
+#line 374 "syntax.y"
     {
 	if(DEBUG) {
 		puts("salida : PR_WRITE id\n");
@@ -1945,7 +1949,7 @@ yyreduce:
   case 28:
 
 /* Line 1455 of yacc.c  */
-#line 378 "syntax.y"
+#line 382 "syntax.y"
     {
 	if(DEBUG) {
 		puts("salida : PR_WRITE cte\n");
@@ -1957,7 +1961,7 @@ yyreduce:
   case 29:
 
 /* Line 1455 of yacc.c  */
-#line 386 "syntax.y"
+#line 390 "syntax.y"
     {
 	if(DEBUG) {
 		puts("Condicional sin ELSE\n");
@@ -1974,7 +1978,7 @@ yyreduce:
   case 30:
 
 /* Line 1455 of yacc.c  */
-#line 399 "syntax.y"
+#line 403 "syntax.y"
     {
 
 
@@ -1993,7 +1997,7 @@ yyreduce:
   case 31:
 
 /* Line 1455 of yacc.c  */
-#line 414 "syntax.y"
+#line 418 "syntax.y"
     {
 	if(DEBUG) {
 		puts("PR_THEN lista_sentencias\n");
@@ -2006,7 +2010,7 @@ yyreduce:
   case 32:
 
 /* Line 1455 of yacc.c  */
-#line 423 "syntax.y"
+#line 427 "syntax.y"
     {
 	if(DEBUG) {
 		puts("PR_ELSE lista_sentencias\n");
@@ -2019,7 +2023,7 @@ yyreduce:
   case 33:
 
 /* Line 1455 of yacc.c  */
-#line 432 "syntax.y"
+#line 436 "syntax.y"
     {
 	// if(DEBUG) {
 		puts("condicion : comparacion\n");
@@ -2035,7 +2039,7 @@ yyreduce:
   case 34:
 
 /* Line 1455 of yacc.c  */
-#line 444 "syntax.y"
+#line 448 "syntax.y"
     {
 	// if(DEBUG) {
 		puts("condicion : comparacion and comparacion\n");
@@ -2055,7 +2059,7 @@ yyreduce:
   case 35:
 
 /* Line 1455 of yacc.c  */
-#line 460 "syntax.y"
+#line 464 "syntax.y"
     {
 	// if(DEBUG) {
 		puts("condicion : comparacion or comparacion\n");
@@ -2074,7 +2078,7 @@ yyreduce:
   case 36:
 
 /* Line 1455 of yacc.c  */
-#line 475 "syntax.y"
+#line 479 "syntax.y"
     {
 	// if(DEBUG) {
 	// puts($2);
@@ -2098,7 +2102,7 @@ yyreduce:
   case 37:
 
 /* Line 1455 of yacc.c  */
-#line 495 "syntax.y"
+#line 499 "syntax.y"
     {
 	if(DEBUG) {
 		puts("comparacion : PR_NOT expresion comparador expresion\n");
@@ -2113,19 +2117,26 @@ yyreduce:
   case 38:
 
 /* Line 1455 of yacc.c  */
-#line 506 "syntax.y"
+#line 510 "syntax.y"
     {
 	if(DEBUG) {
-		puts("Iteracion\n");
+		puts("iteracion : PR_WHILE PAR_ABRE condicion PAR_CIERRA PR_DO lista_sentencias PR_ENDWHILE\n");
 		puts("-------------------\n");
 	}
+
+	t_info_sentencias * p_info = sacar_de_pila(&pila_condiciones);
+	t_nodo_arbol * sentencias_del_do = obtener_raiz(nodo_sentencias);
+	// nodo_do = crear_nodo_arbol(crear_info("DO"),sentencias_del_do,NULL);
+	nodo_iteracion = crear_nodo_arbol(crear_info("WHILE"),p_info->a,sentencias_del_do);
+	sentencias_del_do->padre = nodo_iteracion;
+
 }
     break;
 
   case 39:
 
 /* Line 1455 of yacc.c  */
-#line 514 "syntax.y"
+#line 525 "syntax.y"
     {
 	if(DEBUG) {
 		puts("Asignacion -> Token_ID := expresion\n");
@@ -2148,7 +2159,7 @@ yyreduce:
   case 40:
 
 /* Line 1455 of yacc.c  */
-#line 533 "syntax.y"
+#line 544 "syntax.y"
     {
 	if(DEBUG) {
 		printf("expresion %s %s\n",(yyvsp[(1) - (3)].str_val),(yyvsp[(3) - (3)].str_val) );
@@ -2199,7 +2210,7 @@ yyreduce:
   case 41:
 
 /* Line 1455 of yacc.c  */
-#line 580 "syntax.y"
+#line 591 "syntax.y"
     {
 	if(DEBUG) {
 	printf("%s\n",(yyvsp[(1) - (1)].str_val) );
@@ -2218,7 +2229,7 @@ yyreduce:
   case 42:
 
 /* Line 1455 of yacc.c  */
-#line 595 "syntax.y"
+#line 606 "syntax.y"
     {
 	if(DEBUG) {
 		printf("%s %s\n", (yyvsp[(1) - (3)].str_val), (yyvsp[(3) - (3)].str_val));
@@ -2248,7 +2259,7 @@ yyreduce:
   case 43:
 
 /* Line 1455 of yacc.c  */
-#line 621 "syntax.y"
+#line 632 "syntax.y"
     {
 	if(DEBUG) {
 		printf("%s %s\n", (yyvsp[(1) - (3)].str_val), (yyvsp[(3) - (3)].str_val));
@@ -2279,7 +2290,7 @@ yyreduce:
   case 44:
 
 /* Line 1455 of yacc.c  */
-#line 648 "syntax.y"
+#line 659 "syntax.y"
     {
 	if(DEBUG) {
 	printf("%s\n",(yyvsp[(1) - (1)].str_val) );
@@ -2295,7 +2306,7 @@ yyreduce:
   case 45:
 
 /* Line 1455 of yacc.c  */
-#line 660 "syntax.y"
+#line 671 "syntax.y"
     {
 	if(DEBUG) {
 	printf("%s %s\n", (yyvsp[(1) - (3)].str_val),(yyvsp[(3) - (3)].str_val));
@@ -2325,7 +2336,7 @@ yyreduce:
   case 46:
 
 /* Line 1455 of yacc.c  */
-#line 686 "syntax.y"
+#line 697 "syntax.y"
     {
 	if(DEBUG) {
 	printf("%s %s\n", (yyvsp[(1) - (3)].str_val),(yyvsp[(3) - (3)].str_val));
@@ -2357,7 +2368,7 @@ yyreduce:
   case 47:
 
 /* Line 1455 of yacc.c  */
-#line 714 "syntax.y"
+#line 725 "syntax.y"
     {
 	if(DEBUG) {
 		// printf("%s\n",$1);
@@ -2379,7 +2390,7 @@ yyreduce:
   case 48:
 
 /* Line 1455 of yacc.c  */
-#line 732 "syntax.y"
+#line 743 "syntax.y"
     {
 	if(DEBUG) {
 		printf("%d\n",(yyvsp[(1) - (1)].intval));
@@ -2401,7 +2412,7 @@ yyreduce:
   case 49:
 
 /* Line 1455 of yacc.c  */
-#line 750 "syntax.y"
+#line 761 "syntax.y"
     {
 	if(DEBUG) {
 		printf("%.4f\n",(yyvsp[(1) - (1)].val));
@@ -2423,7 +2434,7 @@ yyreduce:
   case 50:
 
 /* Line 1455 of yacc.c  */
-#line 768 "syntax.y"
+#line 779 "syntax.y"
     {
 	if(DEBUG) {
 		puts("factor : TOKEN_ID\n");
@@ -2437,7 +2448,7 @@ yyreduce:
   case 51:
 
 /* Line 1455 of yacc.c  */
-#line 785 "syntax.y"
+#line 796 "syntax.y"
     {
 	if(DEBUG) {
 		puts("declaracion_variables : PR_DIM COR_ABRE declaracion_variables_interna COR_CIERRA\n");
@@ -2458,7 +2469,7 @@ yyreduce:
   case 52:
 
 /* Line 1455 of yacc.c  */
-#line 802 "syntax.y"
+#line 813 "syntax.y"
     {
 	puts("declaracion_variables : PR_DIM COR_ABRE declaracion_variables_interna COR_CIERRA\n");
 	puts("-------------------\n");
@@ -2468,7 +2479,7 @@ yyreduce:
   case 53:
 
 /* Line 1455 of yacc.c  */
-#line 809 "syntax.y"
+#line 820 "syntax.y"
     {
 	if(DEBUG) {
 		puts("declaracion_variables_interna : TOKEN_ID COMA declaracion_variables_interna COMA tipo_dato\n");
@@ -2484,7 +2495,7 @@ yyreduce:
   case 54:
 
 /* Line 1455 of yacc.c  */
-#line 821 "syntax.y"
+#line 832 "syntax.y"
     {
 	if(DEBUG) {
 		puts("declaracion_variables_interna : TOKEN_ID COR_CIERRA PR_AS COR_ABRE tipo_dato\n");
@@ -2510,7 +2521,7 @@ yyreduce:
   case 55:
 
 /* Line 1455 of yacc.c  */
-#line 843 "syntax.y"
+#line 854 "syntax.y"
     {
 	(yyval.str_val)=(yyvsp[(1) - (1)].str_val);
 	if(DEBUG) {
@@ -2523,7 +2534,7 @@ yyreduce:
   case 56:
 
 /* Line 1455 of yacc.c  */
-#line 852 "syntax.y"
+#line 863 "syntax.y"
     {
 	(yyval.str_val)=(yyvsp[(1) - (1)].str_val);
 	if(DEBUG) { 
@@ -2536,7 +2547,7 @@ yyreduce:
   case 57:
 
 /* Line 1455 of yacc.c  */
-#line 861 "syntax.y"
+#line 872 "syntax.y"
     {
 	(yyval.str_val)=(yyvsp[(1) - (1)].str_val);
 	if(DEBUG) {
@@ -2549,7 +2560,7 @@ yyreduce:
   case 58:
 
 /* Line 1455 of yacc.c  */
-#line 870 "syntax.y"
+#line 881 "syntax.y"
     {
 	// strcpy(nodo_comparador->info->a, ">");
 	if(DEBUG) {
@@ -2562,7 +2573,7 @@ yyreduce:
   case 59:
 
 /* Line 1455 of yacc.c  */
-#line 879 "syntax.y"
+#line 890 "syntax.y"
     {
 	// strcpy(nodo_comparador->info->a, "<");
 	if(DEBUG) {
@@ -2575,7 +2586,7 @@ yyreduce:
   case 60:
 
 /* Line 1455 of yacc.c  */
-#line 888 "syntax.y"
+#line 899 "syntax.y"
     {
 	// strcpy(nodo_comparador->info->a, "<=");
 
@@ -2590,7 +2601,7 @@ yyreduce:
   case 61:
 
 /* Line 1455 of yacc.c  */
-#line 899 "syntax.y"
+#line 910 "syntax.y"
     {
 	// strcpy(nodo_comparador->info->a, ">=");
 	if(DEBUG) {
@@ -2603,7 +2614,7 @@ yyreduce:
   case 62:
 
 /* Line 1455 of yacc.c  */
-#line 908 "syntax.y"
+#line 919 "syntax.y"
     {
 	// strcpy(nodo_comparador->info->a, "==");
 	if(DEBUG) {
@@ -2616,7 +2627,7 @@ yyreduce:
   case 63:
 
 /* Line 1455 of yacc.c  */
-#line 917 "syntax.y"
+#line 928 "syntax.y"
     {
 	// strcpy(nodo_comparador->info->a, "!=");
 	if(DEBUG) {
@@ -2629,7 +2640,7 @@ yyreduce:
 
 
 /* Line 1455 of yacc.c  */
-#line 2633 "y.tab.c"
+#line 2644 "y.tab.c"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);
@@ -2841,7 +2852,7 @@ yyreturn:
 
 
 /* Line 1675 of yacc.c  */
-#line 925 "syntax.y"
+#line 936 "syntax.y"
 
 
 
@@ -3187,7 +3198,6 @@ int _print_t(t_nodo_arbol *tree, int is_left, int offset, int depth, char * s, i
 int print_t(t_nodo_arbol *tree)
 {
 	int i;
-    // char s[20][255];
     char * s = (char *) malloc(sizeof(char) * RENGLONES_IMPRESION_ARBOL * CARACTERES_RENGLON_ARBOL);
 
     for (i = 0; i < RENGLONES_IMPRESION_ARBOL * CARACTERES_RENGLON_ARBOL; i++)

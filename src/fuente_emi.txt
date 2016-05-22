@@ -1,21 +1,20 @@
 MAIN
 DIM [b,c,d] AS [STRING,INT,INT];
 
-IF( 3 >= 3 AND 1 == 1)
-THEN
-    IF( 1 == 1 OR NOT 2)
-    THEN
-        c := 1;
-    ELSE
-        c := 3+8;
-        c := 2;
-        c := 2;
-        c := 2;
-    ENDIF
-ELSE
+WHILE(1==1 OR NOT 2)
+DO
 c := 3;
-ENDIF
+c := 2;
+c := 1;
+ENDWHILE
 
+
+WHILE(1==1 OR NOT 2)
+DO
+c := 3;
+c := 2;
+c := 1;
+ENDWHILE
 
 -/ b = "asdasdasdasdasdasdasdasdasdasdasdasdasdasd"; Esto tira error lexico y esta bien, xq supera los 30 caracteres/-
 -/Esto es un comentario asdasd 123123123 1 //// --- /-

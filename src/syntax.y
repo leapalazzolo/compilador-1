@@ -8,7 +8,7 @@
 #include "arbol.h"
 #include "pila.h"
 
-#define DEBUG 0
+#define DEBUG 1
 extern YYSTYPE yylval;
 char prefijo_id[2] = PREFIJO_ID;
 char prefijo_int[2] = PREFIJO_INT;
@@ -66,6 +66,7 @@ t_nodo_arbol * nodo_declaracion_variable;
 
 t_nodo_arbol * nodo_sentencias_then;
 t_nodo_arbol * nodo_sentencias_else;
+t_nodo_arbol * nodo_do;
 
 
 
@@ -205,7 +206,6 @@ lista_sentencias : sentencia lista_sentencias
 	nodo_sentencias->nodo_der->padre = nodo_sentencias;
 	nodo_sentencias = sentencia_apilada->a;
 
-	print_t(obtener_raiz(nodo_sentencias));
 
 	// nodo_sentencias = crear_nodo_arbol(crear_info("NUEVA"),nodo_sentencias,sentencia_apilada->a);
 };
@@ -229,10 +229,14 @@ sentencia : condicional
 sentencia : iteracion
 {
 	if(DEBUG) {
-		puts("Iteracion\n");
+		puts("sentencia : iteracion\n");
 		puts("-------------------\n");		
 	}
-	nodo_sentencia = nodo_iteracion;
+
+	nodo_sentencia = crear_nodo_arbol(crear_info(";"),nodo_iteracion,NULL);
+	insertar_en_pila(&pila_sentencias,crear_info_sentencias(nodo_sentencia));
+	// print_t(nodo_sentencia);
+	// nodo_sentencia = nodo_iteracion;
 };
 
 sentencia : io
@@ -505,9 +509,16 @@ comparacion : PR_NOT expresion
 iteracion : PR_WHILE PAR_ABRE condicion PAR_CIERRA PR_DO lista_sentencias PR_ENDWHILE
 {
 	if(DEBUG) {
-		puts("Iteracion\n");
+		puts("iteracion : PR_WHILE PAR_ABRE condicion PAR_CIERRA PR_DO lista_sentencias PR_ENDWHILE\n");
 		puts("-------------------\n");
 	}
+
+	t_info_sentencias * p_info = sacar_de_pila(&pila_condiciones);
+	t_nodo_arbol * sentencias_del_do = obtener_raiz(nodo_sentencias);
+	// nodo_do = crear_nodo_arbol(crear_info("DO"),sentencias_del_do,NULL);
+	nodo_iteracion = crear_nodo_arbol(crear_info("WHILE"),p_info->a,sentencias_del_do);
+	sentencias_del_do->padre = nodo_iteracion;
+
 }
 
 asignacion : TOKEN_ID OP_IGUAL expresion 
@@ -1267,7 +1278,6 @@ int _print_t(t_nodo_arbol *tree, int is_left, int offset, int depth, char * s, i
 int print_t(t_nodo_arbol *tree)
 {
 	int i;
-    // char s[20][255];
     char * s = (char *) malloc(sizeof(char) * RENGLONES_IMPRESION_ARBOL * CARACTERES_RENGLON_ARBOL);
 
     for (i = 0; i < RENGLONES_IMPRESION_ARBOL * CARACTERES_RENGLON_ARBOL; i++)
