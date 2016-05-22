@@ -54,7 +54,7 @@ Gramática
    33          | comparacion OP_LOG_AND comparacion
    34          | comparacion OP_LOG_OR comparacion
 
-   35 comparacion: expresion comparador termino
+   35 comparacion: expresion comparador expresion
    36            | PR_NOT expresion
 
    37 iteracion: PR_WHILE PAR_ABRE condicion PAR_CIERRA PR_DO lista_sentencias PR_ENDWHILE
@@ -190,7 +190,7 @@ expresion (67)
     en la izquierda: 39 40 41 42, en la derecha: 12 13 14 19 20 35
     36 38 41 42
 termino (68)
-    en la izquierda: 43 44 45, en la derecha: 35 39 40 41 42 44 45
+    en la izquierda: 43 44 45, en la derecha: 39 40 41 42 44 45
 factor (69)
     en la izquierda: 46 47 48 49, en la derecha: 39 43 44 45
 declaracion_variables (70)
@@ -723,7 +723,7 @@ estado 52
 
 estado 53
 
-   35 comparacion: expresion . comparador termino
+   35 comparacion: expresion . comparador expresion
    41 expresion: expresion . OP_SUMA termino
    42          | expresion . OP_RESTA termino
 
@@ -985,15 +985,16 @@ estado 77
 
 estado 78
 
-   35 comparacion: expresion comparador . termino
+   35 comparacion: expresion comparador . expresion
 
     TOKEN_ID     desplazar e ir al estado 38
     CONST_INT    desplazar e ir al estado 39
     CONST_STR    desplazar e ir al estado 40
     CONST_FLOAT  desplazar e ir al estado 41
 
-    termino  ir al estado 98
-    factor   ir al estado 44
+    expresion  ir al estado 98
+    termino    ir al estado 43
+    factor     ir al estado 44
 
 
 estado 79
@@ -1187,12 +1188,12 @@ estado 97
 
 estado 98
 
-   35 comparacion: expresion comparador termino .
-   44 termino: termino . OP_DIV factor
-   45        | termino . OP_MUL factor
+   35 comparacion: expresion comparador expresion .
+   41 expresion: expresion . OP_SUMA termino
+   42          | expresion . OP_RESTA termino
 
-    OP_MUL  desplazar e ir al estado 59
-    OP_DIV  desplazar e ir al estado 60
+    OP_SUMA   desplazar e ir al estado 57
+    OP_RESTA  desplazar e ir al estado 58
 
     $default  reduce usando la regla 35 (comparacion)
 

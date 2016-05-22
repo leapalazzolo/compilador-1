@@ -44,6 +44,7 @@ extern int linecount;
 t_pila * pila_sentencias;
 t_pila * pila_comparaciones;
 t_pila * pila_condiciones;
+t_pila * pila_expresiones;
 
 t_arbol * arbol_ejecucion;
 t_nodo_arbol * nodo_factor;
@@ -475,7 +476,7 @@ condicion : comparacion OP_LOG_OR comparacion
 
 }
 
-comparacion : expresion comparador termino
+comparacion : expresion comparador expresion
 {
 	// if(DEBUG) {
 	// puts($2);
@@ -490,8 +491,12 @@ comparacion : expresion comparador termino
 		exit(1);
 	}
 
+	t_info_sentencias * p_info1 = sacar_de_pila(&pila_expresiones);
+	t_info_sentencias * p_info2 = sacar_de_pila(&pila_expresiones);
+	nodo_comparacion = crear_nodo_arbol(crear_info($2),p_info1->a,p_info1->a);
+
 	// puts("a ver esto ahora");
-	nodo_comparacion = crear_nodo_arbol(crear_info($2),nodo_expresion,nodo_termino);
+	// nodo_comparacion = crear_nodo_arbol(crear_info($2),nodo_expresion,nodo_termino);
 	insertar_en_pila(&pila_comparaciones,crear_info_sentencias(nodo_comparacion));
 }
 
@@ -501,7 +506,10 @@ comparacion : PR_NOT expresion
 		puts("comparacion : PR_NOT expresion comparador expresion\n");
 		puts("-------------------\n");
 	}
-	nodo_comparacion = crear_nodo_arbol(crear_info("NOT"),nodo_expresion,NULL);
+
+	t_info_sentencias * p_info = sacar_de_pila(&pila_expresiones);
+
+	nodo_comparacion = crear_nodo_arbol(crear_info("NOT"),p_info->a,NULL);
 	insertar_en_pila(&pila_comparaciones,crear_info_sentencias(nodo_comparacion));
 
 }
@@ -535,8 +543,9 @@ asignacion : TOKEN_ID OP_IGUAL expresion
 		puts(mjs_error);
 		exit(1);
 	}
+	t_info_sentencias * p_info = sacar_de_pila(&pila_expresiones);
 	/* guardo la asignacion en el arbol de ejecucion */
-	nodo_asignacion = crear_nodo_arbol(crear_info(":="),crear_hoja(crear_info($1)),nodo_expresion);
+	nodo_asignacion = crear_nodo_arbol(crear_info(":="),crear_hoja(crear_info($1)),p_info->a);
 
 }
 
@@ -583,7 +592,10 @@ expresion :termino OP_CONCAT factor
 	// printf("%d %d\n", nodo_termino,nodo_factor );
 
 	/* guardo la expresion en el arbol de ejecucion */
+
 	nodo_expresion = crear_nodo_arbol(crear_info("++"),nodo_termino,nodo_factor);
+
+	insertar_en_pila(&pila_expresiones,crear_info_sentencias(nodo_expresion));
 
 }
 
@@ -599,6 +611,7 @@ expresion : termino
 	
 	/* guardo la expresion en el arbol de ejecucion */
 	nodo_expresion = nodo_termino;
+	insertar_en_pila(&pila_expresiones,crear_info_sentencias(nodo_expresion));
 
 }
 
@@ -624,7 +637,9 @@ expresion : expresion OP_SUMA termino
 	}
 
 	/* guardo la expresion en el arbol de ejecucion */
-	nodo_expresion = crear_nodo_arbol(crear_info("+"),nodo_expresion,nodo_termino);
+	t_info_sentencias * p_info = sacar_de_pila(&pila_expresiones);
+	nodo_expresion = crear_nodo_arbol(crear_info("+"),p_info->a,nodo_termino);
+	insertar_en_pila(&pila_expresiones,crear_info_sentencias(nodo_expresion));
 
 } 
 
@@ -651,7 +666,9 @@ expresion : expresion OP_RESTA termino
 	}
 
 	/* guardo la expresion en el arbol de ejecucion */
-	nodo_expresion = crear_nodo_arbol(crear_info("-"),nodo_expresion,nodo_termino);
+	t_info_sentencias * p_info = sacar_de_pila(&pila_expresiones);
+	nodo_expresion = crear_nodo_arbol(crear_info("-"),p_info->a,nodo_termino);
+	insertar_en_pila(&pila_expresiones,crear_info_sentencias(nodo_expresion));
 
 }
 
@@ -967,6 +984,7 @@ int main(int argc, char **argv ) {
     crear_pila(&pila_sentencias);
     crear_pila(&pila_comparaciones);
     crear_pila(&pila_condiciones);
+    crear_pila(&pila_expresiones);
     crear_arbol(&arbol_ejecucion);
 
 	yyparse();
