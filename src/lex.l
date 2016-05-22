@@ -79,12 +79,12 @@ COMENTARIO          .
 "-"				{ return OP_RESTA;}
 "*"				{ return OP_MUL;}
 "/"				{ return OP_DIV;}
-">"             { return OP_MAYOR;}
-">="            { return OP_MAYOR_IGUAL;}
-"<"             { return OP_MENOR;}
-"<="            { return OP_MENOR_IGUAL;}
-"!="            { return OP_DISTINTO;}
-"=="            { return OP_IGUAL_IGUAL;}
+">"             { yylval.str_val = strdup(yytext);return OP_MAYOR;}
+">="            { yylval.str_val = strdup(yytext);return OP_MAYOR_IGUAL;}
+"<"             { yylval.str_val = strdup(yytext);return OP_MENOR;}
+"<="            { yylval.str_val = strdup(yytext);return OP_MENOR_IGUAL;}
+"!="            { yylval.str_val = strdup(yytext);return OP_DISTINTO;}
+"=="            { yylval.str_val = strdup(yytext);return OP_IGUAL_IGUAL;}
 "AND"           { return OP_LOG_AND;}
 "OR"            { return OP_LOG_OR;}
 "NOT"           { return PR_NOT;}

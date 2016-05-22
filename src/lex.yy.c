@@ -838,32 +838,32 @@ YY_RULE_SETUP
 case 21:
 YY_RULE_SETUP
 #line 82 "lex.l"
-{ return OP_MAYOR;}
+{ yylval.str_val = strdup(yytext);return OP_MAYOR;}
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
 #line 83 "lex.l"
-{ return OP_MAYOR_IGUAL;}
+{ yylval.str_val = strdup(yytext);return OP_MAYOR_IGUAL;}
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
 #line 84 "lex.l"
-{ return OP_MENOR;}
+{ yylval.str_val = strdup(yytext);return OP_MENOR;}
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
 #line 85 "lex.l"
-{ return OP_MENOR_IGUAL;}
+{ yylval.str_val = strdup(yytext);return OP_MENOR_IGUAL;}
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
 #line 86 "lex.l"
-{ return OP_DISTINTO;}
+{ yylval.str_val = strdup(yytext);return OP_DISTINTO;}
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
 #line 87 "lex.l"
-{ return OP_IGUAL_IGUAL;}
+{ yylval.str_val = strdup(yytext);return OP_IGUAL_IGUAL;}
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
