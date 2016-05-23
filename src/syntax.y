@@ -1376,7 +1376,7 @@ void crear_arbol_iguales(t_nodo_arbol ** raiz)
 		t_info_sentencias * p_info = sacar_de_pila(&pila_expresiones_iguales);
 		nodo_aux_izq = crear_nodo_arbol(crear_info("=="), p_info_iguales->a, p_info->a);
 		nodo_aux_pp = crear_nodo_arbol(crear_info("+"), crear_hoja(crear_info("cont")), crear_hoja(crear_info("1")));
-		nodo_aux_der = crear_nodo_arbol(crear_info("="), crear_hoja(crear_info("cont")), nodo_aux_pp);	
+		nodo_aux_der = crear_nodo_arbol(crear_info(":="), crear_hoja(crear_info("cont")), nodo_aux_pp);	
 		nodo_aux_if = crear_nodo_arbol(crear_info("IF"), nodo_aux_izq, nodo_aux_der);
 		nodo_aux_nuevo = crear_nodo_arbol(crear_info("IF"), NULL, NULL);		
 		
