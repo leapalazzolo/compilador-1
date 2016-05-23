@@ -284,7 +284,8 @@ lista_expresiones : expresion COMA lista_expresiones
 		puts("Lista de expresiones\n");
 		puts("-------------------\n");		
 	}
-	insertar_en_pila(&pila_expresiones_iguales,crear_info_sentencias(nodo_expresion));	
+	t_info_sentencias * p_info = sacar_de_pila(&pila_expresiones);
+	insertar_en_pila(&pila_expresiones_iguales,p_info);	
 }
 
 lista_expresiones : expresion
@@ -293,7 +294,8 @@ lista_expresiones : expresion
 		puts("Última expresion\n");
 		puts("-------------------\n");		
 	}
-	insertar_en_pila(&pila_expresiones_iguales,crear_info_sentencias(nodo_expresion));	
+	t_info_sentencias * p_info = sacar_de_pila(&pila_expresiones);
+	insertar_en_pila(&pila_expresiones_iguales,p_info);	
 }
 
 filter : PR_FILTER PAR_ABRE condicion_filter COMA COR_ABRE lista_variables COR_CIERRA PAR_CIERRA
@@ -1360,6 +1362,7 @@ void copiar_sin_finalizador(char * dest,char * orig)
 
 void crear_arbol_iguales(t_nodo_arbol ** raiz)
 {
+		puts("holu");
 		t_nodo_arbol * nodo_aux_izq;
 		t_nodo_arbol * nodo_aux_der;
 		t_nodo_arbol * nodo_aux_pp;
@@ -1368,13 +1371,13 @@ void crear_arbol_iguales(t_nodo_arbol ** raiz)
 		t_nodo_arbol * nodo_aux_actual;
 
 		t_info_sentencias * p_info = sacar_de_pila(&pila_expresiones_iguales);
-		nodo_aux_izq = crear_nodo_arbol(crear_info("=="), crear_hoja(crear_info("a")), p_info->a);
+		nodo_aux_izq = crear_nodo_arbol(crear_info("=="), nodo_expresion, p_info->a);
 		nodo_aux_pp = crear_nodo_arbol(crear_info("+"), crear_hoja(crear_info("cont")), crear_hoja(crear_info("1")));
 		nodo_aux_der = crear_nodo_arbol(crear_info("="), crear_hoja(crear_info("cont")), nodo_aux_pp);	
 		nodo_aux_if = crear_nodo_arbol(crear_info("IF"), nodo_aux_izq, nodo_aux_der);
 		nodo_aux_nuevo = crear_nodo_arbol(crear_info("IF"), NULL, NULL);		
 		
-		if(!frente_de_pila(&pila_expresiones_iguales)){
+		if(!pila_vacia(&pila_expresiones_iguales)){
 			*raiz = crear_nodo_arbol(crear_info(";"), nodo_aux_if, nodo_aux_nuevo);
 			crear_arbol_iguales(&((*raiz)->nodo_der));
 		} else{		
