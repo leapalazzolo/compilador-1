@@ -1,8 +1,8 @@
 MAIN
 DIM [b,c,d] AS [STRING,INT,INT];
-
-WRITE HOLA;
-
-
--/ b = "asdasdasdasdasdasdasdasdasdasdasdasdasdasd"; Esto tira error lexico y esta bien, xq supera los 30 caracteres/-
--/Esto es un comentario asdasd 123123123 1 //// --- /-
+IF(1==1)
+THEN
+c :=1;
+ENDIF
+d:=2;
+IGUALES( c+d/c, [c - 3*2,d,6] );
