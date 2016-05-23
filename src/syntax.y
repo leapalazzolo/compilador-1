@@ -40,6 +40,7 @@ t_info_sentencias * crear_info_sentencias(t_nodo_arbol * p_nodo) ;
 void crear_arbol_iguales(t_nodo_arbol ** raiz);
 
 extern int linecount;
+static t_info_sentencias * p_info_iguales;
 
 t_pila * pila_sentencias;
 t_pila * pila_comparaciones;
@@ -275,6 +276,7 @@ iguales : PR_IGUALES PAR_ABRE expresion COMA COR_ABRE lista_expresiones COR_CIER
 		puts("-------------------\n");
 	}
 	
+	p_info_iguales = sacar_de_pila(&pila_expresiones);	
 	crear_arbol_iguales(&nodo_iguales);			
 }
 
@@ -284,6 +286,7 @@ lista_expresiones : expresion COMA lista_expresiones
 		puts("Lista de expresiones\n");
 		puts("-------------------\n");		
 	}
+	
 	t_info_sentencias * p_info = sacar_de_pila(&pila_expresiones);
 	insertar_en_pila(&pila_expresiones_iguales,p_info);	
 }
@@ -1371,7 +1374,7 @@ void crear_arbol_iguales(t_nodo_arbol ** raiz)
 		t_nodo_arbol * nodo_aux_actual;
 
 		t_info_sentencias * p_info = sacar_de_pila(&pila_expresiones_iguales);
-		nodo_aux_izq = crear_nodo_arbol(crear_info("=="), nodo_expresion, p_info->a);
+		nodo_aux_izq = crear_nodo_arbol(crear_info("=="), p_info_iguales->a, p_info->a);
 		nodo_aux_pp = crear_nodo_arbol(crear_info("+"), crear_hoja(crear_info("cont")), crear_hoja(crear_info("1")));
 		nodo_aux_der = crear_nodo_arbol(crear_info("="), crear_hoja(crear_info("cont")), nodo_aux_pp);	
 		nodo_aux_if = crear_nodo_arbol(crear_info("IF"), nodo_aux_izq, nodo_aux_der);
