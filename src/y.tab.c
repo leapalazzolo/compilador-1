@@ -110,7 +110,6 @@ void reemplazar(char * cad, char old,char new, int size) ;
 t_info_sentencias * crear_info_sentencias(t_nodo_arbol * p_nodo) ;
 void crear_arbol_iguales(t_nodo_arbol ** raiz);
 
-
 extern int linecount;
 
 t_pila * pila_sentencias;
@@ -151,7 +150,7 @@ FILE  *yyin; //Archivo de Entrada
 
 
 /* Line 189 of yacc.c  */
-#line 155 "y.tab.c"
+#line 154 "y.tab.c"
 
 /* Enabling traces.  */
 #ifndef YYDEBUG
@@ -276,7 +275,7 @@ typedef union YYSTYPE
 {
 
 /* Line 214 of yacc.c  */
-#line 83 "syntax.y"
+#line 82 "syntax.y"
 
 int intval;
 float val;
@@ -285,7 +284,7 @@ char *str_val;
 
 
 /* Line 214 of yacc.c  */
-#line 289 "y.tab.c"
+#line 288 "y.tab.c"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
@@ -297,7 +296,7 @@ char *str_val;
 
 
 /* Line 264 of yacc.c  */
-#line 301 "y.tab.c"
+#line 300 "y.tab.c"
 
 #ifdef short
 # undef short
@@ -610,8 +609,8 @@ static const yytype_int8 yyrhs[] =
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
 static const yytype_uint16 yyrline[] =
 {
-       0,   144,   144,   151,   163,   171,   186,   197,   214,   230,
-     243,   253,   263,   272,   282,   290,   299,   307,   313,   319,
+       0,   143,   143,   150,   162,   170,   185,   196,   213,   229,
+     242,   252,   262,   271,   281,   290,   299,   307,   313,   319,
      325,   331,   337,   345,   353,   362,   370,   378,   388,   396,
      409,   424,   433,   442,   454,   470,   485,   509,   523,   538,
      558,   608,   624,   652,   681,   693,   719,   747,   766,   784,
@@ -1610,7 +1609,7 @@ yyreduce:
         case 2:
 
 /* Line 1455 of yacc.c  */
-#line 145 "syntax.y"
+#line 144 "syntax.y"
     {
 	nodo_pgm = nodo_programa;
 	puts("COMPILACION EXITOSA\n");
@@ -1621,7 +1620,7 @@ yyreduce:
   case 3:
 
 /* Line 1455 of yacc.c  */
-#line 152 "syntax.y"
+#line 151 "syntax.y"
     {
 
 	// nodo_declaracion_variable = nodo_sentencias;
@@ -1637,7 +1636,7 @@ yyreduce:
   case 4:
 
 /* Line 1455 of yacc.c  */
-#line 164 "syntax.y"
+#line 163 "syntax.y"
     {
 	if(DEBUG){
 		puts("Codigo sin variables\n");
@@ -1649,7 +1648,7 @@ yyreduce:
   case 5:
 
 /* Line 1455 of yacc.c  */
-#line 172 "syntax.y"
+#line 171 "syntax.y"
     {
 	if(DEBUG) {
 		puts("Asignacion\n");
@@ -1667,7 +1666,7 @@ yyreduce:
   case 6:
 
 /* Line 1455 of yacc.c  */
-#line 187 "syntax.y"
+#line 186 "syntax.y"
     {
 	// if(DEBUG){
 		puts("Una sola sentencia\n");
@@ -1682,7 +1681,7 @@ yyreduce:
   case 7:
 
 /* Line 1455 of yacc.c  */
-#line 198 "syntax.y"
+#line 197 "syntax.y"
     {
 	// if(DEBUG) {
 		puts("Varias sentencias\n");
@@ -1703,7 +1702,7 @@ yyreduce:
   case 8:
 
 /* Line 1455 of yacc.c  */
-#line 215 "syntax.y"
+#line 214 "syntax.y"
     {
 
 	// nodo_sentencia = nodo_condicional;
@@ -1722,7 +1721,7 @@ yyreduce:
   case 9:
 
 /* Line 1455 of yacc.c  */
-#line 231 "syntax.y"
+#line 230 "syntax.y"
     {
 	if(DEBUG) {
 		puts("sentencia : iteracion\n");
@@ -1739,7 +1738,7 @@ yyreduce:
   case 10:
 
 /* Line 1455 of yacc.c  */
-#line 244 "syntax.y"
+#line 243 "syntax.y"
     {
 	if(DEBUG) {
 		puts("Operacion de entrada salidas\n");
@@ -1753,7 +1752,7 @@ yyreduce:
   case 11:
 
 /* Line 1455 of yacc.c  */
-#line 254 "syntax.y"
+#line 253 "syntax.y"
     {
 	if(DEBUG) {
 		puts("Operacion de iguales\n");
@@ -1767,7 +1766,7 @@ yyreduce:
   case 12:
 
 /* Line 1455 of yacc.c  */
-#line 264 "syntax.y"
+#line 263 "syntax.y"
     {
 	if(DEBUG) {
 		puts("Operacioon de filters\n");
@@ -1780,7 +1779,7 @@ yyreduce:
   case 13:
 
 /* Line 1455 of yacc.c  */
-#line 273 "syntax.y"
+#line 272 "syntax.y"
     {
 	if(DEBUG) {
 		puts("iguales : PR_IGUALES PAR_ABRE expresion COMA COR_ABRE lista_expresiones COR_CIERRA PAR_CIERRA\n");
@@ -1794,12 +1793,13 @@ yyreduce:
   case 14:
 
 /* Line 1455 of yacc.c  */
-#line 283 "syntax.y"
+#line 282 "syntax.y"
     {
 	if(DEBUG) {
 		puts("Lista de expresiones\n");
 		puts("-------------------\n");		
 	}
+	insertar_en_pila(&pila_expresiones_iguales,crear_info_sentencias(nodo_expresion));	
 }
     break;
 
@@ -2930,7 +2930,6 @@ int main(int argc, char **argv ) {
 	// {
 	// 	t_nodo_arbol
 	// }
-
 	finally(yyin);
 	return EXIT_SUCCESS;
 }
@@ -3222,6 +3221,12 @@ int _print_t(t_nodo_arbol *tree, int is_left, int offset, int depth, char * s, i
 
 int print_t(t_nodo_arbol *tree)
 {
+	FILE *f = fopen("intermedia.txt", "w");
+	if (f == NULL)
+	{
+	    puts("Error abriendo archivo de notación intermedia");
+	    exit(1);
+	}
 	int i;
     char * s = (char *) malloc(sizeof(char) * RENGLONES_IMPRESION_ARBOL * CARACTERES_RENGLON_ARBOL);
 
@@ -3237,7 +3242,9 @@ int print_t(t_nodo_arbol *tree)
     _print_t(tree, 0, 0, 0, s,CARACTERES_RENGLON_ARBOL);
 
     for (i = 0; i < RENGLONES_IMPRESION_ARBOL; i++)
-        printf("%s\n", s + i*CARACTERES_RENGLON_ARBOL);
+        fprintf(f, "%s\n", s + i*CARACTERES_RENGLON_ARBOL);
+    
+    fclose(f);
 }
 
 void imprimir_arbol(t_nodo_arbol *n){
@@ -3273,11 +3280,12 @@ void copiar_sin_finalizador(char * dest,char * orig)
 
 void crear_arbol_iguales(t_nodo_arbol ** raiz)
 {
-		t_nodo_arbol * nodo_aux_izq = &((*raiz)->nodo_izq);
-		t_nodo_arbol * nodo_aux_der  = NULL;
-		t_nodo_arbol * nodo_aux_pp = NULL;
-		t_nodo_arbol * nodo_aux_if = NULL;
-		t_nodo_arbol * nodo_aux_nuevo = NULL;
+		t_nodo_arbol * nodo_aux_izq;
+		t_nodo_arbol * nodo_aux_der;
+		t_nodo_arbol * nodo_aux_pp;
+		t_nodo_arbol * nodo_aux_if;
+		t_nodo_arbol * nodo_aux_nuevo;
+		t_nodo_arbol * nodo_aux_actual;
 
 		t_info_sentencias * p_info = sacar_de_pila(&pila_expresiones_iguales);
 		nodo_aux_izq = crear_nodo_arbol(crear_info("=="), crear_hoja(crear_info("a")), p_info->a);

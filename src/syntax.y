@@ -39,7 +39,6 @@ void reemplazar(char * cad, char old,char new, int size) ;
 t_info_sentencias * crear_info_sentencias(t_nodo_arbol * p_nodo) ;
 void crear_arbol_iguales(t_nodo_arbol ** raiz);
 
-
 extern int linecount;
 
 t_pila * pila_sentencias;
@@ -285,6 +284,7 @@ lista_expresiones : expresion COMA lista_expresiones
 		puts("Lista de expresiones\n");
 		puts("-------------------\n");		
 	}
+	insertar_en_pila(&pila_expresiones_iguales,crear_info_sentencias(nodo_expresion));	
 }
 
 lista_expresiones : expresion
@@ -1010,7 +1010,6 @@ int main(int argc, char **argv ) {
 	// {
 	// 	t_nodo_arbol
 	// }
-
 	finally(yyin);
 	return EXIT_SUCCESS;
 }
@@ -1302,6 +1301,12 @@ int _print_t(t_nodo_arbol *tree, int is_left, int offset, int depth, char * s, i
 
 int print_t(t_nodo_arbol *tree)
 {
+	FILE *f = fopen("intermedia.txt", "w");
+	if (f == NULL)
+	{
+	    puts("Error abriendo archivo de notación intermedia");
+	    exit(1);
+	}
 	int i;
     char * s = (char *) malloc(sizeof(char) * RENGLONES_IMPRESION_ARBOL * CARACTERES_RENGLON_ARBOL);
 
@@ -1317,7 +1322,9 @@ int print_t(t_nodo_arbol *tree)
     _print_t(tree, 0, 0, 0, s,CARACTERES_RENGLON_ARBOL);
 
     for (i = 0; i < RENGLONES_IMPRESION_ARBOL; i++)
-        printf("%s\n", s + i*CARACTERES_RENGLON_ARBOL);
+        fprintf(f, "%s\n", s + i*CARACTERES_RENGLON_ARBOL);
+    
+    fclose(f);
 }
 
 void imprimir_arbol(t_nodo_arbol *n){
