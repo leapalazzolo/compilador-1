@@ -32,6 +32,7 @@ int tipos_iguales(char * nombre1, char * nombre2, char * mjs_error, int lineNumb
 int traer_tipo(char * nombre);
 void poner_prefijo(char * str, char * prefijo);
 int print_t(t_nodo_arbol *tree);
+void crear_codigo_assembler(t_nodo_arbol *tree);
 int _print_t(t_nodo_arbol *tree, int is_left, int offset, int depth, char * s, int max);
 void imprimir_arbol(t_nodo_arbol *n);
 void copiar_sin_finalizador(char * dest,char * orig); 
@@ -1025,6 +1026,8 @@ int main(int argc, char **argv ) {
 	// puts("hola");
 	print_t(arbol_ejecucion->p_nodo);
 	
+	crear_codigo_assembler(arbol_ejecucion->p_nodo);
+	
 	// imprimir_arbol(arbol_ejecucion->p_nodo);
 
 	// printf("la pila esta vacia? %d\n", pila_vacia(&pila_sentencias) );
@@ -1414,4 +1417,35 @@ void crear_arbol_iguales(t_nodo_arbol ** raiz)
 			puts("b");
 			*raiz = nodo_aux_if;
 		}	
+}
+
+void crear_codigo_assembler(t_nodo_arbol *tree)
+{
+	FILE *a = fopen("Final.asm", "w");
+	if (a == NULL)
+	{
+	    puts("Error abriendo archivo assembler");
+	    exit(1);
+	}
+	fprintf(a, "TITLE TP Compilador 2016");
+	fprintf(a, "\n.MODEL	small");
+	fprintf(a, "\n.386");
+	fprintf(a, "\n.STACK	300h");
+	fprintf(a, "\n");
+	fprintf(a, "\n.DATA");
+	fprintf(a, "\nmessage db	'-- EOF --', '$'");
+	fprintf(a, "\noverflow db	'Overflow!', '$'");
+	fprintf(a, "\ndiviz db	'Division by 0!', '$'");
+	fprintf(a, "\nMAX_STRING_LENGTH equ 30 ;Longitud maxima de los string.");
+	fprintf(a, "\nMAX_STRING_INT equ 65535 ;Tamaño maximo de ints.");
+	fprintf(a, "\nAUX1 DD ?");
+	fprintf(a, "\nAUX2 DD ?");
+	fprintf(a, "\nAUX3 DD ?");
+	fprintf(a, "\nAUX4 DD ?");
+	fprintf(a, "\nAUX5 DD ?");
+	fprintf(a, "\nOldCW DW ?");
+	fprintf(a, "\nNewCW DW ?");
+	fprintf(a, "\n");
+	fprintf(a, "\n.CODE");
+    fclose(a);
 }
