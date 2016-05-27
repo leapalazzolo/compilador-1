@@ -74,30 +74,31 @@ Grammar
    47       | CONST_INT
    48       | CONST_FLOAT
    49       | TOKEN_ID
+   50       | iguales
 
-   50 declaracion_variables: PR_DIM COR_ABRE declaracion_variables_interna COR_CIERRA PUNTO_Y_COMA
-   51                      | PR_DIM COR_ABRE declaracion_variables_interna COR_CIERRA PUNTO_Y_COMA declaracion_variables
+   51 declaracion_variables: PR_DIM COR_ABRE declaracion_variables_interna COR_CIERRA PUNTO_Y_COMA
+   52                      | PR_DIM COR_ABRE declaracion_variables_interna COR_CIERRA PUNTO_Y_COMA declaracion_variables
 
-   52 declaracion_variables_interna: TOKEN_ID COMA declaracion_variables_interna COMA tipo_dato
-   53                              | TOKEN_ID COR_CIERRA PR_AS COR_ABRE tipo_dato
+   53 declaracion_variables_interna: TOKEN_ID COMA declaracion_variables_interna COMA tipo_dato
+   54                              | TOKEN_ID COR_CIERRA PR_AS COR_ABRE tipo_dato
 
-   54 tipo_dato: PR_INT
-   55          | PR_FLOAT
-   56          | PR_STRING
+   55 tipo_dato: PR_INT
+   56          | PR_FLOAT
+   57          | PR_STRING
 
-   57 comparador: OP_MAYOR
-   58           | OP_MENOR
-   59           | OP_MENOR_IGUAL
-   60           | OP_MAYOR_IGUAL
-   61           | OP_IGUAL_IGUAL
-   62           | OP_DISTINTO
+   58 comparador: OP_MAYOR
+   59           | OP_MENOR
+   60           | OP_MENOR_IGUAL
+   61           | OP_MAYOR_IGUAL
+   62           | OP_IGUAL_IGUAL
+   63           | OP_DISTINTO
 
 
 Terminals, with rules where they appear
 
 $end (0) 0
 error (256)
-TOKEN_ID (258) 21 22 25 26 38 49 52 53
+TOKEN_ID (258) 21 22 25 26 38 49 53 54
 CONST_INT (259) 47
 CONST_STR (260) 27 46
 CONST_FLOAT (261) 48
@@ -116,30 +117,30 @@ PR_DO (273) 37
 PR_ENDWHILE (274) 37
 PAR_ABRE (275) 12 15 28 29 37
 PAR_CIERRA (276) 12 15 28 29 37
-COR_ABRE (277) 12 15 50 51 53
-COR_CIERRA (278) 12 15 50 51 53
-COMA (279) 12 13 15 21 52
+COR_ABRE (277) 12 15 51 52 54
+COR_CIERRA (278) 12 15 51 52 54
+COMA (279) 12 13 15 21 53
 OP_LOG_AND (280) 17 33
 OP_LOG_OR (281) 18 34
 OP_SUMA (282) 41
 OP_RESTA (283) 42
 OP_MUL (284) 45
 OP_DIV (285) 44
-OP_MAYOR (286) 57
-OP_MAYOR_IGUAL (287) 60
-OP_MENOR (288) 58
-OP_MENOR_IGUAL (289) 59
-OP_DISTINTO (290) 62
-OP_IGUAL_IGUAL (291) 61
+OP_MAYOR (286) 58
+OP_MAYOR_IGUAL (287) 61
+OP_MENOR (288) 59
+OP_MENOR_IGUAL (289) 60
+OP_DISTINTO (290) 63
+OP_IGUAL_IGUAL (291) 62
 OP_IGUAL (292) 38
-PR_AS (293) 53
-PR_DIM (294) 50 51
+PR_AS (293) 54
+PR_DIM (294) 51 52
 OP_FILTER (295) 19 20
-PR_FLOAT (296) 55
-PR_INT (297) 54
-PR_STRING (298) 56
+PR_FLOAT (296) 56
+PR_INT (297) 55
+PR_STRING (298) 57
 OP_CONCAT (299) 39
-PUNTO_Y_COMA (300) 4 10 11 50 51
+PUNTO_Y_COMA (300) 4 10 11 51 52
 
 
 Nonterminals, with rules where they appear
@@ -155,7 +156,7 @@ sentencia (49)
 lista_sentencias (50)
     on left: 5 6, on right: 2 3 6 30 31 37
 iguales (51)
-    on left: 12, on right: 10
+    on left: 12, on right: 10 50
 lista_expresiones (52)
     on left: 13 14, on right: 12 13
 filter (53)
@@ -191,15 +192,15 @@ expresion (67)
 termino (68)
     on left: 43 44 45, on right: 39 40 41 42 44 45
 factor (69)
-    on left: 46 47 48 49, on right: 39 43 44 45
+    on left: 46 47 48 49 50, on right: 39 43 44 45
 declaracion_variables (70)
-    on left: 50 51, on right: 2 51
+    on left: 51 52, on right: 2 52
 declaracion_variables_interna (71)
-    on left: 52 53, on right: 50 51 52
+    on left: 53 54, on right: 51 52 53
 tipo_dato (72)
-    on left: 54 55 56, on right: 52 53
+    on left: 55 56 57, on right: 53 54
 comparador (73)
-    on left: 57 58 59 60 61 62, on right: 19 20 35
+    on left: 58 59 60 61 62 63, on right: 19 20 35
 
 
 state 0
@@ -307,8 +308,8 @@ state 10
 
 state 11
 
-   50 declaracion_variables: PR_DIM . COR_ABRE declaracion_variables_interna COR_CIERRA PUNTO_Y_COMA
-   51                      | PR_DIM . COR_ABRE declaracion_variables_interna COR_CIERRA PUNTO_Y_COMA declaracion_variables
+   51 declaracion_variables: PR_DIM . COR_ABRE declaracion_variables_interna COR_CIERRA PUNTO_Y_COMA
+   52                      | PR_DIM . COR_ABRE declaracion_variables_interna COR_CIERRA PUNTO_Y_COMA declaracion_variables
 
     COR_ABRE  shift, and go to state 32
 
@@ -442,10 +443,12 @@ state 24
     CONST_INT    shift, and go to state 39
     CONST_STR    shift, and go to state 40
     CONST_FLOAT  shift, and go to state 41
+    PR_IGUALES   shift, and go to state 5
 
-    expresion  go to state 42
-    termino    go to state 43
-    factor     go to state 44
+    iguales    go to state 42
+    expresion  go to state 43
+    termino    go to state 44
+    factor     go to state 45
 
 
 state 25
@@ -456,21 +459,23 @@ state 25
     CONST_INT    shift, and go to state 39
     CONST_STR    shift, and go to state 40
     CONST_FLOAT  shift, and go to state 41
+    PR_IGUALES   shift, and go to state 5
 
-    expresion  go to state 45
-    termino    go to state 43
-    factor     go to state 44
+    iguales    go to state 42
+    expresion  go to state 46
+    termino    go to state 44
+    factor     go to state 45
 
 
 state 26
 
    15 filter: PR_FILTER PAR_ABRE . condicion_filter COMA COR_ABRE lista_variables COR_CIERRA PAR_CIERRA
 
-    PR_NOT     shift, and go to state 46
-    OP_FILTER  shift, and go to state 47
+    PR_NOT     shift, and go to state 47
+    OP_FILTER  shift, and go to state 48
 
-    condicion_filter    go to state 48
-    comparacion_filter  go to state 49
+    condicion_filter    go to state 49
+    comparacion_filter  go to state 50
 
 
 state 27
@@ -503,13 +508,15 @@ state 30
     CONST_INT    shift, and go to state 39
     CONST_STR    shift, and go to state 40
     CONST_FLOAT  shift, and go to state 41
-    PR_NOT       shift, and go to state 50
+    PR_IGUALES   shift, and go to state 5
+    PR_NOT       shift, and go to state 51
 
-    condicion    go to state 51
-    comparacion  go to state 52
-    expresion    go to state 53
-    termino      go to state 43
-    factor       go to state 44
+    iguales      go to state 42
+    condicion    go to state 52
+    comparacion  go to state 53
+    expresion    go to state 54
+    termino      go to state 44
+    factor       go to state 45
 
 
 state 31
@@ -520,23 +527,25 @@ state 31
     CONST_INT    shift, and go to state 39
     CONST_STR    shift, and go to state 40
     CONST_FLOAT  shift, and go to state 41
-    PR_NOT       shift, and go to state 50
+    PR_IGUALES   shift, and go to state 5
+    PR_NOT       shift, and go to state 51
 
-    condicion    go to state 54
-    comparacion  go to state 52
-    expresion    go to state 53
-    termino      go to state 43
-    factor       go to state 44
+    iguales      go to state 42
+    condicion    go to state 55
+    comparacion  go to state 53
+    expresion    go to state 54
+    termino      go to state 44
+    factor       go to state 45
 
 
 state 32
 
-   50 declaracion_variables: PR_DIM COR_ABRE . declaracion_variables_interna COR_CIERRA PUNTO_Y_COMA
-   51                      | PR_DIM COR_ABRE . declaracion_variables_interna COR_CIERRA PUNTO_Y_COMA declaracion_variables
+   51 declaracion_variables: PR_DIM COR_ABRE . declaracion_variables_interna COR_CIERRA PUNTO_Y_COMA
+   52                      | PR_DIM COR_ABRE . declaracion_variables_interna COR_CIERRA PUNTO_Y_COMA declaracion_variables
 
-    TOKEN_ID  shift, and go to state 55
+    TOKEN_ID  shift, and go to state 56
 
-    declaracion_variables_interna  go to state 56
+    declaracion_variables_interna  go to state 57
 
 
 state 33
@@ -604,89 +613,96 @@ state 41
 
 state 42
 
+   50 factor: iguales .
+
+    $default  reduce using rule 50 (factor)
+
+
+state 43
+
    38 asignacion: TOKEN_ID OP_IGUAL expresion .
    41 expresion: expresion . OP_SUMA termino
    42          | expresion . OP_RESTA termino
 
-    OP_SUMA   shift, and go to state 57
-    OP_RESTA  shift, and go to state 58
+    OP_SUMA   shift, and go to state 58
+    OP_RESTA  shift, and go to state 59
 
     $default  reduce using rule 38 (asignacion)
 
 
-state 43
+state 44
 
    39 expresion: termino . OP_CONCAT factor
    40          | termino .
    44 termino: termino . OP_DIV factor
    45        | termino . OP_MUL factor
 
-    OP_MUL     shift, and go to state 59
-    OP_DIV     shift, and go to state 60
-    OP_CONCAT  shift, and go to state 61
+    OP_MUL     shift, and go to state 60
+    OP_DIV     shift, and go to state 61
+    OP_CONCAT  shift, and go to state 62
 
     $default  reduce using rule 40 (expresion)
 
 
-state 44
+state 45
 
    43 termino: factor .
 
     $default  reduce using rule 43 (termino)
 
 
-state 45
+state 46
 
    12 iguales: PR_IGUALES PAR_ABRE expresion . COMA COR_ABRE lista_expresiones COR_CIERRA PAR_CIERRA
    41 expresion: expresion . OP_SUMA termino
    42          | expresion . OP_RESTA termino
 
-    COMA      shift, and go to state 62
-    OP_SUMA   shift, and go to state 57
-    OP_RESTA  shift, and go to state 58
-
-
-state 46
-
-   20 comparacion_filter: PR_NOT . OP_FILTER comparador expresion
-
-    OP_FILTER  shift, and go to state 63
+    COMA      shift, and go to state 63
+    OP_SUMA   shift, and go to state 58
+    OP_RESTA  shift, and go to state 59
 
 
 state 47
 
-   19 comparacion_filter: OP_FILTER . comparador expresion
+   20 comparacion_filter: PR_NOT . OP_FILTER comparador expresion
 
-    OP_MAYOR        shift, and go to state 64
-    OP_MAYOR_IGUAL  shift, and go to state 65
-    OP_MENOR        shift, and go to state 66
-    OP_MENOR_IGUAL  shift, and go to state 67
-    OP_DISTINTO     shift, and go to state 68
-    OP_IGUAL_IGUAL  shift, and go to state 69
-
-    comparador  go to state 70
+    OP_FILTER  shift, and go to state 64
 
 
 state 48
 
-   15 filter: PR_FILTER PAR_ABRE condicion_filter . COMA COR_ABRE lista_variables COR_CIERRA PAR_CIERRA
+   19 comparacion_filter: OP_FILTER . comparador expresion
 
-    COMA  shift, and go to state 71
+    OP_MAYOR        shift, and go to state 65
+    OP_MAYOR_IGUAL  shift, and go to state 66
+    OP_MENOR        shift, and go to state 67
+    OP_MENOR_IGUAL  shift, and go to state 68
+    OP_DISTINTO     shift, and go to state 69
+    OP_IGUAL_IGUAL  shift, and go to state 70
+
+    comparador  go to state 71
 
 
 state 49
+
+   15 filter: PR_FILTER PAR_ABRE condicion_filter . COMA COR_ABRE lista_variables COR_CIERRA PAR_CIERRA
+
+    COMA  shift, and go to state 72
+
+
+state 50
 
    16 condicion_filter: comparacion_filter .
    17                 | comparacion_filter . OP_LOG_AND comparacion_filter
    18                 | comparacion_filter . OP_LOG_OR comparacion_filter
 
-    OP_LOG_AND  shift, and go to state 72
-    OP_LOG_OR   shift, and go to state 73
+    OP_LOG_AND  shift, and go to state 73
+    OP_LOG_OR   shift, and go to state 74
 
     $default  reduce using rule 16 (condicion_filter)
 
 
-state 50
+state 51
 
    36 comparacion: PR_NOT . expresion
 
@@ -694,75 +710,77 @@ state 50
     CONST_INT    shift, and go to state 39
     CONST_STR    shift, and go to state 40
     CONST_FLOAT  shift, and go to state 41
+    PR_IGUALES   shift, and go to state 5
 
-    expresion  go to state 74
-    termino    go to state 43
-    factor     go to state 44
+    iguales    go to state 42
+    expresion  go to state 75
+    termino    go to state 44
+    factor     go to state 45
 
 
-state 51
+state 52
 
    28 condicional: PR_IF PAR_ABRE condicion . PAR_CIERRA then PR_ENDIF
    29            | PR_IF PAR_ABRE condicion . PAR_CIERRA then else PR_ENDIF
 
-    PAR_CIERRA  shift, and go to state 75
+    PAR_CIERRA  shift, and go to state 76
 
 
-state 52
+state 53
 
    32 condicion: comparacion .
    33          | comparacion . OP_LOG_AND comparacion
    34          | comparacion . OP_LOG_OR comparacion
 
-    OP_LOG_AND  shift, and go to state 76
-    OP_LOG_OR   shift, and go to state 77
+    OP_LOG_AND  shift, and go to state 77
+    OP_LOG_OR   shift, and go to state 78
 
     $default  reduce using rule 32 (condicion)
 
 
-state 53
+state 54
 
    35 comparacion: expresion . comparador expresion
    41 expresion: expresion . OP_SUMA termino
    42          | expresion . OP_RESTA termino
 
-    OP_SUMA         shift, and go to state 57
-    OP_RESTA        shift, and go to state 58
-    OP_MAYOR        shift, and go to state 64
-    OP_MAYOR_IGUAL  shift, and go to state 65
-    OP_MENOR        shift, and go to state 66
-    OP_MENOR_IGUAL  shift, and go to state 67
-    OP_DISTINTO     shift, and go to state 68
-    OP_IGUAL_IGUAL  shift, and go to state 69
+    OP_SUMA         shift, and go to state 58
+    OP_RESTA        shift, and go to state 59
+    OP_MAYOR        shift, and go to state 65
+    OP_MAYOR_IGUAL  shift, and go to state 66
+    OP_MENOR        shift, and go to state 67
+    OP_MENOR_IGUAL  shift, and go to state 68
+    OP_DISTINTO     shift, and go to state 69
+    OP_IGUAL_IGUAL  shift, and go to state 70
 
-    comparador  go to state 78
-
-
-state 54
-
-   37 iteracion: PR_WHILE PAR_ABRE condicion . PAR_CIERRA PR_DO lista_sentencias PR_ENDWHILE
-
-    PAR_CIERRA  shift, and go to state 79
+    comparador  go to state 79
 
 
 state 55
 
-   52 declaracion_variables_interna: TOKEN_ID . COMA declaracion_variables_interna COMA tipo_dato
-   53                              | TOKEN_ID . COR_CIERRA PR_AS COR_ABRE tipo_dato
+   37 iteracion: PR_WHILE PAR_ABRE condicion . PAR_CIERRA PR_DO lista_sentencias PR_ENDWHILE
 
-    COR_CIERRA  shift, and go to state 80
-    COMA        shift, and go to state 81
+    PAR_CIERRA  shift, and go to state 80
 
 
 state 56
 
-   50 declaracion_variables: PR_DIM COR_ABRE declaracion_variables_interna . COR_CIERRA PUNTO_Y_COMA
-   51                      | PR_DIM COR_ABRE declaracion_variables_interna . COR_CIERRA PUNTO_Y_COMA declaracion_variables
+   53 declaracion_variables_interna: TOKEN_ID . COMA declaracion_variables_interna COMA tipo_dato
+   54                              | TOKEN_ID . COR_CIERRA PR_AS COR_ABRE tipo_dato
 
-    COR_CIERRA  shift, and go to state 82
+    COR_CIERRA  shift, and go to state 81
+    COMA        shift, and go to state 82
 
 
 state 57
+
+   51 declaracion_variables: PR_DIM COR_ABRE declaracion_variables_interna . COR_CIERRA PUNTO_Y_COMA
+   52                      | PR_DIM COR_ABRE declaracion_variables_interna . COR_CIERRA PUNTO_Y_COMA declaracion_variables
+
+    COR_CIERRA  shift, and go to state 83
+
+
+state 58
 
    41 expresion: expresion OP_SUMA . termino
 
@@ -770,12 +788,14 @@ state 57
     CONST_INT    shift, and go to state 39
     CONST_STR    shift, and go to state 40
     CONST_FLOAT  shift, and go to state 41
+    PR_IGUALES   shift, and go to state 5
 
-    termino  go to state 83
-    factor   go to state 44
+    iguales  go to state 42
+    termino  go to state 84
+    factor   go to state 45
 
 
-state 58
+state 59
 
    42 expresion: expresion OP_RESTA . termino
 
@@ -783,12 +803,14 @@ state 58
     CONST_INT    shift, and go to state 39
     CONST_STR    shift, and go to state 40
     CONST_FLOAT  shift, and go to state 41
+    PR_IGUALES   shift, and go to state 5
 
-    termino  go to state 84
-    factor   go to state 44
+    iguales  go to state 42
+    termino  go to state 85
+    factor   go to state 45
 
 
-state 59
+state 60
 
    45 termino: termino OP_MUL . factor
 
@@ -796,11 +818,13 @@ state 59
     CONST_INT    shift, and go to state 39
     CONST_STR    shift, and go to state 40
     CONST_FLOAT  shift, and go to state 41
+    PR_IGUALES   shift, and go to state 5
 
-    factor  go to state 85
+    iguales  go to state 42
+    factor   go to state 86
 
 
-state 60
+state 61
 
    44 termino: termino OP_DIV . factor
 
@@ -808,11 +832,13 @@ state 60
     CONST_INT    shift, and go to state 39
     CONST_STR    shift, and go to state 40
     CONST_FLOAT  shift, and go to state 41
+    PR_IGUALES   shift, and go to state 5
 
-    factor  go to state 86
+    iguales  go to state 42
+    factor   go to state 87
 
 
-state 61
+state 62
 
    39 expresion: termino OP_CONCAT . factor
 
@@ -820,74 +846,76 @@ state 61
     CONST_INT    shift, and go to state 39
     CONST_STR    shift, and go to state 40
     CONST_FLOAT  shift, and go to state 41
+    PR_IGUALES   shift, and go to state 5
 
-    factor  go to state 87
-
-
-state 62
-
-   12 iguales: PR_IGUALES PAR_ABRE expresion COMA . COR_ABRE lista_expresiones COR_CIERRA PAR_CIERRA
-
-    COR_ABRE  shift, and go to state 88
+    iguales  go to state 42
+    factor   go to state 88
 
 
 state 63
 
-   20 comparacion_filter: PR_NOT OP_FILTER . comparador expresion
+   12 iguales: PR_IGUALES PAR_ABRE expresion COMA . COR_ABRE lista_expresiones COR_CIERRA PAR_CIERRA
 
-    OP_MAYOR        shift, and go to state 64
-    OP_MAYOR_IGUAL  shift, and go to state 65
-    OP_MENOR        shift, and go to state 66
-    OP_MENOR_IGUAL  shift, and go to state 67
-    OP_DISTINTO     shift, and go to state 68
-    OP_IGUAL_IGUAL  shift, and go to state 69
-
-    comparador  go to state 89
+    COR_ABRE  shift, and go to state 89
 
 
 state 64
 
-   57 comparador: OP_MAYOR .
+   20 comparacion_filter: PR_NOT OP_FILTER . comparador expresion
 
-    $default  reduce using rule 57 (comparador)
+    OP_MAYOR        shift, and go to state 65
+    OP_MAYOR_IGUAL  shift, and go to state 66
+    OP_MENOR        shift, and go to state 67
+    OP_MENOR_IGUAL  shift, and go to state 68
+    OP_DISTINTO     shift, and go to state 69
+    OP_IGUAL_IGUAL  shift, and go to state 70
+
+    comparador  go to state 90
 
 
 state 65
 
-   60 comparador: OP_MAYOR_IGUAL .
-
-    $default  reduce using rule 60 (comparador)
-
-
-state 66
-
-   58 comparador: OP_MENOR .
+   58 comparador: OP_MAYOR .
 
     $default  reduce using rule 58 (comparador)
 
 
+state 66
+
+   61 comparador: OP_MAYOR_IGUAL .
+
+    $default  reduce using rule 61 (comparador)
+
+
 state 67
 
-   59 comparador: OP_MENOR_IGUAL .
+   59 comparador: OP_MENOR .
 
     $default  reduce using rule 59 (comparador)
 
 
 state 68
 
-   62 comparador: OP_DISTINTO .
+   60 comparador: OP_MENOR_IGUAL .
 
-    $default  reduce using rule 62 (comparador)
+    $default  reduce using rule 60 (comparador)
 
 
 state 69
 
-   61 comparador: OP_IGUAL_IGUAL .
+   63 comparador: OP_DISTINTO .
 
-    $default  reduce using rule 61 (comparador)
+    $default  reduce using rule 63 (comparador)
 
 
 state 70
+
+   62 comparador: OP_IGUAL_IGUAL .
+
+    $default  reduce using rule 62 (comparador)
+
+
+state 71
 
    19 comparacion_filter: OP_FILTER comparador . expresion
 
@@ -895,62 +923,64 @@ state 70
     CONST_INT    shift, and go to state 39
     CONST_STR    shift, and go to state 40
     CONST_FLOAT  shift, and go to state 41
+    PR_IGUALES   shift, and go to state 5
 
-    expresion  go to state 90
-    termino    go to state 43
-    factor     go to state 44
-
-
-state 71
-
-   15 filter: PR_FILTER PAR_ABRE condicion_filter COMA . COR_ABRE lista_variables COR_CIERRA PAR_CIERRA
-
-    COR_ABRE  shift, and go to state 91
+    iguales    go to state 42
+    expresion  go to state 91
+    termino    go to state 44
+    factor     go to state 45
 
 
 state 72
 
-   17 condicion_filter: comparacion_filter OP_LOG_AND . comparacion_filter
+   15 filter: PR_FILTER PAR_ABRE condicion_filter COMA . COR_ABRE lista_variables COR_CIERRA PAR_CIERRA
 
-    PR_NOT     shift, and go to state 46
-    OP_FILTER  shift, and go to state 47
-
-    comparacion_filter  go to state 92
+    COR_ABRE  shift, and go to state 92
 
 
 state 73
 
-   18 condicion_filter: comparacion_filter OP_LOG_OR . comparacion_filter
+   17 condicion_filter: comparacion_filter OP_LOG_AND . comparacion_filter
 
-    PR_NOT     shift, and go to state 46
-    OP_FILTER  shift, and go to state 47
+    PR_NOT     shift, and go to state 47
+    OP_FILTER  shift, and go to state 48
 
     comparacion_filter  go to state 93
 
 
 state 74
 
-   36 comparacion: PR_NOT expresion .
-   41 expresion: expresion . OP_SUMA termino
-   42          | expresion . OP_RESTA termino
+   18 condicion_filter: comparacion_filter OP_LOG_OR . comparacion_filter
 
-    OP_SUMA   shift, and go to state 57
-    OP_RESTA  shift, and go to state 58
+    PR_NOT     shift, and go to state 47
+    OP_FILTER  shift, and go to state 48
 
-    $default  reduce using rule 36 (comparacion)
+    comparacion_filter  go to state 94
 
 
 state 75
 
-   28 condicional: PR_IF PAR_ABRE condicion PAR_CIERRA . then PR_ENDIF
-   29            | PR_IF PAR_ABRE condicion PAR_CIERRA . then else PR_ENDIF
+   36 comparacion: PR_NOT expresion .
+   41 expresion: expresion . OP_SUMA termino
+   42          | expresion . OP_RESTA termino
 
-    PR_THEN  shift, and go to state 94
+    OP_SUMA   shift, and go to state 58
+    OP_RESTA  shift, and go to state 59
 
-    then  go to state 95
+    $default  reduce using rule 36 (comparacion)
 
 
 state 76
+
+   28 condicional: PR_IF PAR_ABRE condicion PAR_CIERRA . then PR_ENDIF
+   29            | PR_IF PAR_ABRE condicion PAR_CIERRA . then else PR_ENDIF
+
+    PR_THEN  shift, and go to state 95
+
+    then  go to state 96
+
+
+state 77
 
    33 condicion: comparacion OP_LOG_AND . comparacion
 
@@ -958,15 +988,17 @@ state 76
     CONST_INT    shift, and go to state 39
     CONST_STR    shift, and go to state 40
     CONST_FLOAT  shift, and go to state 41
-    PR_NOT       shift, and go to state 50
+    PR_IGUALES   shift, and go to state 5
+    PR_NOT       shift, and go to state 51
 
-    comparacion  go to state 96
-    expresion    go to state 53
-    termino      go to state 43
-    factor       go to state 44
+    iguales      go to state 42
+    comparacion  go to state 97
+    expresion    go to state 54
+    termino      go to state 44
+    factor       go to state 45
 
 
-state 77
+state 78
 
    34 condicion: comparacion OP_LOG_OR . comparacion
 
@@ -974,15 +1006,17 @@ state 77
     CONST_INT    shift, and go to state 39
     CONST_STR    shift, and go to state 40
     CONST_FLOAT  shift, and go to state 41
-    PR_NOT       shift, and go to state 50
+    PR_IGUALES   shift, and go to state 5
+    PR_NOT       shift, and go to state 51
 
-    comparacion  go to state 97
-    expresion    go to state 53
-    termino      go to state 43
-    factor       go to state 44
+    iguales      go to state 42
+    comparacion  go to state 98
+    expresion    go to state 54
+    termino      go to state 44
+    factor       go to state 45
 
 
-state 78
+state 79
 
    35 comparacion: expresion comparador . expresion
 
@@ -990,89 +1024,91 @@ state 78
     CONST_INT    shift, and go to state 39
     CONST_STR    shift, and go to state 40
     CONST_FLOAT  shift, and go to state 41
+    PR_IGUALES   shift, and go to state 5
 
-    expresion  go to state 98
-    termino    go to state 43
-    factor     go to state 44
-
-
-state 79
-
-   37 iteracion: PR_WHILE PAR_ABRE condicion PAR_CIERRA . PR_DO lista_sentencias PR_ENDWHILE
-
-    PR_DO  shift, and go to state 99
+    iguales    go to state 42
+    expresion  go to state 99
+    termino    go to state 44
+    factor     go to state 45
 
 
 state 80
 
-   53 declaracion_variables_interna: TOKEN_ID COR_CIERRA . PR_AS COR_ABRE tipo_dato
+   37 iteracion: PR_WHILE PAR_ABRE condicion PAR_CIERRA . PR_DO lista_sentencias PR_ENDWHILE
 
-    PR_AS  shift, and go to state 100
+    PR_DO  shift, and go to state 100
 
 
 state 81
 
-   52 declaracion_variables_interna: TOKEN_ID COMA . declaracion_variables_interna COMA tipo_dato
+   54 declaracion_variables_interna: TOKEN_ID COR_CIERRA . PR_AS COR_ABRE tipo_dato
 
-    TOKEN_ID  shift, and go to state 55
-
-    declaracion_variables_interna  go to state 101
+    PR_AS  shift, and go to state 101
 
 
 state 82
 
-   50 declaracion_variables: PR_DIM COR_ABRE declaracion_variables_interna COR_CIERRA . PUNTO_Y_COMA
-   51                      | PR_DIM COR_ABRE declaracion_variables_interna COR_CIERRA . PUNTO_Y_COMA declaracion_variables
+   53 declaracion_variables_interna: TOKEN_ID COMA . declaracion_variables_interna COMA tipo_dato
 
-    PUNTO_Y_COMA  shift, and go to state 102
+    TOKEN_ID  shift, and go to state 56
+
+    declaracion_variables_interna  go to state 102
 
 
 state 83
+
+   51 declaracion_variables: PR_DIM COR_ABRE declaracion_variables_interna COR_CIERRA . PUNTO_Y_COMA
+   52                      | PR_DIM COR_ABRE declaracion_variables_interna COR_CIERRA . PUNTO_Y_COMA declaracion_variables
+
+    PUNTO_Y_COMA  shift, and go to state 103
+
+
+state 84
 
    41 expresion: expresion OP_SUMA termino .
    44 termino: termino . OP_DIV factor
    45        | termino . OP_MUL factor
 
-    OP_MUL  shift, and go to state 59
-    OP_DIV  shift, and go to state 60
+    OP_MUL  shift, and go to state 60
+    OP_DIV  shift, and go to state 61
 
     $default  reduce using rule 41 (expresion)
 
 
-state 84
+state 85
 
    42 expresion: expresion OP_RESTA termino .
    44 termino: termino . OP_DIV factor
    45        | termino . OP_MUL factor
 
-    OP_MUL  shift, and go to state 59
-    OP_DIV  shift, and go to state 60
+    OP_MUL  shift, and go to state 60
+    OP_DIV  shift, and go to state 61
 
     $default  reduce using rule 42 (expresion)
 
 
-state 85
+state 86
 
    45 termino: termino OP_MUL factor .
 
     $default  reduce using rule 45 (termino)
 
 
-state 86
+state 87
 
    44 termino: termino OP_DIV factor .
 
     $default  reduce using rule 44 (termino)
 
 
-state 87
+state 88
 
    39 expresion: termino OP_CONCAT factor .
 
     $default  reduce using rule 39 (expresion)
 
 
-state 88
+state 89
 
    12 iguales: PR_IGUALES PAR_ABRE expresion COMA COR_ABRE . lista_expresiones COR_CIERRA PAR_CIERRA
 
@@ -1080,14 +1116,16 @@ state 88
     CONST_INT    shift, and go to state 39
     CONST_STR    shift, and go to state 40
     CONST_FLOAT  shift, and go to state 41
+    PR_IGUALES   shift, and go to state 5
 
-    lista_expresiones  go to state 103
-    expresion          go to state 104
-    termino            go to state 43
-    factor             go to state 44
+    iguales            go to state 42
+    lista_expresiones  go to state 104
+    expresion          go to state 105
+    termino            go to state 44
+    factor             go to state 45
 
 
-state 89
+state 90
 
    20 comparacion_filter: PR_NOT OP_FILTER comparador . expresion
 
@@ -1095,48 +1133,50 @@ state 89
     CONST_INT    shift, and go to state 39
     CONST_STR    shift, and go to state 40
     CONST_FLOAT  shift, and go to state 41
+    PR_IGUALES   shift, and go to state 5
 
-    expresion  go to state 105
-    termino    go to state 43
-    factor     go to state 44
+    iguales    go to state 42
+    expresion  go to state 106
+    termino    go to state 44
+    factor     go to state 45
 
 
-state 90
+state 91
 
    19 comparacion_filter: OP_FILTER comparador expresion .
    41 expresion: expresion . OP_SUMA termino
    42          | expresion . OP_RESTA termino
 
-    OP_SUMA   shift, and go to state 57
-    OP_RESTA  shift, and go to state 58
+    OP_SUMA   shift, and go to state 58
+    OP_RESTA  shift, and go to state 59
 
     $default  reduce using rule 19 (comparacion_filter)
 
 
-state 91
+state 92
 
    15 filter: PR_FILTER PAR_ABRE condicion_filter COMA COR_ABRE . lista_variables COR_CIERRA PAR_CIERRA
 
-    TOKEN_ID  shift, and go to state 106
+    TOKEN_ID  shift, and go to state 107
 
-    lista_variables  go to state 107
+    lista_variables  go to state 108
 
 
-state 92
+state 93
 
    17 condicion_filter: comparacion_filter OP_LOG_AND comparacion_filter .
 
     $default  reduce using rule 17 (condicion_filter)
 
 
-state 93
+state 94
 
    18 condicion_filter: comparacion_filter OP_LOG_OR comparacion_filter .
 
     $default  reduce using rule 18 (condicion_filter)
 
 
-state 94
+state 95
 
    30 then: PR_THEN . lista_sentencias
 
@@ -1149,7 +1189,7 @@ state 94
     PR_WHILE    shift, and go to state 10
 
     sentencia         go to state 12
-    lista_sentencias  go to state 108
+    lista_sentencias  go to state 109
     iguales           go to state 14
     filter            go to state 15
     io                go to state 16
@@ -1160,44 +1200,44 @@ state 94
     asignacion        go to state 21
 
 
-state 95
+state 96
 
    28 condicional: PR_IF PAR_ABRE condicion PAR_CIERRA then . PR_ENDIF
    29            | PR_IF PAR_ABRE condicion PAR_CIERRA then . else PR_ENDIF
 
-    PR_ENDIF  shift, and go to state 109
-    PR_ELSE   shift, and go to state 110
+    PR_ENDIF  shift, and go to state 110
+    PR_ELSE   shift, and go to state 111
 
-    else  go to state 111
+    else  go to state 112
 
 
-state 96
+state 97
 
    33 condicion: comparacion OP_LOG_AND comparacion .
 
     $default  reduce using rule 33 (condicion)
 
 
-state 97
+state 98
 
    34 condicion: comparacion OP_LOG_OR comparacion .
 
     $default  reduce using rule 34 (condicion)
 
 
-state 98
+state 99
 
    35 comparacion: expresion comparador expresion .
    41 expresion: expresion . OP_SUMA termino
    42          | expresion . OP_RESTA termino
 
-    OP_SUMA   shift, and go to state 57
-    OP_RESTA  shift, and go to state 58
+    OP_SUMA   shift, and go to state 58
+    OP_RESTA  shift, and go to state 59
 
     $default  reduce using rule 35 (comparacion)
 
 
-state 99
+state 100
 
    37 iteracion: PR_WHILE PAR_ABRE condicion PAR_CIERRA PR_DO . lista_sentencias PR_ENDWHILE
 
@@ -1210,7 +1250,7 @@ state 99
     PR_WHILE    shift, and go to state 10
 
     sentencia         go to state 12
-    lista_sentencias  go to state 112
+    lista_sentencias  go to state 113
     iguales           go to state 14
     filter            go to state 15
     io                go to state 16
@@ -1221,97 +1261,97 @@ state 99
     asignacion        go to state 21
 
 
-state 100
-
-   53 declaracion_variables_interna: TOKEN_ID COR_CIERRA PR_AS . COR_ABRE tipo_dato
-
-    COR_ABRE  shift, and go to state 113
-
-
 state 101
 
-   52 declaracion_variables_interna: TOKEN_ID COMA declaracion_variables_interna . COMA tipo_dato
+   54 declaracion_variables_interna: TOKEN_ID COR_CIERRA PR_AS . COR_ABRE tipo_dato
 
-    COMA  shift, and go to state 114
+    COR_ABRE  shift, and go to state 114
 
 
 state 102
 
-   50 declaracion_variables: PR_DIM COR_ABRE declaracion_variables_interna COR_CIERRA PUNTO_Y_COMA .
-   51                      | PR_DIM COR_ABRE declaracion_variables_interna COR_CIERRA PUNTO_Y_COMA . declaracion_variables
+   53 declaracion_variables_interna: TOKEN_ID COMA declaracion_variables_interna . COMA tipo_dato
 
-    PR_DIM  shift, and go to state 11
-
-    $default  reduce using rule 50 (declaracion_variables)
-
-    declaracion_variables  go to state 115
+    COMA  shift, and go to state 115
 
 
 state 103
 
-   12 iguales: PR_IGUALES PAR_ABRE expresion COMA COR_ABRE lista_expresiones . COR_CIERRA PAR_CIERRA
+   51 declaracion_variables: PR_DIM COR_ABRE declaracion_variables_interna COR_CIERRA PUNTO_Y_COMA .
+   52                      | PR_DIM COR_ABRE declaracion_variables_interna COR_CIERRA PUNTO_Y_COMA . declaracion_variables
 
-    COR_CIERRA  shift, and go to state 116
+    PR_DIM  shift, and go to state 11
+
+    $default  reduce using rule 51 (declaracion_variables)
+
+    declaracion_variables  go to state 116
 
 
 state 104
+
+   12 iguales: PR_IGUALES PAR_ABRE expresion COMA COR_ABRE lista_expresiones . COR_CIERRA PAR_CIERRA
+
+    COR_CIERRA  shift, and go to state 117
+
+
+state 105
 
    13 lista_expresiones: expresion . COMA lista_expresiones
    14                  | expresion .
    41 expresion: expresion . OP_SUMA termino
    42          | expresion . OP_RESTA termino
 
-    COMA      shift, and go to state 117
-    OP_SUMA   shift, and go to state 57
-    OP_RESTA  shift, and go to state 58
+    COMA      shift, and go to state 118
+    OP_SUMA   shift, and go to state 58
+    OP_RESTA  shift, and go to state 59
 
     $default  reduce using rule 14 (lista_expresiones)
 
 
-state 105
+state 106
 
    20 comparacion_filter: PR_NOT OP_FILTER comparador expresion .
    41 expresion: expresion . OP_SUMA termino
    42          | expresion . OP_RESTA termino
 
-    OP_SUMA   shift, and go to state 57
-    OP_RESTA  shift, and go to state 58
+    OP_SUMA   shift, and go to state 58
+    OP_RESTA  shift, and go to state 59
 
     $default  reduce using rule 20 (comparacion_filter)
 
 
-state 106
+state 107
 
    21 lista_variables: TOKEN_ID . COMA lista_variables
    22                | TOKEN_ID .
 
-    COMA  shift, and go to state 118
+    COMA  shift, and go to state 119
 
     $default  reduce using rule 22 (lista_variables)
 
 
-state 107
+state 108
 
    15 filter: PR_FILTER PAR_ABRE condicion_filter COMA COR_ABRE lista_variables . COR_CIERRA PAR_CIERRA
 
-    COR_CIERRA  shift, and go to state 119
+    COR_CIERRA  shift, and go to state 120
 
 
-state 108
+state 109
 
    30 then: PR_THEN lista_sentencias .
 
     $default  reduce using rule 30 (then)
 
 
-state 109
+state 110
 
    28 condicional: PR_IF PAR_ABRE condicion PAR_CIERRA then PR_ENDIF .
 
     $default  reduce using rule 28 (condicional)
 
 
-state 110
+state 111
 
    31 else: PR_ELSE . lista_sentencias
 
@@ -1324,7 +1364,7 @@ state 110
     PR_WHILE    shift, and go to state 10
 
     sentencia         go to state 12
-    lista_sentencias  go to state 120
+    lista_sentencias  go to state 121
     iguales           go to state 14
     filter            go to state 15
     io                go to state 16
@@ -1335,57 +1375,57 @@ state 110
     asignacion        go to state 21
 
 
-state 111
+state 112
 
    29 condicional: PR_IF PAR_ABRE condicion PAR_CIERRA then else . PR_ENDIF
 
-    PR_ENDIF  shift, and go to state 121
-
-
-state 112
-
-   37 iteracion: PR_WHILE PAR_ABRE condicion PAR_CIERRA PR_DO lista_sentencias . PR_ENDWHILE
-
-    PR_ENDWHILE  shift, and go to state 122
+    PR_ENDIF  shift, and go to state 122
 
 
 state 113
 
-   53 declaracion_variables_interna: TOKEN_ID COR_CIERRA PR_AS COR_ABRE . tipo_dato
+   37 iteracion: PR_WHILE PAR_ABRE condicion PAR_CIERRA PR_DO lista_sentencias . PR_ENDWHILE
 
-    PR_FLOAT   shift, and go to state 123
-    PR_INT     shift, and go to state 124
-    PR_STRING  shift, and go to state 125
-
-    tipo_dato  go to state 126
+    PR_ENDWHILE  shift, and go to state 123
 
 
 state 114
 
-   52 declaracion_variables_interna: TOKEN_ID COMA declaracion_variables_interna COMA . tipo_dato
+   54 declaracion_variables_interna: TOKEN_ID COR_CIERRA PR_AS COR_ABRE . tipo_dato
 
-    PR_FLOAT   shift, and go to state 123
-    PR_INT     shift, and go to state 124
-    PR_STRING  shift, and go to state 125
+    PR_FLOAT   shift, and go to state 124
+    PR_INT     shift, and go to state 125
+    PR_STRING  shift, and go to state 126
 
     tipo_dato  go to state 127
 
 
 state 115
 
-   51 declaracion_variables: PR_DIM COR_ABRE declaracion_variables_interna COR_CIERRA PUNTO_Y_COMA declaracion_variables .
+   53 declaracion_variables_interna: TOKEN_ID COMA declaracion_variables_interna COMA . tipo_dato
 
-    $default  reduce using rule 51 (declaracion_variables)
+    PR_FLOAT   shift, and go to state 124
+    PR_INT     shift, and go to state 125
+    PR_STRING  shift, and go to state 126
+
+    tipo_dato  go to state 128
 
 
 state 116
 
-   12 iguales: PR_IGUALES PAR_ABRE expresion COMA COR_ABRE lista_expresiones COR_CIERRA . PAR_CIERRA
+   52 declaracion_variables: PR_DIM COR_ABRE declaracion_variables_interna COR_CIERRA PUNTO_Y_COMA declaracion_variables .
 
-    PAR_CIERRA  shift, and go to state 128
+    $default  reduce using rule 52 (declaracion_variables)
 
 
 state 117
+
+   12 iguales: PR_IGUALES PAR_ABRE expresion COMA COR_ABRE lista_expresiones COR_CIERRA . PAR_CIERRA
+
+    PAR_CIERRA  shift, and go to state 129
+
+
+state 118
 
    13 lista_expresiones: expresion COMA . lista_expresiones
 
@@ -1393,107 +1433,109 @@ state 117
     CONST_INT    shift, and go to state 39
     CONST_STR    shift, and go to state 40
     CONST_FLOAT  shift, and go to state 41
+    PR_IGUALES   shift, and go to state 5
 
-    lista_expresiones  go to state 129
-    expresion          go to state 104
-    termino            go to state 43
-    factor             go to state 44
-
-
-state 118
-
-   21 lista_variables: TOKEN_ID COMA . lista_variables
-
-    TOKEN_ID  shift, and go to state 106
-
-    lista_variables  go to state 130
+    iguales            go to state 42
+    lista_expresiones  go to state 130
+    expresion          go to state 105
+    termino            go to state 44
+    factor             go to state 45
 
 
 state 119
 
-   15 filter: PR_FILTER PAR_ABRE condicion_filter COMA COR_ABRE lista_variables COR_CIERRA . PAR_CIERRA
+   21 lista_variables: TOKEN_ID COMA . lista_variables
 
-    PAR_CIERRA  shift, and go to state 131
+    TOKEN_ID  shift, and go to state 107
+
+    lista_variables  go to state 131
 
 
 state 120
+
+   15 filter: PR_FILTER PAR_ABRE condicion_filter COMA COR_ABRE lista_variables COR_CIERRA . PAR_CIERRA
+
+    PAR_CIERRA  shift, and go to state 132
+
+
+state 121
 
    31 else: PR_ELSE lista_sentencias .
 
     $default  reduce using rule 31 (else)
 
 
-state 121
+state 122
 
    29 condicional: PR_IF PAR_ABRE condicion PAR_CIERRA then else PR_ENDIF .
 
     $default  reduce using rule 29 (condicional)
 
 
-state 122
+state 123
 
    37 iteracion: PR_WHILE PAR_ABRE condicion PAR_CIERRA PR_DO lista_sentencias PR_ENDWHILE .
 
     $default  reduce using rule 37 (iteracion)
 
 
-state 123
-
-   55 tipo_dato: PR_FLOAT .
-
-    $default  reduce using rule 55 (tipo_dato)
-
-
 state 124
 
-   54 tipo_dato: PR_INT .
-
-    $default  reduce using rule 54 (tipo_dato)
-
-
-state 125
-
-   56 tipo_dato: PR_STRING .
+   56 tipo_dato: PR_FLOAT .
 
     $default  reduce using rule 56 (tipo_dato)
 
 
+state 125
+
+   55 tipo_dato: PR_INT .
+
+    $default  reduce using rule 55 (tipo_dato)
+
+
 state 126
 
-   53 declaracion_variables_interna: TOKEN_ID COR_CIERRA PR_AS COR_ABRE tipo_dato .
+   57 tipo_dato: PR_STRING .
 
-    $default  reduce using rule 53 (declaracion_variables_interna)
+    $default  reduce using rule 57 (tipo_dato)
 
 
 state 127
 
-   52 declaracion_variables_interna: TOKEN_ID COMA declaracion_variables_interna COMA tipo_dato .
+   54 declaracion_variables_interna: TOKEN_ID COR_CIERRA PR_AS COR_ABRE tipo_dato .
 
-    $default  reduce using rule 52 (declaracion_variables_interna)
+    $default  reduce using rule 54 (declaracion_variables_interna)
 
 
 state 128
+
+   53 declaracion_variables_interna: TOKEN_ID COMA declaracion_variables_interna COMA tipo_dato .
+
+    $default  reduce using rule 53 (declaracion_variables_interna)
+
+
+state 129
 
    12 iguales: PR_IGUALES PAR_ABRE expresion COMA COR_ABRE lista_expresiones COR_CIERRA PAR_CIERRA .
 
     $default  reduce using rule 12 (iguales)
 
 
-state 129
+state 130
 
    13 lista_expresiones: expresion COMA lista_expresiones .
 
     $default  reduce using rule 13 (lista_expresiones)
 
 
-state 130
+state 131
 
    21 lista_variables: TOKEN_ID COMA lista_variables .
 
     $default  reduce using rule 21 (lista_variables)
 
 
-state 131
+state 132
 
    15 filter: PR_FILTER PAR_ABRE condicion_filter COMA COR_ABRE lista_variables COR_CIERRA PAR_CIERRA .
 

@@ -98,6 +98,7 @@ char *str_val;
 %type <str_val> factor
 %type <str_val> comparador
 %type <str_val> sentencia
+%type <str_val> iguales
 // %type <str_val> factor_str
 
 %token PR_MAIN
@@ -272,6 +273,7 @@ sentencia : filter PUNTO_Y_COMA
 iguales : PR_IGUALES PAR_ABRE expresion COMA COR_ABRE lista_expresiones COR_CIERRA PAR_CIERRA 
 {
 	if(DEBUG) {
+		$$ = "IGUALES";
 		puts("iguales : PR_IGUALES PAR_ABRE expresion COMA COR_ABRE lista_expresiones COR_CIERRA PAR_CIERRA\n");
 		puts("-------------------\n");
 	}
@@ -504,7 +506,7 @@ comparacion : expresion comparador expresion
 
 	t_info_sentencias * p_info1 = sacar_de_pila(&pila_expresiones);
 	t_info_sentencias * p_info2 = sacar_de_pila(&pila_expresiones);
-	nodo_comparacion = crear_nodo_arbol(crear_info($2),p_info1->a,p_info1->a);
+	nodo_comparacion = crear_nodo_arbol(crear_info($2),p_info1->a,p_info2->a);
 
 	// puts("a ver esto ahora");
 	// nodo_comparacion = crear_nodo_arbol(crear_info($2),nodo_expresion,nodo_termino);
@@ -814,6 +816,19 @@ factor : TOKEN_ID
 	nodo_factor = crear_hoja(crear_info($1));
 } 
      
+     
+factor : iguales 
+{
+	if(DEBUG) {
+		puts($1);
+		puts("Operacion de iguales\n");
+		puts("-------------------\n");	
+	}
+	nodo_factor = crear_nodo_arbol(crear_info("IGUALES"),nodo_iguales,NULL);
+	//nodo_sentencia = crear_nodo_arbol(crear_info(";"),nodo_iguales,NULL);
+	//insertar_en_pila(&pila_sentencias,crear_info_sentencias(nodo_sentencia));
+}
+
 // factor : expresion
 // {
 // 	puts("factor : expresion\n");
@@ -999,13 +1014,15 @@ int main(int argc, char **argv ) {
     crear_pila(&pila_expresiones);
     crear_arbol(&arbol_ejecucion);
 
+    agregar_variable_a_TS("IGUALES","INT", 0);
+
 	yyparse();
 	imprimir_tabla_simbolos();
 	// arbol_ejecucion->p_nodo = obtener_raiz(nodo_sentencias);
 	arbol_ejecucion->p_nodo = obtener_raiz(nodo_iguales);
 
-	recorrer_en_orden(arbol_ejecucion->p_nodo,&visitar);
-	
+	//recorrer_en_orden(arbol_ejecucion->p_nodo,&visitar);
+	// puts("hola");
 	print_t(arbol_ejecucion->p_nodo);
 	
 	// imprimir_arbol(arbol_ejecucion->p_nodo);
@@ -1016,6 +1033,7 @@ int main(int argc, char **argv ) {
 	// 	t_nodo_arbol
 	// }
 	finally(yyin);
+	puts("cerrando todoooo");
 	return EXIT_SUCCESS;
 }
 
@@ -1306,7 +1324,7 @@ int _print_t(t_nodo_arbol *tree, int is_left, int offset, int depth, char * s, i
 
 int print_t(t_nodo_arbol *tree)
 {
-	FILE *f = fopen("intermedia.txt", "w");
+	FILE *f = fopen("intermedia.txt", "w+");
 	if (f == NULL)
 	{
 	    puts("Error abriendo archivo de notación intermedia");
@@ -1326,8 +1344,16 @@ int print_t(t_nodo_arbol *tree)
 
     _print_t(tree, 0, 0, 0, s,CARACTERES_RENGLON_ARBOL);
 
+
     for (i = 0; i < RENGLONES_IMPRESION_ARBOL; i++)
+    {
+       //printf("%s\n", s + i*CARACTERES_RENGLON_ARBOL);
         fprintf(f, "%s\n", s + i*CARACTERES_RENGLON_ARBOL);
+    	
+    }
+
+   // for (i = 0; i < RENGLONES_IMPRESION_ARBOL; i++)
+   //     printf("%s\n", s + i*CARACTERES_RENGLON_ARBOL);
     
     fclose(f);
 }
@@ -1381,9 +1407,11 @@ void crear_arbol_iguales(t_nodo_arbol ** raiz)
 		nodo_aux_nuevo = crear_nodo_arbol(crear_info("IF"), NULL, NULL);		
 		
 		if(!pila_vacia(&pila_expresiones_iguales)){
+			puts("a");
 			*raiz = crear_nodo_arbol(crear_info(";"), nodo_aux_if, nodo_aux_nuevo);
 			crear_arbol_iguales(&((*raiz)->nodo_der));
 		} else{		
+			puts("b");
 			*raiz = nodo_aux_if;
 		}	
 }

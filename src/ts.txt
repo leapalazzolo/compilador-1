@@ -1,12 +1,11 @@
 NOMBRE 				 TIPO 				 VALOR				 LINEA
 
+_IGUALES				INT				0				0
 _d				INT				0				3
 _c				INT				0				3
 _b				STRING								3 
-%1				INT				0				3
-%1				INT				0				3
-%1				INT				0				5
-%2				INT				0				7
-%3				INT				0				8
-%2				INT				0				8
-%6				INT				0				8
+%3				INT				0				3
+%4				INT				0				3
+%3				INT				0				3
+%2				INT				0				3
+%6				INT				0				3
