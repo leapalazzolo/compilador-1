@@ -132,4 +132,79 @@ void vaciar_arbol(t_arbol ** p_arbol) {
 	(*p_arbol)->p_nodo = NULL;
 }
 
+int comparar_etiquetas(t_info * e1,t_info * e2)
+{
+	if(e1 == NULL)
+		return 0;
+
+	if(e2 == NULL)
+		return 0;
+
+	return strcmp(e1->a,e2->a) == 0;
+}
+
+int comparar_nodos(t_nodo_arbol * e1,t_nodo_arbol * e2)
+{
+	if(e1 == e2)
+		return 1;
+
+	return comparar_etiquetas(e1->info,e2->info);
+}
+
+t_nodo_arbol * buscar_etiqueta(t_nodo_arbol * p_nodo,t_info * p_info)
+{
+	buscar_etiqueta_comparador(p_nodo,p_info,&comparar_nodos);
+}
+
+
+t_nodo_arbol * buscar_etiqueta_comparador(t_nodo_arbol * p_nodo,t_info * p_info,int (*f)(t_nodo_arbol*,t_nodo_arbol*))
+{
+	if(p_nodo == NULL || p_info == NULL)
+		return NULL;
+
+	t_nodo_arbol * temp = buscar_etiqueta_comparador(p_nodo->nodo_izq,p_info,&comparar_nodos);
+	if(temp != NULL)
+		return temp;
+
+	if(comparar_etiquetas(p_nodo->info,p_info))
+		return p_nodo;
+
+	temp = buscar_etiqueta_comparador(p_nodo->nodo_der,p_info,&comparar_nodos);
+	if(temp != NULL)
+		return temp;
+
+	return NULL;
+}
+
+
+t_nodo_arbol * clonar_arbol(t_nodo_arbol * p_nodo)
+{
+   if (p_nodo == NULL ) 
+    return p_nodo;
+puts(p_nodo->info->a);
+ puts("111");
+   //create new node and make it a copy of node pointed by root
+   t_nodo_arbol * temp = (t_nodo_arbol *)malloc(sizeof(t_nodo_arbol)) ;
+ puts("222");
+ temp->info = copiar_etiqueta(p_nodo->info);
+
+ puts("444");
+   temp->nodo_der = clonar_arbol(p_nodo->nodo_der);    //cloning left child
+ puts("555");
+   temp->nodo_izq = clonar_arbol(p_nodo->nodo_izq);  //cloning right child
+
+ puts("");
+   if(temp->nodo_der)
+   	temp->nodo_der->padre = temp;
+   if(temp->nodo_izq)
+   	temp->nodo_izq->padre = temp;
+   return temp;
+}
+
+t_info * copiar_etiqueta(t_info * p_info)
+{
+	t_info * p_nueva_info = (t_info *) malloc (sizeof(t_info));
+	strcpy(p_nueva_info->a,p_info->a);
+	return p_nueva_info;
+}
 

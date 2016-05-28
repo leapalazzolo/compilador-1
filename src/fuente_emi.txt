@@ -1,3 +1,4 @@
 MAIN
-DIM [b,c,d] AS [STRING,INT,INT];
-d := 3 + 4 * IGUALES( c+d/c, [c - 3*2,d,6] );
+DIM [a,b,c,d,r] AS [INT,INT,INT,INT,INT];
+d := FILTER ( _>4 + 2 , [a,b,c,d]) + 2;
+d:= 1+1+1+1+2+2+2+3+3+3;

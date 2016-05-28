@@ -32,13 +32,13 @@ int tipos_iguales(char * nombre1, char * nombre2, char * mjs_error, int lineNumb
 int traer_tipo(char * nombre);
 void poner_prefijo(char * str, char * prefijo);
 int print_t(t_nodo_arbol *tree);
-void crear_codigo_assembler(t_nodo_arbol *tree);
 int _print_t(t_nodo_arbol *tree, int is_left, int offset, int depth, char * s, int max);
 void imprimir_arbol(t_nodo_arbol *n);
 void copiar_sin_finalizador(char * dest,char * orig); 
 void reemplazar(char * cad, char old,char new, int size) ;
 t_info_sentencias * crear_info_sentencias(t_nodo_arbol * p_nodo) ;
 void crear_arbol_iguales(t_nodo_arbol ** raiz);
+void crear_codigo_assembler(t_nodo_arbol *tree);
 
 extern int linecount;
 static t_info_sentencias * p_info_iguales;
@@ -47,7 +47,11 @@ t_pila * pila_sentencias;
 t_pila * pila_comparaciones;
 t_pila * pila_condiciones;
 t_pila * pila_expresiones;
+t_pila * pila_factores;
+t_pila * pila_terminos;
 t_pila * pila_expresiones_iguales;
+t_pila * pila_variables_filter;
+t_pila * pila_comparacion_filter;
 
 t_arbol * arbol_ejecucion;
 t_nodo_arbol * nodo_factor;
@@ -64,11 +68,15 @@ t_nodo_arbol * nodo_comparador;
 t_nodo_arbol * nodo_condicional;
 t_nodo_arbol * nodo_iteracion;
 t_nodo_arbol * nodo_io;
+t_nodo_arbol * nodo_entrada;
+t_nodo_arbol * nodo_salida;
 t_nodo_arbol * nodo_iguales;
 t_nodo_arbol * nodo_filter;
 t_nodo_arbol * nodo_declaracion_variable;
 t_nodo_arbol * nodo_sentencias_then;
 t_nodo_arbol * nodo_sentencias_else;
+t_nodo_arbol * nodo_comparacion_filter;
+t_nodo_arbol * nodo_condicion_filter;
 
 
 
@@ -100,6 +108,9 @@ char *str_val;
 %type <str_val> comparador
 %type <str_val> sentencia
 %type <str_val> iguales
+%type <str_val> filter
+%type <str_val> salida
+%type <str_val> entrada
 // %type <str_val> factor_str
 
 %token PR_MAIN
@@ -242,14 +253,14 @@ sentencia : iteracion
 	// nodo_sentencia = nodo_iteracion;
 };
 
-sentencia : io
+sentencia : io PUNTO_Y_COMA
 {
 	if(DEBUG) {
 		puts("Operacion de entrada salidas\n");
 		puts("-------------------\n");		
 	}
-	nodo_sentencia = nodo_io;
-
+	nodo_sentencia = crear_nodo_arbol(crear_info(";"),nodo_io,NULL);
+	insertar_en_pila(&pila_sentencias,crear_info_sentencias(nodo_sentencia));
 };
 
 sentencia : iguales PUNTO_Y_COMA
@@ -268,19 +279,23 @@ sentencia : filter PUNTO_Y_COMA
 		puts("Operacioon de filters\n");
 		puts("-------------------\n");
 	}
+
+	nodo_sentencia = crear_nodo_arbol(crear_info(";"),nodo_filter,NULL);
+	insertar_en_pila(&pila_sentencias,crear_info_sentencias(nodo_sentencia));
 	
 }
 
 iguales : PR_IGUALES PAR_ABRE expresion COMA COR_ABRE lista_expresiones COR_CIERRA PAR_CIERRA 
 {
 	if(DEBUG) {
-		$$ = "IGUALES";
 		puts("iguales : PR_IGUALES PAR_ABRE expresion COMA COR_ABRE lista_expresiones COR_CIERRA PAR_CIERRA\n");
 		puts("-------------------\n");
 	}
+	$$ = "IGUALES";
 	
 	p_info_iguales = sacar_de_pila(&pila_expresiones);	
-	crear_arbol_iguales(&nodo_iguales);			
+	crear_arbol_iguales(&nodo_iguales);		
+	free(p_info_iguales);	
 }
 
 lista_expresiones : expresion COMA lista_expresiones
@@ -310,37 +325,111 @@ filter : PR_FILTER PAR_ABRE condicion_filter COMA COR_ABRE lista_variables COR_C
 		puts("filter : PR_FILTER PAR_ABRE condicion COMA COR_ABRE lista_variables COR_CIERRA PAR_CIERRA\n");
 		puts("-------------------\n");
 	}
+	$$ = "FILTER";
+
+	t_info * p_op_filter = crear_info("_");
+	t_nodo_arbol * p_nodo_a_reemplazar;
+
+	nodo_filter = crear_nodo_arbol(crear_info("FILTER"),NULL,NULL);
+	t_nodo_arbol * p_nodo_then_filter;
+
+	t_nodo_arbol * template_nodo_a_reemplazar = nodo_condicion_filter;
+
+	while(!pila_vacia(&pila_variables_filter))
+	{
+		t_info_sentencias * p_variable = sacar_de_pila(&pila_variables_filter);
+		printf("La variable es %s\n",p_variable->a->info->a );
+		t_nodo_arbol * p_nodo_clonado = clonar_arbol(template_nodo_a_reemplazar);
+		puts("aaa");
+		p_nodo_a_reemplazar = buscar_etiqueta(p_nodo_clonado,p_op_filter);
+		if(p_nodo_a_reemplazar == NULL)
+		{
+			puts("es nulo... me parece que algo no esta bien...");
+			exit(1); 
+		}else
+		{
+			puts("Encontrado");
+			free(p_nodo_a_reemplazar->info);
+			p_nodo_a_reemplazar->info = p_variable->a->info;
+
+			t_nodo_arbol * p_nodo_if_filter = crear_nodo_arbol(crear_info("IF"),p_nodo_clonado,NULL);
+			if(nodo_filter->nodo_izq == NULL)
+			{
+				nodo_filter->nodo_izq = p_nodo_if_filter;
+				nodo_filter->nodo_izq->padre = nodo_filter;
+			} else 
+			{
+				p_nodo_then_filter->nodo_der = p_nodo_if_filter;
+				p_nodo_then_filter->nodo_der->padre = p_nodo_then_filter;
+			}
+
+
+			t_nodo_arbol * p_nodo_asignacion_filter = crear_nodo_arbol(crear_info(":="),crear_hoja(crear_info(NOMBRE_RETORNO_FILTER)),crear_hoja(crear_info(p_variable->a->info->a)));
+			p_nodo_then_filter = crear_nodo_arbol(crear_info("<-true . false->"),p_nodo_asignacion_filter,NULL);
+			p_nodo_if_filter->nodo_der = p_nodo_then_filter;
+			p_nodo_if_filter->nodo_der->padre = p_nodo_if_filter;
+
+		}
+		free(p_variable);
+	}
+
+	free(p_op_filter);
+
 }
 
 condicion_filter : comparacion_filter
 {
 	puts("condicion_filter : comparacion_filter\n");
 	puts("-------------------\n");
+	t_info_sentencias * p_nodo_comparacion_filter = sacar_de_pila(&pila_comparacion_filter);
+	nodo_condicion_filter = p_nodo_comparacion_filter->a;
+	free(p_nodo_comparacion_filter);
 }
 
 condicion_filter : comparacion_filter OP_LOG_AND comparacion_filter
 {
 	puts("condicion_filter : comparacion_filter and comparacion_filter\n");
 	puts("-------------------\n");
+	t_info_sentencias * p_nodo_comparacion_filter1 = sacar_de_pila(&pila_comparacion_filter);
+	t_info_sentencias * p_nodo_comparacion_filter2 = sacar_de_pila(&pila_comparacion_filter);
+	nodo_condicion_filter = crear_nodo_arbol(crear_info("AND"),p_nodo_comparacion_filter1->a,p_nodo_comparacion_filter2->a);
+
+	free(p_nodo_comparacion_filter1);
+	free(p_nodo_comparacion_filter2);
 }
 
 condicion_filter : comparacion_filter OP_LOG_OR comparacion_filter
 {
 	puts("condicion_filter : comparacion_filter or comparacion_filter\n");
 	puts("-------------------\n");
+
+	t_info_sentencias * p_nodo_comparacion_filter1 = sacar_de_pila(&pila_comparacion_filter);
+	t_info_sentencias * p_nodo_comparacion_filter2 = sacar_de_pila(&pila_comparacion_filter);
+	nodo_condicion_filter = crear_nodo_arbol(crear_info("OR"),p_nodo_comparacion_filter1->a,p_nodo_comparacion_filter2->a);
+
+	free(p_nodo_comparacion_filter1);
+	free(p_nodo_comparacion_filter2);
 }
 
 comparacion_filter : OP_FILTER comparador expresion
 {
 	puts("comparacion_filter : OP_FILTER comparador expresion\n");
 	puts("-------------------\n");
+
+	t_info_sentencias * p_nodo_expresion = sacar_de_pila(&pila_expresiones);
+
+	nodo_comparacion_filter = crear_nodo_arbol(crear_info($2),crear_hoja(crear_info("_")),p_nodo_expresion->a);
+	insertar_en_pila(&pila_comparacion_filter , crear_info_sentencias(nodo_comparacion_filter));
+	// t_info_sentencias * p_info1 = sacar_de_pila(&pila_expresiones);
+	// t_info_sentencias * p_info2 = sacar_de_pila(&pila_expresiones);
+	// nodo_comparacion = crear_nodo_arbol(crear_info($2),p_info1->a,p_info2->a);
 }
 
-comparacion_filter : PR_NOT OP_FILTER comparador expresion
-{
-	puts("comparacion_filter : PR_NOT OP_FILTER comparador expresion\n");
-	puts("-------------------\n");
-}
+// comparacion_filter : PR_NOT OP_FILTER comparador expresion
+// {
+// 	puts("comparacion_filter : PR_NOT OP_FILTER comparador expresion\n");
+// 	puts("-------------------\n");
+// }
 
 lista_variables : TOKEN_ID COMA lista_variables
 {
@@ -348,14 +437,16 @@ lista_variables : TOKEN_ID COMA lista_variables
 		puts("Lista de variables\n");
 		puts("-------------------\n");		
 	}
+	insertar_en_pila(&pila_variables_filter,crear_info_sentencias(crear_hoja(crear_info($1))));
 }
 
 lista_variables : TOKEN_ID
 {
 	if(DEBUG) {
-		puts("Ãšltima variable\n");
+		puts("Ultima variable\n");
 		puts("-------------------\n");
 	}
+	insertar_en_pila(&pila_variables_filter,crear_info_sentencias(crear_hoja(crear_info($1))));
 }
 
 io : entrada
@@ -365,6 +456,8 @@ io : entrada
 		puts("-------------------\n");
 	}
 
+	nodo_io = nodo_entrada;
+
 }
 
 io : salida
@@ -373,6 +466,7 @@ io : salida
 		puts("io : salida\n");
 		puts("-------------------\n");		
 	}
+	nodo_io = nodo_salida;
 }
 
 entrada : PR_READ TOKEN_ID
@@ -381,6 +475,13 @@ entrada : PR_READ TOKEN_ID
 		puts("entrada : READ id\n");
 		puts("-------------------\n");		
 	}
+	char mjs[50];
+	if(buscar_en_TS_sin_prefijo($2,mjs,linecount) == -1)
+	{
+		puts(mjs);
+		exit(1);
+	}
+	nodo_entrada = crear_nodo_arbol(crear_info("READ"),crear_hoja(crear_info($2)),NULL);
 }
 
 salida : PR_WRITE TOKEN_ID
@@ -389,8 +490,15 @@ salida : PR_WRITE TOKEN_ID
 		puts("salida : PR_WRITE id\n");
 		puts("-------------------\n");
 	}
-	// char msj_error[50];
-	// buscar_en_TS_sin_prefijo($2,msj_error,linecount);
+
+	char mjs[50];
+	if(buscar_en_TS_sin_prefijo($2,mjs,linecount) == -1)
+	{
+		puts(mjs);
+		exit(1);
+	}
+	nodo_salida = crear_nodo_arbol(crear_info("WRITE"),crear_hoja(crear_info($2)),NULL);
+
 }
 
 salida : PR_WRITE CONST_STR
@@ -399,6 +507,8 @@ salida : PR_WRITE CONST_STR
 		puts("salida : PR_WRITE cte\n");
 		puts("-------------------\n");	
 	}
+	nodo_salida = crear_nodo_arbol(crear_info("WRITE"),crear_hoja(crear_info($2)),NULL);
+
 }
 
 condicional : PR_IF PAR_ABRE condicion PAR_CIERRA then PR_ENDIF
@@ -494,7 +604,7 @@ comparacion : expresion comparador expresion
 {
 	// if(DEBUG) {
 	// puts($2);
-		puts("comparacion : expresion comparador termino\n");
+		puts("comparacion : expresion comparador expresion\n");
 		puts("-------------------\n");
 	// }
 	char mjs_error[60];
@@ -563,7 +673,7 @@ asignacion : TOKEN_ID OP_IGUAL expresion
 
 }
 
-expresion :termino OP_CONCAT factor 
+expresion :factor OP_CONCAT factor 
 {
 	if(DEBUG) {
 		printf("expresion %s %s\n",$1,$3 );
@@ -600,14 +710,15 @@ expresion :termino OP_CONCAT factor
 		puts(mjs_error);
 		exit(1);
 	}
-	// puts(nodo_termino->info->a);
-	// puts(nodo_factor->info->a);
 
-	// printf("%d %d\n", nodo_termino,nodo_factor );
 
 	/* guardo la expresion en el arbol de ejecucion */
 
-	nodo_expresion = crear_nodo_arbol(crear_info("++"),nodo_termino,nodo_factor);
+	t_info_sentencias * p_nodo_factor1 = sacar_de_pila(&pila_factores);
+
+	t_info_sentencias * p_nodo_factor2 = sacar_de_pila(&pila_factores);
+
+	nodo_expresion = crear_nodo_arbol(crear_info("++"),p_nodo_factor1->a,p_nodo_factor2->a);
 
 	insertar_en_pila(&pila_expresiones,crear_info_sentencias(nodo_expresion));
 
@@ -624,8 +735,9 @@ expresion : termino
 	$$=$1;
 	
 	/* guardo la expresion en el arbol de ejecucion */
-	nodo_expresion = nodo_termino;
-	insertar_en_pila(&pila_expresiones,crear_info_sentencias(nodo_expresion));
+	t_info_sentencias * p_nodo_termino = sacar_de_pila(&pila_terminos);
+	nodo_expresion = p_nodo_termino->a;
+	insertar_en_pila(&pila_expresiones,p_nodo_termino);
 
 }
 
@@ -651,9 +763,13 @@ expresion : expresion OP_SUMA termino
 	}
 
 	/* guardo la expresion en el arbol de ejecucion */
-	t_info_sentencias * p_info = sacar_de_pila(&pila_expresiones);
-	nodo_expresion = crear_nodo_arbol(crear_info("+"),p_info->a,nodo_termino);
+	t_info_sentencias * p_nodo_expresion = sacar_de_pila(&pila_expresiones);
+	t_info_sentencias * p_nodo_termino =  sacar_de_pila(&pila_terminos);
+	nodo_expresion = crear_nodo_arbol(crear_info("+"),p_nodo_expresion->a,p_nodo_termino->a);
 	insertar_en_pila(&pila_expresiones,crear_info_sentencias(nodo_expresion));
+
+	free(p_nodo_expresion);
+	free(p_nodo_termino);
 
 } 
 
@@ -680,9 +796,13 @@ expresion : expresion OP_RESTA termino
 	}
 
 	/* guardo la expresion en el arbol de ejecucion */
-	t_info_sentencias * p_info = sacar_de_pila(&pila_expresiones);
-	nodo_expresion = crear_nodo_arbol(crear_info("-"),p_info->a,nodo_termino);
+	t_info_sentencias * p_nodo_expresion = sacar_de_pila(&pila_expresiones);
+	t_info_sentencias * p_nodo_termino =  sacar_de_pila(&pila_terminos);
+	nodo_expresion = crear_nodo_arbol(crear_info("-"),p_nodo_expresion->a,p_nodo_termino->a);
 	insertar_en_pila(&pila_expresiones,crear_info_sentencias(nodo_expresion));
+
+	free(p_nodo_expresion);
+	free(p_nodo_termino);
 
 }
 
@@ -694,7 +814,9 @@ termino : factor
 		puts("-------------------\n");
 	}
 	/*guardo el termino en el arbol de ejecucion*/
-	nodo_termino = nodo_factor;
+	t_info_sentencias * p_nodo_factor = sacar_de_pila(&pila_factores);
+	nodo_termino = p_nodo_factor->a;
+	insertar_en_pila(&pila_terminos,p_nodo_factor);
 
 }
 
@@ -721,7 +843,15 @@ termino : termino OP_DIV factor
 	}
 
 	/*guardo el termino en el arbol de ejecucion*/
-	nodo_termino = crear_nodo_arbol(crear_info("/"),nodo_termino,nodo_factor);
+	t_info_sentencias * p_nodo_factor = sacar_de_pila(&pila_factores);
+	t_info_sentencias * p_nodo_termino = sacar_de_pila(&pila_terminos);
+
+	nodo_termino = crear_nodo_arbol(crear_info("/"),p_nodo_termino->a,p_nodo_factor->a);
+	insertar_en_pila(&pila_terminos,crear_info_sentencias(nodo_termino));
+
+	free(p_nodo_factor);
+	free(p_nodo_termino);
+
 }
 
 termino : termino OP_MUL factor
@@ -748,7 +878,14 @@ termino : termino OP_MUL factor
 	}
 
 	/*guardo el termino en el arbol de ejecucion*/
-	nodo_termino = crear_nodo_arbol(crear_info("*"),nodo_termino,nodo_factor);
+	t_info_sentencias * p_nodo_factor = sacar_de_pila(&pila_factores);
+	t_info_sentencias * p_nodo_termino = sacar_de_pila(&pila_terminos);
+
+	nodo_termino = crear_nodo_arbol(crear_info("*"),p_nodo_termino->a,p_nodo_factor->a);
+	insertar_en_pila(&pila_terminos,crear_info_sentencias(nodo_termino));
+
+	free(p_nodo_factor);
+	free(p_nodo_termino);
 
 }
 
@@ -765,7 +902,9 @@ factor : CONST_STR
 	$$=$1;
 
 	/*guardo el termino en el arbol de ejecucion*/
-	nodo_factor = crear_hoja(crear_info($1));
+	nodo_factor =  crear_hoja(crear_info($1));
+	insertar_en_pila(&pila_factores,crear_info_sentencias(nodo_factor));
+	// nodo_factor = crear_hoja(crear_info($1));
 
 	puts($1);
 
@@ -786,7 +925,9 @@ factor : CONST_INT
 	agregar_cte_a_TS(TIPO_INT,NULL, $1,0.0,linecount);
 
 	/*guardo el termino en el arbol de ejecucion*/
-	nodo_factor = crear_hoja(crear_info(temp));
+	nodo_factor =  crear_hoja(crear_info(temp));
+	insertar_en_pila(&pila_factores,crear_info_sentencias(nodo_factor));
+	// nodo_factor = crear_hoja(crear_info(temp));
 }
 
 factor : CONST_FLOAT
@@ -804,7 +945,9 @@ factor : CONST_FLOAT
 	agregar_cte_a_TS(TIPO_FLOAT,NULL, 0,$1,linecount);
 
 	/*guardo el termino en el arbol de ejecucion*/
-	nodo_factor = crear_hoja(crear_info(temp));
+	nodo_factor =  crear_hoja(crear_info(temp));
+	insertar_en_pila(&pila_factores,crear_info_sentencias( nodo_factor));
+	// nodo_factor = crear_hoja(crear_info(temp));
 }
 
 factor : TOKEN_ID
@@ -814,7 +957,9 @@ factor : TOKEN_ID
 		puts("-------------------\n");
 	}
 	/*guardo el termino en el arbol de ejecucion*/
-	nodo_factor = crear_hoja(crear_info($1));
+	nodo_factor =  crear_hoja(crear_info($1));
+	insertar_en_pila(&pila_factores,crear_info_sentencias(nodo_factor ));
+	// nodo_factor = crear_hoja(crear_info(temp));
 } 
      
      
@@ -822,12 +967,24 @@ factor : iguales
 {
 	if(DEBUG) {
 		puts($1);
-		puts("Operacion de iguales\n");
+		puts("factor : iguales \n");
 		puts("-------------------\n");	
 	}
-	nodo_factor = crear_nodo_arbol(crear_info("IGUALES"),nodo_iguales,NULL);
+	insertar_en_pila(&pila_factores,crear_info_sentencias(crear_nodo_arbol(crear_info("IGUALES"),nodo_iguales,NULL)));
+	// nodo_factor = crear_nodo_arbol(crear_info("IGUALES"),nodo_iguales,NULL);
 	//nodo_sentencia = crear_nodo_arbol(crear_info(";"),nodo_iguales,NULL);
 	//insertar_en_pila(&pila_sentencias,crear_info_sentencias(nodo_sentencia));
+}
+
+factor : filter
+{
+	if(DEBUG) {
+		puts($1);
+		puts("factor : filter\n");
+		puts("-------------------\n");	
+	}	
+	insertar_en_pila(&pila_factores,crear_info_sentencias(nodo_filter));
+
 }
 
 // factor : expresion
@@ -1012,21 +1169,27 @@ int main(int argc, char **argv ) {
     crear_pila(&pila_sentencias);
     crear_pila(&pila_comparaciones);
     crear_pila(&pila_condiciones);
+    crear_pila(&pila_factores);
+    crear_pila(&pila_terminos);
     crear_pila(&pila_expresiones);
+    crear_pila(&pila_expresiones_iguales);
+    crear_pila(&pila_variables_filter);
+    crear_pila(&pila_comparacion_filter);
     crear_arbol(&arbol_ejecucion);
 
     agregar_variable_a_TS("IGUALES","INT", 0);
+    agregar_variable_a_TS("FILTER","INT", 0);
 
 	yyparse();
 	imprimir_tabla_simbolos();
-	// arbol_ejecucion->p_nodo = obtener_raiz(nodo_sentencias);
-	arbol_ejecucion->p_nodo = obtener_raiz(nodo_iguales);
+	arbol_ejecucion->p_nodo = obtener_raiz(nodo_sentencia);
+
+	// crear_codigo_assembler(arbol_ejecucion->p_nodo);
+	// arbol_ejecucion->p_nodo = obtener_raiz(nodo_iguales);
 
 	//recorrer_en_orden(arbol_ejecucion->p_nodo,&visitar);
 	// puts("hola");
 	print_t(arbol_ejecucion->p_nodo);
-	
-	crear_codigo_assembler(arbol_ejecucion->p_nodo);
 	
 	// imprimir_arbol(arbol_ejecucion->p_nodo);
 
@@ -1039,6 +1202,37 @@ int main(int argc, char **argv ) {
 	puts("cerrando todoooo");
 	return EXIT_SUCCESS;
 }
+
+void crear_codigo_assembler(t_nodo_arbol *tree)
+{
+	FILE *a = fopen("Final.asm", "w");
+	if (a == NULL)
+	{
+	    puts("Error abriendo archivo assembler");
+	    exit(1);
+	}
+	fprintf(a, "TITLE TP Compilador 2016");
+	fprintf(a, "\n.MODEL	small");
+	fprintf(a, "\n.386");
+	fprintf(a, "\n.STACK	300h");
+	fprintf(a, "\n");
+	fprintf(a, "\n.DATA");
+	fprintf(a, "\nmessage db	'-- EOF --', '$'");
+	fprintf(a, "\noverflow db	'Overflow!', '$'");
+	fprintf(a, "\ndiviz db	'Division by 0!', '$'");
+	fprintf(a, "\nMAX_STRING_LENGTH equ 30 ;Longitud maxima de los string.");
+	fprintf(a, "\nMAX_STRING_INT equ 65535 ;Tamaño maximo de ints.");
+	fprintf(a, "\nAUX1 DD ?");
+	fprintf(a, "\nAUX2 DD ?");
+	fprintf(a, "\nAUX3 DD ?");
+	fprintf(a, "\nAUX4 DD ?");
+	fprintf(a, "\nAUX5 DD ?");
+	fprintf(a, "\nOldCW DW ?");
+	fprintf(a, "\nNewCW DW ?");
+	fprintf(a, "\n");
+	fprintf(a, "\n.CODE");
+    fclose(a);
+  }
 
 int yyerror(void)
 {
@@ -1202,9 +1396,13 @@ void agregar_variable_a_TS(char * nombre, char * tipo_str, int lineNumber) {
 /*Agrega una constante a la TS*/
 void agregar_cte_a_TS(int tipo, char * valor_str, int valor_int,float valor_float, int lineNumber) {
 
+
 	if(tipo == TIPO_STRING) {
 		strcpy(aux2,prefijo_string);
 		strcat(aux2, valor_str);
+		if(buscar_en_TS_sin_prefijo(valor_str,NULL,0) != -1)
+		return;
+
 		cantidad_cte_string++;
 		agregar_simbolo(aux2,tipo,NULL,NULL,lineNumber);
 
@@ -1213,12 +1411,17 @@ void agregar_cte_a_TS(int tipo, char * valor_str, int valor_int,float valor_floa
 		strcpy(aux2,prefijo_int);
 		sprintf(aux,"%d",valor_int);
 		strcat(aux2,aux);
+		if(buscar_en_TS_sin_prefijo(aux,NULL,0) != -1)
+		return;
+
 		agregar_simbolo(aux2,tipo,aux,NULL,lineNumber);
 		
 	}else if(tipo == TIPO_FLOAT) {
 		strcpy(aux2,prefijo_float);
 		snprintf(aux,30,"%.4f",valor_float);
 		strcat(aux2,aux);
+		if(buscar_en_TS_sin_prefijo(aux,NULL,0) != -1)
+		return;
 		agregar_simbolo(aux2,tipo,aux,NULL,lineNumber);
 		
 	}
@@ -1394,7 +1597,7 @@ void copiar_sin_finalizador(char * dest,char * orig)
 
 void crear_arbol_iguales(t_nodo_arbol ** raiz)
 {
-		puts("holu");
+		// puts("holu");
 		t_nodo_arbol * nodo_aux_izq;
 		t_nodo_arbol * nodo_aux_der;
 		t_nodo_arbol * nodo_aux_pp;
@@ -1407,45 +1610,17 @@ void crear_arbol_iguales(t_nodo_arbol ** raiz)
 		nodo_aux_pp = crear_nodo_arbol(crear_info("+"), crear_hoja(crear_info("cont")), crear_hoja(crear_info("1")));
 		nodo_aux_der = crear_nodo_arbol(crear_info(":="), crear_hoja(crear_info("cont")), nodo_aux_pp);	
 		nodo_aux_if = crear_nodo_arbol(crear_info("IF"), nodo_aux_izq, nodo_aux_der);
-		nodo_aux_nuevo = crear_nodo_arbol(crear_info("IF"), NULL, NULL);		
 		
 		if(!pila_vacia(&pila_expresiones_iguales)){
-			puts("a");
-			*raiz = crear_nodo_arbol(crear_info(";"), nodo_aux_if, nodo_aux_nuevo);
+			// puts("a");
+			nodo_aux_nuevo = crear_nodo_arbol(crear_info("IF"), NULL, NULL);		
+			t_nodo_arbol * aux = crear_nodo_arbol(crear_info(";"), nodo_aux_if, nodo_aux_nuevo);
+			aux->padre = *raiz;
+			*raiz = aux;
 			crear_arbol_iguales(&((*raiz)->nodo_der));
 		} else{		
-			puts("b");
+			nodo_aux_if->padre = *raiz;
+			// puts("b");
 			*raiz = nodo_aux_if;
 		}	
-}
-
-void crear_codigo_assembler(t_nodo_arbol *tree)
-{
-	FILE *a = fopen("Final.asm", "w");
-	if (a == NULL)
-	{
-	    puts("Error abriendo archivo assembler");
-	    exit(1);
-	}
-	fprintf(a, "TITLE TP Compilador 2016");
-	fprintf(a, "\n.MODEL	small");
-	fprintf(a, "\n.386");
-	fprintf(a, "\n.STACK	300h");
-	fprintf(a, "\n");
-	fprintf(a, "\n.DATA");
-	fprintf(a, "\nmessage db	'-- EOF --', '$'");
-	fprintf(a, "\noverflow db	'Overflow!', '$'");
-	fprintf(a, "\ndiviz db	'Division by 0!', '$'");
-	fprintf(a, "\nMAX_STRING_LENGTH equ 30 ;Longitud maxima de los string.");
-	fprintf(a, "\nMAX_STRING_INT equ 65535 ;Tamaño maximo de ints.");
-	fprintf(a, "\nAUX1 DD ?");
-	fprintf(a, "\nAUX2 DD ?");
-	fprintf(a, "\nAUX3 DD ?");
-	fprintf(a, "\nAUX4 DD ?");
-	fprintf(a, "\nAUX5 DD ?");
-	fprintf(a, "\nOldCW DW ?");
-	fprintf(a, "\nNewCW DW ?");
-	fprintf(a, "\n");
-	fprintf(a, "\n.CODE");
-    fclose(a);
 }

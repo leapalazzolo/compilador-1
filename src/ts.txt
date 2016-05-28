@@ -1,11 +1,13 @@
 NOMBRE 				 TIPO 				 VALOR				 LINEA
 
 _IGUALES				INT				0				0
+_FILTER				INT				0				0
+_r				INT				0				3
 _d				INT				0				3
 _c				INT				0				3
-_b				STRING								3 
-%3				INT				0				3
+_b				INT				0				3
+_a				INT				0				3
 %4				INT				0				3
-%3				INT				0				3
 %2				INT				0				3
-%6				INT				0				3
+%1				INT				0				4
+%3				INT				0				4

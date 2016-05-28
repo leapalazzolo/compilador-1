@@ -22,6 +22,7 @@
 #define VARIABLE_ERROR_TIPOS "Error de tipos. No se puede operar entre el tipo %s y %s en la linea %d\n"
 #define OPERACION_INVALIDA_TIPOS "Operacion invalida. No puede realizar la operacion %s entre %s y %s porque son del tipo %s en la linea %d\n"
 
+#define NOMBRE_RETORNO_FILTER "filt"
 
 
 
