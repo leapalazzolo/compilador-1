@@ -8,4 +8,3 @@ _c				INT				0				3
 _b				INT				0				3
 _a				INT				0				3
 %4				INT				0				3
-%2				INT				0				3

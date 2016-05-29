@@ -1,0 +1,72 @@
+Turbo Assembler	 Version 2.01	     05/29/16 18:54:36	    Page 1
+Final.txt
+TP Compilador 2016
+
+
+      1					 TITLE TP Compilador 2016
+      2	    0000			 .MODEL	 small
+      3					 .386
+      4	00000000			 .STACK	 300h
+*Warning* Final.txt(4) Assuming	segment	is 32-bit
+      5
+      6	    0000			 .DATA
+      7	    0000  2D 2D	20 45 4F 46 20+	 message db	 '-- EOF --', '$'
+      8		  2D 2D	24
+      9	    000A  4F 76	65 72 66 6C 6F+	 overflow db	 'Overflow!', '$'
+     10		  77 21	24
+     11	    0014  44 69	76 69 73 69 6F+	 diviz db	 'Division by 0!', '$'
+     12		  6E 20	62 79 20 30 21+
+     13		  24
+     14		  = 001E		 MAX_STRING_LENGTH equ 30 ;Longitud maxima de los string.
+     15		  = FFFF		 MAX_STRING_INT	equ 65535 ;Tamaño maximo de ints.
+     16	    0023  ????????		 AUX1 DD ?
+     17	    0027  ????			 _d DW ?
+     18
+     19	    0029			 .CODE
+     20	    0000			 MAIN:
+     21	    0000  C7 06	0027r 0004	 MOV _d, 4
+     22	    0006  B8 4C00		 MOV AX, 4C00h
+     23					 END MAIN
+Turbo Assembler	 Version 2.01	     05/29/16 18:54:36	    Page 2
+Symbol Table
+TP Compilador 2016
+
+
+
+Symbol Name			  Type	 Value
+
+??DATE				  Text	 "05/29/16"
+??FILENAME			  Text	 "Final	  "
+??TIME				  Text	 "18:54:36"
+??VERSION			  Number 0201
+@CODE				  Text	 _TEXT
+@CODESIZE			  Text	 0
+@CPU				  Text	 0D0FH
+@CURSEG				  Text	 _TEXT
+@DATA				  Text	 DGROUP
+@DATASIZE			  Text	 0
+@FILENAME			  Text	 FINAL
+@MODEL				  Text	 2
+@WORDSIZE			  Text	 2
+AUX1				  Dword	 DGROUP:0023
+DIVIZ				  Byte	 DGROUP:0014
+MAIN				  Near	 _TEXT:0000
+MAX_STRING_INT			  Number FFFF
+MAX_STRING_LENGTH		  Number 001E
+MESSAGE				  Byte	 DGROUP:0000
+OVERFLOW			  Byte	 DGROUP:000A
+_D				  Word	 DGROUP:0027
+
+Groups & Segments		  Bit Size Align  Combine Class
+
+DGROUP				  Group
+  STACK				  32  0300 Para	  Stack	  STACK
+  _DATA				  16  0029 Word	  Public  DATA
+_TEXT				  16  0009 Word	  Public  CODE
+Turbo Assembler	 Version 2.01	     05/29/16 18:54:36	    Page 3
+Error Summary
+TP Compilador 2016
+
+
+*Warning* Final.txt(4) Assuming	segment	is 32-bit
+

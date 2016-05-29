@@ -33,7 +33,7 @@ int traer_tipo(char * nombre);
 void poner_prefijo(char * str, char * prefijo);
 int print_t(t_nodo_arbol *tree);
 int _print_t(t_nodo_arbol *tree, int is_left, int offset, int depth, char * s, int max);
-void imprimir_arbol(t_nodo_arbol *n);
+void recorrer_asm(t_nodo_arbol *n);
 void copiar_sin_finalizador(char * dest,char * orig); 
 void reemplazar(char * cad, char old,char new, int size) ;
 t_info_sentencias * crear_info_sentencias(t_nodo_arbol * p_nodo) ;
@@ -42,6 +42,7 @@ void crear_codigo_assembler(t_nodo_arbol *tree);
 
 extern int linecount;
 static t_info_sentencias * p_info_iguales;
+static FILE *a;
 
 t_pila * pila_sentencias;
 t_pila * pila_comparaciones;
@@ -1157,6 +1158,7 @@ char * tipo_simbolo_to_string(int tipo);
 //funcion para realizar todo lo que haga falta previo a terminar
 void finally(FILE *yyin){
 	vaciar_tabla_simbolos();
+	fclose(a);
 	// vaciar_arbol(&arbol_ejecucion);
 	fclose(yyin);
 }
@@ -1206,41 +1208,12 @@ int main(int argc, char **argv ) {
 	// {
 	// 	t_nodo_arbol
 	// }
+	
+	crear_codigo_assembler(arbol_ejecucion->p_nodo);
 	finally(yyin);
 	puts("cerrando todoooo");
 	return EXIT_SUCCESS;
 }
-
-void crear_codigo_assembler(t_nodo_arbol *tree)
-{
-	FILE *a = fopen("Final.asm", "w");
-	if (a == NULL)
-	{
-	    puts("Error abriendo archivo assembler");
-	    exit(1);
-	}
-	fprintf(a, "TITLE TP Compilador 2016");
-	fprintf(a, "\n.MODEL	small");
-	fprintf(a, "\n.386");
-	fprintf(a, "\n.STACK	300h");
-	fprintf(a, "\n");
-	fprintf(a, "\n.DATA");
-	fprintf(a, "\nmessage db	'-- EOF --', '$'");
-	fprintf(a, "\noverflow db	'Overflow!', '$'");
-	fprintf(a, "\ndiviz db	'Division by 0!', '$'");
-	fprintf(a, "\nMAX_STRING_LENGTH equ 30 ;Longitud maxima de los string.");
-	fprintf(a, "\nMAX_STRING_INT equ 65535 ;Tamaño maximo de ints.");
-	fprintf(a, "\nAUX1 DD ?");
-	fprintf(a, "\nAUX2 DD ?");
-	fprintf(a, "\nAUX3 DD ?");
-	fprintf(a, "\nAUX4 DD ?");
-	fprintf(a, "\nAUX5 DD ?");
-	fprintf(a, "\nOldCW DW ?");
-	fprintf(a, "\nNewCW DW ?");
-	fprintf(a, "\n");
-	fprintf(a, "\n.CODE");
-    fclose(a);
-  }
 
 int yyerror(void)
 {
@@ -1572,14 +1545,6 @@ int print_t(t_nodo_arbol *tree)
     fclose(f);
 }
 
-void imprimir_arbol(t_nodo_arbol *n){
-	printf("%s\n", n->info->a);
-	if(n->nodo_izq != NULL)
-		imprimir_arbol(n->nodo_izq);
-	if(n->nodo_der != NULL)
-		imprimir_arbol(n->nodo_der);
-}
-
 
 void reemplazar(char * cad, char old,char new, int size) 
 {
@@ -1631,4 +1596,49 @@ void crear_arbol_iguales(t_nodo_arbol ** raiz)
 			// puts("b");
 			*raiz = nodo_aux_if;
 		}	
+}
+
+void crear_codigo_assembler(t_nodo_arbol *tree)
+{
+	a = fopen("Final.txt", "w");
+	if (a == NULL)
+	{
+	    puts("Error abriendo archivo assembler");
+	    exit(1);
+	}
+	fprintf(a, "TITLE TP Compilador 2016");
+	fprintf(a, "\n.MODEL	small");
+	fprintf(a, "\n.386");
+	fprintf(a, "\n.STACK	300h");
+	fprintf(a, "\n");
+	fprintf(a, "\n.DATA");
+	fprintf(a, "\nmessage db	'-- EOF --', '$'");
+	fprintf(a, "\noverflow db	'Overflow!', '$'");
+	fprintf(a, "\ndiviz db	'Division by 0!', '$'");
+	fprintf(a, "\nMAX_STRING_LENGTH equ 30 ;Longitud maxima de los string.");
+	fprintf(a, "\nMAX_STRING_INT equ 65535 ;Tamaño maximo de ints.");
+	fprintf(a, "\nAUX1 DD ?");
+	fprintf(a, "\n_d DW ?");
+	fprintf(a, "\n");
+	fprintf(a, "\n.CODE");
+	fprintf(a, "\nMAIN:");
+	recorrer_asm(tree);
+	fprintf(a, "\nMOV AX, 4C00h");
+	fprintf(a, "\nEND MAIN");
+    
+}
+
+void recorrer_asm(t_nodo_arbol *n){
+		if(strcmp(n->info->a,":=")==0)		
+		{	
+			fprintf(a, "\nMOV ");
+			fprintf(a, "_"); 
+			fprintf(a, n->nodo_izq->info->a); 
+			fprintf(a, ", ");
+			fprintf(a, n->nodo_der->info->a);
+		}
+	if(n->nodo_izq != NULL)
+		recorrer_asm(n->nodo_izq);
+	if(n->nodo_der != NULL)
+		recorrer_asm(n->nodo_der);
 }
