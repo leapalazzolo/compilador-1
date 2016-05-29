@@ -1657,7 +1657,7 @@ void crear_codigo_assembler(t_nodo_arbol *tree)
 }
 
 void recorrer_asm(t_nodo_arbol *n){
-		if(strcmp(n->info->a,":=")==0)		
+		if(strcmp(n->info->a,":=")==0 && n->nodo_der->nodo_izq == NULL && n->nodo_der->nodo_der == NULL)		
 		{	
 			fprintf(a, "\nMOV ");
 			fprintf(a, "_"); 
