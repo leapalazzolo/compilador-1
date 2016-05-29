@@ -39,6 +39,7 @@ void reemplazar(char * cad, char old,char new, int size) ;
 t_info_sentencias * crear_info_sentencias(t_nodo_arbol * p_nodo) ;
 void crear_arbol_iguales(t_nodo_arbol ** raiz);
 void crear_codigo_assembler(t_nodo_arbol *tree);
+void crear_inicio_assembler();
 
 extern int linecount;
 static t_info_sentencias * p_info_iguales;
@@ -1167,6 +1168,7 @@ void finally(FILE *yyin){
 
 int main(int argc, char **argv ) {
 	// puts("Corriendo el compilador...");
+	crear_inicio_assembler();
 
 	++argv, --argc; 
 
@@ -1267,14 +1269,32 @@ void imprimir_tabla_simbolos() {
 	for (i = 0; i < cantidad_simbolos; ++i)
 	{
 		if(tabla_simbolos[i].tipo == TIPO_STRING)
+		{
 			fprintf(f, "%s\t\t\t\t%s\t\t\t\t%s\t\t\t\t%d \n",tabla_simbolos[i].nombre,tipo_simbolo_to_string(tabla_simbolos[i].tipo),tabla_simbolos[i].valor_string == NULL ? "" : tabla_simbolos[i].valor_string,tabla_simbolos[i].lineNumber);
+			fprintf(a, "\n");
+			fprintf(a, tabla_simbolos[i].nombre);			
+			fprintf(a, " DW ?");
+		}
 	
 		if(tabla_simbolos[i].tipo == TIPO_INT)
+		{
 			fprintf(f, "%s\t\t\t\t%s\t\t\t\t%d\t\t\t\t%d\n",tabla_simbolos[i].nombre,tipo_simbolo_to_string(tabla_simbolos[i].tipo),tabla_simbolos[i].valor_int,tabla_simbolos[i].lineNumber);
+			if(tabla_simbolos[i].nombre[0] == '_')
+			{
+				fprintf(a, "\n");
+				fprintf(a, tabla_simbolos[i].nombre);			
+				fprintf(a, " DW ?");
+			}
+		}
 		
 		if(tabla_simbolos[i].tipo == TIPO_FLOAT)
+		{
 			fprintf(f, "%s\t\t\t\t%s\t\t\t\t%.4f\t\t\t\t%d\n",tabla_simbolos[i].nombre,tipo_simbolo_to_string(tabla_simbolos[i].tipo),tabla_simbolos[i].valor_float,tabla_simbolos[i].lineNumber);
-
+			fprintf(a, "\n");
+			fprintf(a, tabla_simbolos[i].nombre);			
+			fprintf(a, " DW ?");
+		}
+		
 		// if(tabla_simbolos[i].tipo == TIPO_PR)
 		// 	fprintf(f, "%s\t\t\t\t%s\t\t\t\t\n",tabla_simbolos[i].nombre,tipo_simbolo_to_string(tabla_simbolos[i].tipo));
 				
@@ -1598,7 +1618,7 @@ void crear_arbol_iguales(t_nodo_arbol ** raiz)
 		}	
 }
 
-void crear_codigo_assembler(t_nodo_arbol *tree)
+void crear_inicio_assembler()
 {
 	a = fopen("Final.txt", "w");
 	if (a == NULL)
@@ -1617,8 +1637,10 @@ void crear_codigo_assembler(t_nodo_arbol *tree)
 	fprintf(a, "\ndiviz db	'Division by 0!', '$'");
 	fprintf(a, "\nMAX_STRING_LENGTH equ 30 ;Longitud maxima de los string.");
 	fprintf(a, "\nMAX_STRING_INT equ 65535 ;Tamaño maximo de ints.");
-	fprintf(a, "\nAUX1 DD ?");
-	fprintf(a, "\n_d DW ?");
+}
+
+void crear_codigo_assembler(t_nodo_arbol *tree)
+{
 	fprintf(a, "\n");
 	fprintf(a, "\n.CODE");
 	fprintf(a, "\nMAIN:");

@@ -9,8 +9,13 @@ overflow db	'Overflow!', '$'
 diviz db	'Division by 0!', '$'
 MAX_STRING_LENGTH equ 30 ;Longitud maxima de los string.
 MAX_STRING_INT equ 65535 ;Tamaño maximo de ints.
-AUX1 DD ?
+_IGUALES DW ?
+_FILTER DW ?
+_r DW ?
 _d DW ?
+_c DW ?
+_b DW ?
+_a DW ?
 
 .CODE
 MAIN:

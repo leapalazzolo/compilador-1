@@ -1,4 +1,4 @@
-Turbo Assembler	 Version 2.01	     05/29/16 18:54:36	    Page 1
+Turbo Assembler	 Version 2.01	     05/29/16 19:13:15	    Page 1
 Final.txt
 TP Compilador 2016
 
@@ -19,15 +19,20 @@ TP Compilador 2016
      13		  24
      14		  = 001E		 MAX_STRING_LENGTH equ 30 ;Longitud maxima de los string.
      15		  = FFFF		 MAX_STRING_INT	equ 65535 ;Tamaño maximo de ints.
-     16	    0023  ????????		 AUX1 DD ?
-     17	    0027  ????			 _d DW ?
-     18
-     19	    0029			 .CODE
-     20	    0000			 MAIN:
-     21	    0000  C7 06	0027r 0004	 MOV _d, 4
-     22	    0006  B8 4C00		 MOV AX, 4C00h
-     23					 END MAIN
-Turbo Assembler	 Version 2.01	     05/29/16 18:54:36	    Page 2
+     16	    0023  ????			 _IGUALES DW ?
+     17	    0025  ????			 _FILTER DW ?
+     18	    0027  ????			 _r DW ?
+     19	    0029  ????			 _d DW ?
+     20	    002B  ????			 _c DW ?
+     21	    002D  ????			 _b DW ?
+     22	    002F  ????			 _a DW ?
+     23
+     24	    0031			 .CODE
+     25	    0000			 MAIN:
+     26	    0000  C7 06	0029r 0004	 MOV _d, 4
+     27	    0006  B8 4C00		 MOV AX, 4C00h
+     28					 END MAIN
+Turbo Assembler	 Version 2.01	     05/29/16 19:13:15	    Page 2
 Symbol Table
 TP Compilador 2016
 
@@ -37,7 +42,7 @@ Symbol Name			  Type	 Value
 
 ??DATE				  Text	 "05/29/16"
 ??FILENAME			  Text	 "Final	  "
-??TIME				  Text	 "18:54:36"
+??TIME				  Text	 "19:13:15"
 ??VERSION			  Number 0201
 @CODE				  Text	 _TEXT
 @CODESIZE			  Text	 0
@@ -48,22 +53,27 @@ Symbol Name			  Type	 Value
 @FILENAME			  Text	 FINAL
 @MODEL				  Text	 2
 @WORDSIZE			  Text	 2
-AUX1				  Dword	 DGROUP:0023
 DIVIZ				  Byte	 DGROUP:0014
 MAIN				  Near	 _TEXT:0000
 MAX_STRING_INT			  Number FFFF
 MAX_STRING_LENGTH		  Number 001E
 MESSAGE				  Byte	 DGROUP:0000
 OVERFLOW			  Byte	 DGROUP:000A
-_D				  Word	 DGROUP:0027
+_A				  Word	 DGROUP:002F
+_B				  Word	 DGROUP:002D
+_C				  Word	 DGROUP:002B
+_D				  Word	 DGROUP:0029
+_FILTER				  Word	 DGROUP:0025
+_IGUALES			  Word	 DGROUP:0023
+_R				  Word	 DGROUP:0027
 
 Groups & Segments		  Bit Size Align  Combine Class
 
 DGROUP				  Group
   STACK				  32  0300 Para	  Stack	  STACK
-  _DATA				  16  0029 Word	  Public  DATA
+  _DATA				  16  0031 Word	  Public  DATA
 _TEXT				  16  0009 Word	  Public  CODE
-Turbo Assembler	 Version 2.01	     05/29/16 18:54:36	    Page 3
+Turbo Assembler	 Version 2.01	     05/29/16 19:13:15	    Page 3
 Error Summary
 TP Compilador 2016
 
