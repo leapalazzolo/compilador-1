@@ -40,6 +40,7 @@ t_info_sentencias * crear_info_sentencias(t_nodo_arbol * p_nodo) ;
 void crear_arbol_iguales(t_nodo_arbol ** raiz);
 void crear_codigo_assembler(t_nodo_arbol *tree);
 void crear_inicio_assembler();
+int is_hoja(t_nodo_arbol *n);
 
 extern int linecount;
 static t_info_sentencias * p_info_iguales;
@@ -1657,7 +1658,7 @@ void crear_codigo_assembler(t_nodo_arbol *tree)
 }
 
 void recorrer_asm(t_nodo_arbol *n){
-		if(strcmp(n->info->a,":=")==0 && n->nodo_der->nodo_izq == NULL && n->nodo_der->nodo_der == NULL)		
+		if(strcmp(n->info->a,":=")==0 && is_hoja(n->nodo_der))		
 		{	
 			fprintf(a, "\nMOV ");
 			fprintf(a, "_"); 
@@ -1669,4 +1670,12 @@ void recorrer_asm(t_nodo_arbol *n){
 		recorrer_asm(n->nodo_izq);
 	if(n->nodo_der != NULL)
 		recorrer_asm(n->nodo_der);
+}
+
+int is_hoja(t_nodo_arbol *n)
+{
+	if(n->nodo_izq != NULL || n->nodo_der != NULL)
+		return 0;
+		
+	return 1;
 }
