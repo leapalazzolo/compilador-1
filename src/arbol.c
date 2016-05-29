@@ -181,19 +181,13 @@ t_nodo_arbol * clonar_arbol(t_nodo_arbol * p_nodo)
 {
    if (p_nodo == NULL ) 
     return p_nodo;
-puts(p_nodo->info->a);
- puts("111");
    //create new node and make it a copy of node pointed by root
    t_nodo_arbol * temp = (t_nodo_arbol *)malloc(sizeof(t_nodo_arbol)) ;
- puts("222");
  temp->info = copiar_etiqueta(p_nodo->info);
 
- puts("444");
    temp->nodo_der = clonar_arbol(p_nodo->nodo_der);    //cloning left child
- puts("555");
    temp->nodo_izq = clonar_arbol(p_nodo->nodo_izq);  //cloning right child
 
- puts("");
    if(temp->nodo_der)
    	temp->nodo_der->padre = temp;
    if(temp->nodo_izq)

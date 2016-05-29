@@ -338,9 +338,8 @@ filter : PR_FILTER PAR_ABRE condicion_filter COMA COR_ABRE lista_variables COR_C
 	while(!pila_vacia(&pila_variables_filter))
 	{
 		t_info_sentencias * p_variable = sacar_de_pila(&pila_variables_filter);
-		printf("La variable es %s\n",p_variable->a->info->a );
+		// printf("La variable es %s\n",p_variable->a->info->a );
 		t_nodo_arbol * p_nodo_clonado = clonar_arbol(template_nodo_a_reemplazar);
-		puts("aaa");
 		p_nodo_a_reemplazar = buscar_etiqueta(p_nodo_clonado,p_op_filter);
 		if(p_nodo_a_reemplazar == NULL)
 		{
@@ -348,9 +347,18 @@ filter : PR_FILTER PAR_ABRE condicion_filter COMA COR_ABRE lista_variables COR_C
 			exit(1); 
 		}else
 		{
-			puts("Encontrado");
+			// puts("Encontrado");
 			free(p_nodo_a_reemplazar->info);
 			p_nodo_a_reemplazar->info = p_variable->a->info;
+			p_nodo_a_reemplazar = buscar_etiqueta(p_nodo_clonado,p_op_filter);
+			while(p_nodo_a_reemplazar != NULL)
+			{
+				// puts("segunda vuelta");
+				free(p_nodo_a_reemplazar->info);
+				p_nodo_a_reemplazar->info = p_variable->a->info;
+				p_nodo_a_reemplazar = buscar_etiqueta(p_nodo_clonado,p_op_filter);
+			}
+
 
 			t_nodo_arbol * p_nodo_if_filter = crear_nodo_arbol(crear_info("IF"),p_nodo_clonado,NULL);
 			if(nodo_filter->nodo_izq == NULL)
