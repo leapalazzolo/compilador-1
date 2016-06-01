@@ -82,3 +82,36 @@ t_info_sentencias * frente_de_pila(t_pila** p_pila) {
 	return (*p_pila)->p_nodo->info;
 }
 
+void insertar_en_pila_asm(t_pila_asm ** p_pila_asm, char * data) {
+
+	t_nodo_asm * nodo_asm = (t_nodo_asm*)malloc(sizeof(t_nodo_asm**));
+
+	if(*p_pila_asm == NULL) {
+		*p_pila_asm = (t_pila_asm*) malloc(sizeof(t_pila_asm**));
+	 	(*p_pila_asm)->p_nodo_asm = NULL;
+	}
+ 	nodo_asm->sig_nodo = (*p_pila_asm)->p_nodo_asm;
+ 	(*p_pila_asm)->p_nodo_asm = nodo_asm;
+
+
+	nodo_asm->data = data;
+
+}
+
+char * sacar_de_pila_asm(t_pila_asm** p_pila_asm) {
+	if(*p_pila_asm == NULL) return NULL;
+	t_nodo_asm * nodo_a_eliminar = (*p_pila_asm)->p_nodo_asm;
+	char * data = (*p_pila_asm)->p_nodo_asm->data;
+	(*p_pila_asm)->p_nodo_asm = (*p_pila_asm)->p_nodo_asm->sig_nodo;
+
+	if((*p_pila_asm)->p_nodo_asm == NULL) {
+		free(*p_pila_asm);
+		*p_pila_asm = NULL;
+	}
+
+	if(nodo_a_eliminar != NULL)
+		free(nodo_a_eliminar);
+
+	return data;
+}
+

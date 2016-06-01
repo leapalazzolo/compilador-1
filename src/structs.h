@@ -45,6 +45,14 @@ typedef struct {
 	t_nodo * p_nodo;
 } t_pila;
 
+typedef struct  t_nodo_asm{
+	char * data;
+	struct t_nodo_asm * sig_nodo;
+} t_nodo_asm;
+
+typedef struct {
+	t_nodo_asm * p_nodo_asm;
+} t_pila_asm;
 
 
 #define TIPO_FLOAT 1
