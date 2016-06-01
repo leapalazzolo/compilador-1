@@ -115,3 +115,7 @@ char * sacar_de_pila_asm(t_pila_asm** p_pila_asm) {
 	return data;
 }
 
+int pila_vacia_asm(t_pila_asm ** p_pila_asm) {
+	return (*p_pila_asm) == NULL;
+}
+

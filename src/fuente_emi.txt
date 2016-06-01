@@ -3,5 +3,5 @@ DIM [a,b,c,d,r] AS [INT,INT,INT,INT,INT];
 d := 4;
 c := 3;
 b := c;
-a := b*c;
+a := b*c*d+3/2;
 

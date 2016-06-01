@@ -14,6 +14,7 @@ int pila_vacia();
 
 void insertar_en_pila_asm(t_pila_asm ** p_pila_asm, char * data);
 char * sacar_de_pila_asm(t_pila_asm** p_pila_asm);
+int pila_vacia_asm(t_pila_asm ** p_pila_asm);
 
 
 #endif
