@@ -41,7 +41,6 @@ void crear_arbol_iguales(t_nodo_arbol ** raiz);
 void crear_codigo_assembler(t_nodo_arbol *tree);
 void crear_inicio_assembler();
 int is_hoja(t_nodo_arbol *n);
-void corregir_binario(t_nodo_arbol *n);
 
 extern int linecount;
 static t_info_sentencias * p_info_iguales;
@@ -1204,7 +1203,6 @@ int main(int argc, char **argv ) {
 
 	//recorrer_en_orden(arbol_ejecucion->p_nodo,&visitar);
 	// puts("hola");
-	corregir_binario(arbol_ejecucion->p_nodo);
 	print_t(arbol_ejecucion->p_nodo);
 	
 	// imprimir_arbol(arbol_ejecucion->p_nodo);
@@ -1712,13 +1710,4 @@ int is_hoja(t_nodo_arbol *n)
 		return 0;
 		
 	return 1;
-}
-
-void corregir_binario(t_nodo_arbol *n)
-{	
-
-	if(n->nodo_izq != NULL)
-		corregir_binario(n->nodo_izq);
-	if(n->nodo_der != NULL)
-		corregir_binario(n->nodo_der);
 }

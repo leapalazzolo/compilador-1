@@ -1,0 +1,29 @@
+TITLE TP Compilador 2016
+.MODEL	small
+.386
+.STACK	300h
+
+.DATA
+message db	'-- EOF --', '$'
+overflow db	'Overflow!', '$'
+diviz db	'Division by 0!', '$'
+MAX_STRING_LENGTH equ 30 ;Longitud maxima de los string.
+MAX_STRING_INT equ 65535 ;Tama�o maximo de ints.
+_IGUALES DW ?
+_FILTER DW ?
+_r DW ?
+_d DW ?
+_c DW ?
+_b DW ?
+_a DW ?
+
+.CODE
+MAIN:
+MOV R1, c
+MUL R1, b
+MOV @aux1, R1
+MOV b, c
+MOV c, 3
+MOV d, 4
+MOV AX, 4C00h
+END MAIN
