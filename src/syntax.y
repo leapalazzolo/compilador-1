@@ -41,10 +41,12 @@ void crear_arbol_iguales(t_nodo_arbol ** raiz);
 void crear_codigo_assembler(t_nodo_arbol *tree);
 void crear_inicio_assembler();
 int is_hoja(t_nodo_arbol *n);
+void corregir_binario(t_nodo_arbol *n);
 
 extern int linecount;
 static t_info_sentencias * p_info_iguales;
 static FILE *a;
+static int igualdad_anidada=0;
 
 t_pila * pila_sentencias;
 t_pila * pila_comparaciones;
@@ -1202,6 +1204,7 @@ int main(int argc, char **argv ) {
 
 	//recorrer_en_orden(arbol_ejecucion->p_nodo,&visitar);
 	// puts("hola");
+	corregir_binario(arbol_ejecucion->p_nodo);
 	print_t(arbol_ejecucion->p_nodo);
 	
 	// imprimir_arbol(arbol_ejecucion->p_nodo);
@@ -1213,7 +1216,7 @@ int main(int argc, char **argv ) {
 	// }
 	
 	crear_codigo_assembler(arbol_ejecucion->p_nodo);
-	finally(yyin);
+	finally(yyin); 
 	puts("cerrando todoooo");
 	return EXIT_SUCCESS;
 }
@@ -1541,7 +1544,7 @@ int print_t(t_nodo_arbol *tree)
 	FILE *f = fopen("intermedia.txt", "w+");
 	if (f == NULL)
 	{
-	    puts("Error abriendo archivo de notación intermedia");
+	    puts("Error abriendo archivo de notaciï¿½n intermedia");
 	    exit(1);
 	}
 	int i;
@@ -1643,7 +1646,7 @@ void crear_inicio_assembler()
 	fprintf(a, "\noverflow db	'Overflow!', '$'");
 	fprintf(a, "\ndiviz db	'Division by 0!', '$'");
 	fprintf(a, "\nMAX_STRING_LENGTH equ 30 ;Longitud maxima de los string.");
-	fprintf(a, "\nMAX_STRING_INT equ 65535 ;Tamaño maximo de ints.");
+	fprintf(a, "\nMAX_STRING_INT equ 65535 ;Tamaï¿½o maximo de ints.");
 }
 
 void crear_codigo_assembler(t_nodo_arbol *tree)
@@ -1658,13 +1661,44 @@ void crear_codigo_assembler(t_nodo_arbol *tree)
 }
 
 void recorrer_asm(t_nodo_arbol *n){
-		if(strcmp(n->info->a,":=")==0 && is_hoja(n->nodo_der))		
+		if(strcmp(n->info->a,":=")==0)		
 		{	
-			fprintf(a, "\nMOV ");
-			fprintf(a, "_"); 
-			fprintf(a, n->nodo_izq->info->a); 
-			fprintf(a, ", ");
-			fprintf(a, n->nodo_der->info->a);
+			if(is_hoja(n->nodo_der))
+			{
+				fprintf(a, "\nMOV ");
+				fprintf(a, n->nodo_izq->info->a); 
+				fprintf(a, ", ");
+				fprintf(a, n->nodo_der->info->a);
+			} 
+			else if(igualdad_anidada==1){
+				fprintf(a, "\nMOV ");
+				fprintf(a, n->nodo_izq->info->a); 
+				fprintf(a, ", ");
+				fprintf(a, "@aux1");
+			}
+			else
+			{
+				igualdad_anidada = 1;
+			}
+		} else if(strcmp(n->info->a,"*")==0)
+		{
+			if(is_hoja(n->nodo_izq) && is_hoja(n->nodo_der))
+			{
+				fprintf(a, "\nMOV ");
+				fprintf(a, "R1"); 
+				fprintf(a, ", ");
+				fprintf(a, n->nodo_der->info->a);
+				
+				fprintf(a, "\nMUL ");
+				fprintf(a, "R1"); 
+				fprintf(a, ", ");
+				fprintf(a, n->nodo_izq->info->a);
+				
+				fprintf(a, "\nMOV ");
+				fprintf(a, "@aux1"); 
+				fprintf(a, ", ");
+				fprintf(a, "R1");
+			}	
 		}
 	if(n->nodo_izq != NULL)
 		recorrer_asm(n->nodo_izq);
@@ -1678,4 +1712,13 @@ int is_hoja(t_nodo_arbol *n)
 		return 0;
 		
 	return 1;
+}
+
+void corregir_binario(t_nodo_arbol *n)
+{	
+
+	if(n->nodo_izq != NULL)
+		corregir_binario(n->nodo_izq);
+	if(n->nodo_der != NULL)
+		corregir_binario(n->nodo_der);
 }
