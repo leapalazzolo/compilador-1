@@ -56,6 +56,7 @@ t_pila * pila_terminos;
 t_pila * pila_expresiones_iguales;
 t_pila * pila_variables_filter;
 t_pila * pila_comparacion_filter;
+t_pila * pila_asm;
 
 t_arbol * arbol_ejecucion;
 t_nodo_arbol * nodo_factor;
@@ -81,6 +82,7 @@ t_nodo_arbol * nodo_sentencias_then;
 t_nodo_arbol * nodo_sentencias_else;
 t_nodo_arbol * nodo_comparacion_filter;
 t_nodo_arbol * nodo_condicion_filter;
+t_nodo_arbol * nodo_asm;
 
 
 
@@ -1668,15 +1670,15 @@ void recorrer_asm(t_nodo_arbol *n){
 				fprintf(a, ", ");
 				fprintf(a, n->nodo_der->info->a);
 			} 
-			else if(igualdad_anidada==1){
-				fprintf(a, "\nMOV ");
-				fprintf(a, n->nodo_izq->info->a); 
-				fprintf(a, ", ");
-				fprintf(a, "@aux1");
-			}
 			else
 			{
-				igualdad_anidada = 1;
+				char str[80];
+				strcpy(str, "\nMOV ");
+				strcat(str, n->nodo_izq->info->a);
+				strcat(str, ", ");
+				strcat(str, "@aux1");
+				nodo_asm = crear_nodo_arbol(crear_info(str),NULL,NULL);
+				insertar_en_pila(&pila_asm,crear_info_sentencias(nodo_asm));
 			}
 		} else if(strcmp(n->info->a,"*")==0)
 		{
@@ -1696,6 +1698,9 @@ void recorrer_asm(t_nodo_arbol *n){
 				fprintf(a, "@aux1"); 
 				fprintf(a, ", ");
 				fprintf(a, "R1");
+				
+				t_info_sentencias * sentencia_asm = sacar_de_pila(&pila_asm);
+				fprintf(a, sentencia_asm->a->info->a);
 			}	
 		}
 	if(n->nodo_izq != NULL)

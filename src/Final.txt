@@ -22,6 +22,7 @@ MAIN:
 MOV R1, c
 MUL R1, b
 MOV @aux1, R1
+MOV a, @aux1
 MOV b, c
 MOV c, 3
 MOV d, 4
