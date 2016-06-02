@@ -20,7 +20,7 @@ double f;
 
 
 KEYWORD				["if"]
-ID					{LETRA}({LETRA}|{DIGITO}|_|-)*
+ID					{LETRA}({LETRA}|{DIGITO}|_)*
 LETRA				[a-zA-Z]
 CAR_ESPECIAL		[�,?,�,!]
 OP_MUL				["*"]

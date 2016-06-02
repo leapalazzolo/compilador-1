@@ -46,6 +46,7 @@ extern int linecount;
 static t_info_sentencias * p_info_iguales;
 static FILE *a;
 static int usar_aux = 0;
+static char * asig_final;
 
 t_pila * pila_sentencias;
 t_pila * pila_comparaciones;
@@ -1680,7 +1681,7 @@ void recorrer_asm(t_nodo_arbol *n, char * auxiliar){
 				char str[80];
 				strcpy(str, "\n\nFSTP ");
 				strcat(str, n->nodo_izq->info->a);
-				insertar_en_pila_asm(&pila_asm,str);
+				asig_final = str;
 			}
 		} else if(strcmp(n->info->a,"*")==0)
 		{
@@ -1694,7 +1695,12 @@ void recorrer_asm(t_nodo_arbol *n, char * auxiliar){
 				
 				fprintf(a, "\nFMUL");
 				
-				while(!pila_vacia_asm(&pila_asm)){
+				if(auxiliar != NULL){
+					fprintf(a, "\nFSTP ");
+					fprintf(a, auxiliar);
+				}
+				
+				if(!pila_vacia_asm(&pila_asm)){
 					char * data = sacar_de_pila_asm(&pila_asm);
 					fprintf(a, data);
 				}
@@ -1704,12 +1710,24 @@ void recorrer_asm(t_nodo_arbol *n, char * auxiliar){
 				strcpy(str, "\n\nFLD ");
 				strcat(str, n->nodo_izq->info->a);
 				strcat(str, "\nFMUL");
+				
+				if(auxiliar != NULL){
+					strcat(str, "\nFSTP ");
+					strcat(str, auxiliar);
+				}
+				
 				insertar_en_pila_asm(&pila_asm,str);
 			} else if(!is_hoja(n->nodo_izq) && is_hoja(n->nodo_der)){
 				char str[80];
 				strcpy(str, "\n\nFLD ");
 				strcat(str, n->nodo_der->info->a);
 				strcat(str, "\nFMUL");
+				
+				if(auxiliar != NULL){
+					strcat(str, "\nFSTP ");
+					strcat(str, auxiliar);
+				}
+				
 				insertar_en_pila_asm(&pila_asm,str);			
 			}	
 		} else if(strcmp(n->info->a,"/")==0)
@@ -1724,7 +1742,12 @@ void recorrer_asm(t_nodo_arbol *n, char * auxiliar){
 				
 				fprintf(a, "\nFDIV");
 				
-				while(!pila_vacia_asm(&pila_asm)){
+				if(auxiliar != NULL){
+					fprintf(a, "\nFSTP ");
+					fprintf(a, auxiliar);
+				}
+				
+				if(!pila_vacia_asm(&pila_asm)){
 					char * data = sacar_de_pila_asm(&pila_asm);
 					fprintf(a, data);
 				}
@@ -1734,14 +1757,60 @@ void recorrer_asm(t_nodo_arbol *n, char * auxiliar){
 				strcpy(str, "\n\nFLD ");
 				strcat(str, n->nodo_izq->info->a);
 				strcat(str, "\nFDIV");
+				
+				if(auxiliar != NULL){
+					strcat(str, "\nFSTP ");
+					strcat(str, auxiliar);
+				}
+				
 				insertar_en_pila_asm(&pila_asm,str);
 			} else if(!is_hoja(n->nodo_izq) && is_hoja(n->nodo_der)){
 				char str[80];
 				strcpy(str, "\n\nFLD ");
 				strcat(str, n->nodo_der->info->a);
 				strcat(str, "\nFDIV");
+				
+				if(auxiliar != NULL){
+					strcat(str, "\nFSTP ");
+					strcat(str, auxiliar);
+				}
+				
 				insertar_en_pila_asm(&pila_asm,str);			
 			}	
+		} else if(strcmp(n->info->a,"-")==0)
+		{
+			if(!is_hoja(n->nodo_izq) && !is_hoja(n->nodo_der))
+			{
+				char str[80];
+				strcpy(str, "\n\nFLD ");
+				strcat(str, "aux1");
+				strcat(str, "\nFLD ");
+				strcat(str, "aux2");
+				strcat(str, "\nFSUB");
+				insertar_en_pila_asm(&pila_asm,str);
+				
+				auxiliar1 = "aux1";
+				auxiliar2 = "aux2";
+			}
+		} else if(strcmp(n->info->a,"+")==0)
+		{
+			if(!is_hoja(n->nodo_izq) && !is_hoja(n->nodo_der))
+			{
+				char str[80];
+				strcpy(str, "\n\nFLD ");
+				strcat(str, "aux1");
+				strcat(str, "\nFLD ");
+				strcat(str, "aux2");
+				strcat(str, "\nFSUB");
+				insertar_en_pila_asm(&pila_asm,str);
+				
+				auxiliar1 = "aux1";
+				auxiliar2 = "aux2";
+			}
+		} else if(strcmp(n->info->a,";")==0)
+		{
+			if(asig_final != NULL)
+				fprintf(a, asig_final);
 		} 
 		
 	if(n->nodo_izq != NULL)

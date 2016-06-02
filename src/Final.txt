@@ -28,20 +28,28 @@ FLD b
 FLD c
 FMUL
 
-FLD d
-FMUL
+FLD a
+FDIV
+FSTP aux1
 
 FLD 3
-FDIV
-
 FLD 2
 FMUL
+FSTP aux2
+
+FLD aux1
+FLD aux2
+FSUB
 
 FSTP a
 
 MOV b, c
 
+FSTP a
+
 MOV c, 3
+
+FSTP a
 
 MOV d, 4
 MOV AX, 4C00h
