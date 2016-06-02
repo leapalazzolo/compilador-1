@@ -33,7 +33,7 @@ int traer_tipo(char * nombre);
 void poner_prefijo(char * str, char * prefijo);
 int print_t(t_nodo_arbol *tree);
 int _print_t(t_nodo_arbol *tree, int is_left, int offset, int depth, char * s, int max);
-void recorrer_asm(t_nodo_arbol *n);
+void recorrer_asm(t_nodo_arbol *n, char * auxiliar);
 void copiar_sin_finalizador(char * dest,char * orig); 
 void reemplazar(char * cad, char old,char new, int size) ;
 t_info_sentencias * crear_info_sentencias(t_nodo_arbol * p_nodo) ;
@@ -45,7 +45,7 @@ int is_hoja(t_nodo_arbol *n);
 extern int linecount;
 static t_info_sentencias * p_info_iguales;
 static FILE *a;
-static int igualdad_anidada=0;
+static int usar_aux = 0;
 
 t_pila * pila_sentencias;
 t_pila * pila_comparaciones;
@@ -1655,13 +1655,17 @@ void crear_codigo_assembler(t_nodo_arbol *tree)
 	fprintf(a, "\nMOV AX,@DATA ;");
 	fprintf(a, "\nMOV DS,AX ;");
 	fprintf(a, "\nFINIT ;");
-	recorrer_asm(tree);
+	recorrer_asm(tree, NULL);
 	fprintf(a, "\nMOV AX, 4C00h");
 	fprintf(a, "\nend;");
     
 }
 
-void recorrer_asm(t_nodo_arbol *n){
+void recorrer_asm(t_nodo_arbol *n, char * auxiliar){
+
+		char * auxiliar1 = NULL;
+		char * auxiliar2 = NULL;
+
 		if(strcmp(n->info->a,":=")==0)		
 		{	
 			if(is_hoja(n->nodo_der))
@@ -1683,22 +1687,18 @@ void recorrer_asm(t_nodo_arbol *n){
 			if(is_hoja(n->nodo_izq) && is_hoja(n->nodo_der))
 			{
 				fprintf(a, "\n\nFLD ");
-				fprintf(a, n->nodo_der->info->a);
+				fprintf(a, n->nodo_izq->info->a);
 				
 				fprintf(a, "\nFLD ");
-				fprintf(a, n->nodo_izq->info->a);
+				fprintf(a, n->nodo_der->info->a);
 				
 				fprintf(a, "\nFMUL");
 				
-				if(!pila_vacia_asm(&pila_asm_aux)){
-					char * data = sacar_de_pila_asm(&pila_asm_aux);
-					fprintf(a, "\nFSTP");
-				}
-				
 				while(!pila_vacia_asm(&pila_asm)){
 					char * data = sacar_de_pila_asm(&pila_asm);
 					fprintf(a, data);
 				}
+				
 			} else if(is_hoja(n->nodo_izq) && !is_hoja(n->nodo_der)){
 				char str[80];
 				strcpy(str, "\n\nFLD ");
@@ -1710,105 +1710,13 @@ void recorrer_asm(t_nodo_arbol *n){
 				strcpy(str, "\n\nFLD ");
 				strcat(str, n->nodo_der->info->a);
 				strcat(str, "\nFMUL");
-				if(pila_vacia_asm(&pila_asm)){
-					fprintf(a, str);
-				} else{
-					insertar_en_pila_asm(&pila_asm,str);
-				}				
+				insertar_en_pila_asm(&pila_asm,str);			
 			}	
-		} else if(strcmp(n->info->a,"/")==0)
-		{
-			if(is_hoja(n->nodo_izq) && is_hoja(n->nodo_der))
-			{
-				fprintf(a, "\n\nFLD ");
-				fprintf(a, n->nodo_der->info->a);
-				
-				fprintf(a, "\nFLD ");
-				fprintf(a, n->nodo_izq->info->a);
-				
-				fprintf(a, "\nFDIV");
-				
-				if(!pila_vacia_asm(&pila_asm_aux)){
-					char * data = sacar_de_pila_asm(&pila_asm_aux);
-					fprintf(a, "\nFSTP");
-				}
-				
-				while(!pila_vacia_asm(&pila_asm)){
-					char * data = sacar_de_pila_asm(&pila_asm);
-					fprintf(a, data);
-				}
-			} else if(is_hoja(n->nodo_izq) && !is_hoja(n->nodo_der)){
-				char str[80];
-				strcpy(str, "\n\nFLD ");
-				strcat(str, n->nodo_izq->info->a);
-				strcat(str, "\nFDIV");
-				insertar_en_pila_asm(&pila_asm,str);
-			} else if(!is_hoja(n->nodo_izq) && is_hoja(n->nodo_der)){
-				char str[80];
-				strcpy(str, "\n\nFLD ");
-				strcat(str, n->nodo_der->info->a);
-				strcat(str, "\nFDIV");
-				if(pila_vacia_asm(&pila_asm)){
-					fprintf(a, str);
-				} else{
-					insertar_en_pila_asm(&pila_asm,str);
-				}				
-			}	
-		} else if(strcmp(n->info->a,"+")==0)
-		{
-			if(is_hoja(n->nodo_izq) && is_hoja(n->nodo_der))
-			{
-				fprintf(a, "\n\nFLD ");
-				fprintf(a, n->nodo_der->info->a);
-				
-				fprintf(a, "\nFLD ");
-				fprintf(a, n->nodo_izq->info->a);
-				
-				fprintf(a, "\nFADD");
-				
-				if(!pila_vacia_asm(&pila_asm_aux)){
-					char * data = sacar_de_pila_asm(&pila_asm_aux);
-					fprintf(a, "\nFSTP");
-				}
-				
-				while(!pila_vacia_asm(&pila_asm)){
-					char * data = sacar_de_pila_asm(&pila_asm);
-					char str[80];
-					strcpy(str, "\nFSTP ");
-					strcat(str, data);
-					fprintf(a, str);
-				}
-			} else if(is_hoja(n->nodo_izq) && !is_hoja(n->nodo_der)){
-				char str[80];
-				strcpy(str, "\n\nFLD ");
-				strcat(str, n->nodo_izq->info->a);
-				strcat(str, "\nFADD");
-				insertar_en_pila_asm(&pila_asm,str);
-			} else if(!is_hoja(n->nodo_izq) && is_hoja(n->nodo_der)){
-				char str[80];
-				strcpy(str, "\n\nFLD ");
-				strcat(str, n->nodo_der->info->a);
-				strcat(str, "\nFADD");
-				if(pila_vacia_asm(&pila_asm)){
-					fprintf(a, str);
-				} else{
-					insertar_en_pila_asm(&pila_asm,str);
-				}				
-			} else{
-				char str[80];
-				strcpy(str, "\n\nFLD ");
-				strcat(str, "aux1");
-				strcpy(str, "\nFLD ");
-				strcat(str, "aux2");
-				strcat(str, "\nFADD");
-				insertar_en_pila_asm(&pila_asm_aux,"aux1");
-				insertar_en_pila_asm(&pila_asm_aux,"aux2");
-			}	
-		}
+		} 
 	if(n->nodo_izq != NULL)
-		recorrer_asm(n->nodo_izq);
+		recorrer_asm(n->nodo_izq, auxiliar1);
 	if(n->nodo_der != NULL)
-		recorrer_asm(n->nodo_der);
+		recorrer_asm(n->nodo_der, auxiliar2);
 }
 
 int is_hoja(t_nodo_arbol *n)

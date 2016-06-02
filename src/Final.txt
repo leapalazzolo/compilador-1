@@ -24,20 +24,20 @@ MOV AX,@DATA ;
 MOV DS,AX ;
 FINIT ;
 
-FLD c
 FLD b
+FLD c
 FMUL
-FSTP
 
 FLD d
 FMUL
 
-FSTP a
+FLD 3
+FMUL
 
 FLD 2
-FLD 3
-FDIV
-FSTP
+FMUL
+
+FSTP a
 
 MOV b, c
 
