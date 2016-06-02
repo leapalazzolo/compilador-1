@@ -47,6 +47,7 @@ static t_info_sentencias * p_info_iguales;
 static FILE *a;
 static int usar_aux = 0;
 static char * asig_final;
+static char * sent_final;
 
 t_pila * pila_sentencias;
 t_pila * pila_comparaciones;
@@ -1698,9 +1699,13 @@ void recorrer_asm(t_nodo_arbol *n, char * auxiliar){
 				if(auxiliar != NULL){
 					fprintf(a, "\nFSTP ");
 					fprintf(a, auxiliar);
+					if(strcmp(auxiliar, "aux2")==0){
+						fprintf(a, sent_final);
+						sent_final == "";
+					}
 				}
 				
-				if(!pila_vacia_asm(&pila_asm)){
+				while(!pila_vacia_asm(&pila_asm) && strcmp(frente_de_pila_asm(&pila_asm), "\n\nFLD aux1\nFLD aux2\nFSUB")!=0 && strcmp(frente_de_pila_asm(&pila_asm), "\n\nFLD aux1\nFLD aux2\nFADD")!=0){
 					char * data = sacar_de_pila_asm(&pila_asm);
 					fprintf(a, data);
 				}
@@ -1745,9 +1750,13 @@ void recorrer_asm(t_nodo_arbol *n, char * auxiliar){
 				if(auxiliar != NULL){
 					fprintf(a, "\nFSTP ");
 					fprintf(a, auxiliar);
+					if(strcmp(auxiliar, "aux2")==0){
+						fprintf(a, sent_final);
+						sent_final == "";
+					}
 				}
 				
-				if(!pila_vacia_asm(&pila_asm)){
+				while(!pila_vacia_asm(&pila_asm) && strcmp(frente_de_pila_asm(&pila_asm), "\n\nFLD aux1\nFLD aux2\nFSUB")!=0 && strcmp(frente_de_pila_asm(&pila_asm), "\n\nFLD aux1\nFLD aux2\nFADD")!=0){
 					char * data = sacar_de_pila_asm(&pila_asm);
 					fprintf(a, data);
 				}
@@ -1787,7 +1796,7 @@ void recorrer_asm(t_nodo_arbol *n, char * auxiliar){
 				strcat(str, "\nFLD ");
 				strcat(str, "aux2");
 				strcat(str, "\nFSUB");
-				insertar_en_pila_asm(&pila_asm,str);
+				sent_final = str;
 				
 				auxiliar1 = "aux1";
 				auxiliar2 = "aux2";
@@ -1801,8 +1810,9 @@ void recorrer_asm(t_nodo_arbol *n, char * auxiliar){
 				strcat(str, "aux1");
 				strcat(str, "\nFLD ");
 				strcat(str, "aux2");
-				strcat(str, "\nFSUB");
-				insertar_en_pila_asm(&pila_asm,str);
+				strcat(str, "\nFADD");
+				
+				sent_final = str;
 				
 				auxiliar1 = "aux1";
 				auxiliar2 = "aux2";

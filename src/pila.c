@@ -119,3 +119,8 @@ int pila_vacia_asm(t_pila_asm ** p_pila_asm) {
 	return (*p_pila_asm) == NULL;
 }
 
+char * frente_de_pila_asm(t_pila_asm** p_pila_asm) {
+	if(*p_pila_asm == NULL) return NULL;
+	return (*p_pila_asm)->p_nodo_asm->data;
+}
+

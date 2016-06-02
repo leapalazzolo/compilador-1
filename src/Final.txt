@@ -24,23 +24,6 @@ MOV AX,@DATA ;
 MOV DS,AX ;
 FINIT ;
 
-FLD b
-FLD c
-FMUL
-
-FLD a
-FDIV
-FSTP aux1
-
-FLD 3
-FLD 2
-FMUL
-FSTP aux2
-
-FLD aux1
-FLD aux2
-FSUB
-
 FSTP a
 
 MOV b, c

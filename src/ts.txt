@@ -9,4 +9,3 @@ _b				INT				0				3
 _a				INT				0				3
 %4				INT				0				3
 %3				INT				0				4
-%2				INT				0				6
