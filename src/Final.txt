@@ -32,7 +32,7 @@ FLD d
 FMUL
 
 FLD 3
-FMUL
+FDIV
 
 FLD 2
 FMUL

@@ -3627,7 +3627,38 @@ void recorrer_asm(t_nodo_arbol *n, char * auxiliar){
 				strcat(str, "\nFMUL");
 				insertar_en_pila_asm(&pila_asm,str);			
 			}	
+		} else if(strcmp(n->info->a,"/")==0)
+		{
+			if(is_hoja(n->nodo_izq) && is_hoja(n->nodo_der))
+			{
+				fprintf(a, "\n\nFLD ");
+				fprintf(a, n->nodo_izq->info->a);
+				
+				fprintf(a, "\nFLD ");
+				fprintf(a, n->nodo_der->info->a);
+				
+				fprintf(a, "\nFDIV");
+				
+				while(!pila_vacia_asm(&pila_asm)){
+					char * data = sacar_de_pila_asm(&pila_asm);
+					fprintf(a, data);
+				}
+				
+			} else if(is_hoja(n->nodo_izq) && !is_hoja(n->nodo_der)){
+				char str[80];
+				strcpy(str, "\n\nFLD ");
+				strcat(str, n->nodo_izq->info->a);
+				strcat(str, "\nFDIV");
+				insertar_en_pila_asm(&pila_asm,str);
+			} else if(!is_hoja(n->nodo_izq) && is_hoja(n->nodo_der)){
+				char str[80];
+				strcpy(str, "\n\nFLD ");
+				strcat(str, n->nodo_der->info->a);
+				strcat(str, "\nFDIV");
+				insertar_en_pila_asm(&pila_asm,str);			
+			}	
 		} 
+		
 	if(n->nodo_izq != NULL)
 		recorrer_asm(n->nodo_izq, auxiliar1);
 	if(n->nodo_der != NULL)
