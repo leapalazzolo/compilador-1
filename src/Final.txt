@@ -24,6 +24,23 @@ MOV AX,@DATA ;
 MOV DS,AX ;
 FINIT ;
 
+FLD a
+FLD b
+FMUL
+
+FLD c
+FDIV
+FSTP aux1
+
+FLD d
+FLD r
+FMUL
+FSTP aux2
+
+FLD aux1
+FLD aux2
+FADD
+
 FSTP a
 
 MOV b, c
