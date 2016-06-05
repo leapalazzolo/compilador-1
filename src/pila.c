@@ -66,6 +66,12 @@ t_info_sentencias * sacar_de_pila(t_pila** p_pila) {
 }
 
 
+t_info_sentencias * frente_de_pila(t_pila** p_pila) {
+	if(*p_pila == NULL) return NULL;
+	return (*p_pila)->p_nodo->info;
+}
+
+
 void vaciar_pila(t_pila ** p_pila) {
 	while(pila_vacia(p_pila) == 0){
 		sacar_de_pila(p_pila);
@@ -77,10 +83,66 @@ int pila_vacia(t_pila ** p_pila) {
 }
 
 
-t_info_sentencias * frente_de_pila(t_pila** p_pila) {
+
+/* INICIO PILA DE COLAS*/
+
+
+void crear_pila_de_colas(t_pila_de_colas ** p_pila) {
+	*p_pila = NULL;
+}
+
+void insertar_en_pila_de_colas(t_pila_de_colas ** p_pila, t_cola * p_info) {
+
+	t_nodo_pila_de_colas * nodo = (t_nodo_pila_de_colas*)malloc(sizeof(t_nodo_pila_de_colas));
+
+	if(*p_pila == NULL) {
+		*p_pila = (t_pila_de_colas*) malloc(sizeof(t_pila_de_colas**));
+	 	(*p_pila)->p_nodo = NULL;
+	} 
+ 	nodo->sig_nodo = (*p_pila)->p_nodo;
+ 	(*p_pila)->p_nodo = nodo;
+	 
+
+	nodo->info = p_info;
+
+}
+
+t_cola * sacar_de_pila_de_colas(t_pila_de_colas** p_pila) {
+	if(*p_pila == NULL) return NULL;
+	t_nodo_pila_de_colas * nodo_a_eliminar = (*p_pila)->p_nodo;
+	t_cola * ret_info = (*p_pila)->p_nodo->info;
+	(*p_pila)->p_nodo = (*p_pila)->p_nodo->sig_nodo;
+
+	if((*p_pila)->p_nodo == NULL) {
+		free(*p_pila);
+		*p_pila = NULL;
+	}
+
+	if(nodo_a_eliminar != NULL)
+		free(nodo_a_eliminar);
+
+	return ret_info;
+}
+
+
+t_cola * frente_de_pila_de_colas(t_pila_de_colas** p_pila) {
 	if(*p_pila == NULL) return NULL;
 	return (*p_pila)->p_nodo->info;
 }
+
+
+void vaciar_pila_de_colas(t_pila_de_colas ** p_pila) {
+	while(pila_vacia_de_colas(p_pila) == 0){
+		sacar_de_pila_de_colas(p_pila);
+	}
+}
+
+int pila_vacia_de_colas(t_pila_de_colas ** p_pila) {
+	return (*p_pila) == NULL;
+}
+
+/* FIN PILA DE COLAS */
+
 
 void insertar_en_pila_asm(t_pila_asm ** p_pila_asm, char * data) {
 

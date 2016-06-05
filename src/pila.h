@@ -12,6 +12,13 @@ void vaciar_pila();
 void delete_pila();
 int pila_vacia();
 
+void crear_pila_de_colas(t_pila_de_colas **);
+void insertar_en_pila_de_colas(t_pila_de_colas**,t_cola*);
+t_cola * sacar_de_pila_de_colas(t_pila_de_colas **);
+t_cola * frente_de_pila_de_colas(t_pila_de_colas **);
+void vaciar_pila_de_colas();
+int pila_vacia_de_colas();
+
 void insertar_en_pila_asm(t_pila_asm ** p_pila_asm, char * data);
 char * sacar_de_pila_asm(t_pila_asm** p_pila_asm);
 int pila_vacia_asm(t_pila_asm ** p_pila_asm);

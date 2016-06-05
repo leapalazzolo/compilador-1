@@ -202,3 +202,37 @@ t_info * copiar_etiqueta(t_info * p_info)
 	return p_nueva_info;
 }
 
+
+
+void refactorizar_nodo(t_nodo_arbol ** p_nodo)
+{
+	if(!p_nodo || !*p_nodo)
+		return ;
+
+	while((*p_nodo)->nodo_izq != NULL && (*p_nodo)->nodo_der == NULL)
+	{
+		t_nodo_arbol * aux = *p_nodo;
+		*p_nodo = (*p_nodo)->nodo_izq;
+		(*p_nodo)->padre = aux->padre;
+		puts((*p_nodo)->info->a);
+
+		free(aux->info);
+		free(aux);
+	}
+
+	while((*p_nodo)->nodo_izq == NULL && (*p_nodo)->nodo_der != NULL)
+	{
+
+		t_nodo_arbol * aux = *p_nodo;
+		*p_nodo = (*p_nodo)->nodo_der;
+		(*p_nodo)->padre = aux->padre;
+		puts((*p_nodo)->info->a);
+
+		free(aux->info);
+		free(aux);
+	}
+
+	refactorizar_nodo(&(*p_nodo)->nodo_izq);
+	refactorizar_nodo(&(*p_nodo)->nodo_der);
+}
+

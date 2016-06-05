@@ -7,6 +7,7 @@
 #include "defines.h"
 #include "arbol.h"
 #include "pila.h"
+#include "cola.h"
 
 #define DEBUG 1
 extern YYSTYPE yylval;
@@ -49,7 +50,9 @@ static int usar_aux = 0;
 static char * asig_final;
 static char * sent_final;
 
-t_pila * pila_sentencias;
+t_pila_de_colas * pila_de_colas;
+t_pila * pila_bloques;
+t_cola * cola_sentencias;
 t_pila * pila_comparaciones;
 t_pila * pila_condiciones;
 t_pila * pila_expresiones;
@@ -189,13 +192,15 @@ programa : PR_MAIN lista_sentencias
 sentencia : asignacion PUNTO_Y_COMA
 {
 	if(DEBUG) {
-		puts("Asignacion\n");
+		puts("sentencia : asignacion PUNTO_Y_COMA\n");
 		puts("-------------------\n");		
 	}
 
 
 	nodo_sentencia = crear_nodo_arbol(crear_info(";"),nodo_asignacion,NULL);
-	insertar_en_pila(&pila_sentencias,crear_info_sentencias(nodo_sentencia));
+	insertar_en_cola(&cola_sentencias,crear_info_sentencias(nodo_sentencia));
+	puts("insertando en cola");
+	recorrer_en_orden(nodo_sentencia,&visitar);
 
 
 };
@@ -206,10 +211,12 @@ lista_sentencias : sentencia
 	// if(DEBUG){
 		puts("Una sola sentencia\n");
 		puts("-------------------\n");
-		// printf("la pila esta vacia? %d\n",pila_vacia(&pila_sentencias) );
+		// printf("la pila esta vacia? %d\n",pila_vacia(&cola_sentencias) );
 	// }
-		t_info_sentencias * sentencia_apilada = sacar_de_pila(&pila_sentencias);
+		t_info_sentencias * sentencia_apilada = sacar_de_cola(&cola_sentencias);
 		nodo_sentencias = sentencia_apilada->a;
+		puts("sacando de cola");
+		recorrer_en_orden(sentencia_apilada->a,&visitar);
 };
 
 lista_sentencias : sentencia lista_sentencias
@@ -220,10 +227,13 @@ lista_sentencias : sentencia lista_sentencias
 	// }
 	// nodo_sentencias = nodo_sentencia;
 	// nodo_sentencias->nodo_der = nodo_sentencia;
-	t_info_sentencias * sentencia_apilada = sacar_de_pila(&pila_sentencias);
+	t_info_sentencias * sentencia_apilada = sacar_de_cola(&cola_sentencias);
 	nodo_sentencias->nodo_der = sentencia_apilada->a;
 	nodo_sentencias->nodo_der->padre = nodo_sentencias;
 	nodo_sentencias = sentencia_apilada->a;
+		puts("sacando de cola");
+		recorrer_en_orden(sentencia_apilada->a,&visitar);
+
 
 
 	// nodo_sentencias = crear_nodo_arbol(crear_info("NUEVA"),nodo_sentencias,sentencia_apilada->a);
@@ -238,9 +248,14 @@ sentencia : condicional
 		puts("-------------------\n");		
 	}
 	
-	nodo_sentencia = crear_nodo_arbol(crear_info(";"),nodo_condicional,NULL);
-	insertar_en_pila(&pila_sentencias,crear_info_sentencias(nodo_sentencia));
+	//para esta altura todas las sentencias del bloque deberian haber sido desencoladas
+	printf("La cola de sentencias esta vacia? %d\n",cola_vacia(&cola_sentencias));
+	cola_sentencias = sacar_de_pila_de_colas(&pila_de_colas);
 
+	nodo_sentencia = crear_nodo_arbol(crear_info(";"),nodo_condicional,NULL);
+	insertar_en_cola(&cola_sentencias,crear_info_sentencias(nodo_sentencia));
+	puts("insertando en cola");
+	recorrer_en_orden(nodo_sentencia,&visitar);
 
 };
 
@@ -252,8 +267,14 @@ sentencia : iteracion
 		puts("-------------------\n");		
 	}
 
+	//para esta altura todas las sentencias del bloque deberian haber sido desencoladas
+	printf("La cola de sentencias esta vacia? %d\n",cola_vacia(&cola_sentencias));
+	cola_sentencias = sacar_de_pila_de_colas(&pila_de_colas);
+
 	nodo_sentencia = crear_nodo_arbol(crear_info(";"),nodo_iteracion,NULL);
-	insertar_en_pila(&pila_sentencias,crear_info_sentencias(nodo_sentencia));
+	insertar_en_cola(&cola_sentencias,crear_info_sentencias(nodo_sentencia));
+		puts("insertando en cola");
+	recorrer_en_orden(nodo_sentencia,&visitar);
 	// print_t(nodo_sentencia);
 	// nodo_sentencia = nodo_iteracion;
 };
@@ -265,7 +286,9 @@ sentencia : io PUNTO_Y_COMA
 		puts("-------------------\n");		
 	}
 	nodo_sentencia = crear_nodo_arbol(crear_info(";"),nodo_io,NULL);
-	insertar_en_pila(&pila_sentencias,crear_info_sentencias(nodo_sentencia));
+	insertar_en_cola(&cola_sentencias,crear_info_sentencias(nodo_sentencia));
+		puts("insertando en cola");
+	recorrer_en_orden(nodo_sentencia,&visitar);
 };
 
 sentencia : iguales PUNTO_Y_COMA
@@ -275,7 +298,9 @@ sentencia : iguales PUNTO_Y_COMA
 		puts("-------------------\n");	
 	}
 	nodo_sentencia = crear_nodo_arbol(crear_info(";"),nodo_iguales,NULL);
-	insertar_en_pila(&pila_sentencias,crear_info_sentencias(nodo_sentencia));
+	insertar_en_cola(&cola_sentencias,crear_info_sentencias(nodo_sentencia));
+		puts("insertando en cola");
+	recorrer_en_orden(nodo_sentencia,&visitar);
 }
 
 sentencia : filter PUNTO_Y_COMA
@@ -286,7 +311,9 @@ sentencia : filter PUNTO_Y_COMA
 	}
 
 	nodo_sentencia = crear_nodo_arbol(crear_info(";"),nodo_filter,NULL);
-	insertar_en_pila(&pila_sentencias,crear_info_sentencias(nodo_sentencia));
+	insertar_en_cola(&cola_sentencias,crear_info_sentencias(nodo_sentencia));
+		puts("insertando en cola");
+	recorrer_en_orden(nodo_sentencia,&visitar);
 	
 }
 
@@ -547,7 +574,7 @@ condicional : PR_IF PAR_ABRE condicion PAR_CIERRA then else PR_ENDIF
 	}
 
 	t_info_sentencias * p_info = sacar_de_pila(&pila_condiciones);
-	nodo_then = crear_nodo_arbol(crear_info("<-true . false->"),nodo_sentencias_then,nodo_sentencias_else);
+	nodo_then = crear_nodo_arbol(crear_info("<V.F>"),nodo_sentencias_then,nodo_sentencias_else);
 	nodo_condicional = crear_nodo_arbol(crear_info("IF"),p_info->a,nodo_then);
 
 }
@@ -559,6 +586,7 @@ then : PR_THEN lista_sentencias
 		puts("-------------------\n");	
 	}
 	nodo_sentencias_then = obtener_raiz(nodo_sentencias);
+
 }
 
 else : PR_ELSE lista_sentencias
@@ -576,6 +604,10 @@ condicion : comparacion
 		puts("condicion : comparacion\n");
 		puts("-------------------\n");
 	// }
+
+	insertar_en_pila_de_colas(&pila_de_colas,cola_sentencias);
+	crear_cola(&cola_sentencias);
+
 	t_info_sentencias * p_info = sacar_de_pila(&pila_comparaciones);
 	nodo_condicion = p_info->a;
 	insertar_en_pila(&pila_condiciones,crear_info_sentencias(nodo_condicion));
@@ -588,6 +620,9 @@ condicion : comparacion OP_LOG_AND comparacion
 		puts("condicion : comparacion and comparacion\n");
 		puts("-------------------\n");		
 	// }
+
+	insertar_en_pila_de_colas(&pila_de_colas,cola_sentencias);
+	crear_cola(&cola_sentencias);
 
 	t_info_sentencias * p_info1 = sacar_de_pila(&pila_comparaciones);
 	t_info_sentencias * p_info2 = sacar_de_pila(&pila_comparaciones);
@@ -604,6 +639,9 @@ condicion : comparacion OP_LOG_OR comparacion
 		puts("condicion : comparacion or comparacion\n");
 		puts("-------------------\n");		
 	// }
+
+	insertar_en_pila_de_colas(&pila_de_colas,cola_sentencias);
+	crear_cola(&cola_sentencias);
 
 	t_info_sentencias * p_info1 = sacar_de_pila(&pila_comparaciones);
 	t_info_sentencias * p_info2 = sacar_de_pila(&pila_comparaciones);
@@ -669,6 +707,7 @@ iteracion : PR_WHILE PAR_ABRE condicion PAR_CIERRA PR_DO lista_sentencias PR_END
 asignacion : TOKEN_ID OP_IGUAL expresion 
 {
 	if(DEBUG) {
+		puts($1);
 		puts("Asignacion -> Token_ID := expresion\n");
 		puts("-------------------\n");
 	}
@@ -986,7 +1025,7 @@ factor : iguales
 	insertar_en_pila(&pila_factores,crear_info_sentencias(crear_nodo_arbol(crear_info("IGUALES"),nodo_iguales,NULL)));
 	// nodo_factor = crear_nodo_arbol(crear_info("IGUALES"),nodo_iguales,NULL);
 	//nodo_sentencia = crear_nodo_arbol(crear_info(";"),nodo_iguales,NULL);
-	//insertar_en_pila(&pila_sentencias,crear_info_sentencias(nodo_sentencia));
+	//insertar_en_pila(&cola_sentencias,crear_info_sentencias(nodo_sentencia));
 }
 
 factor : filter
@@ -1181,7 +1220,11 @@ int main(int argc, char **argv ) {
 	    yyin = stdin;
 
     }
-    crear_pila(&pila_sentencias);
+
+    crear_pila_de_colas(&pila_de_colas);
+    // crear_pila(&cola_sentencias);
+    crear_cola(&cola_sentencias);
+    crear_pila(&pila_bloques);
     crear_pila(&pila_comparaciones);
     crear_pila(&pila_condiciones);
     crear_pila(&pila_factores);
@@ -1199,6 +1242,8 @@ int main(int argc, char **argv ) {
 	imprimir_tabla_simbolos();
 	arbol_ejecucion->p_nodo = obtener_raiz(nodo_sentencia);
 
+	refactorizar_nodo(&arbol_ejecucion->p_nodo);
+
 	// crear_codigo_assembler(arbol_ejecucion->p_nodo);
 	// arbol_ejecucion->p_nodo = obtener_raiz(nodo_iguales);
 
@@ -1208,7 +1253,7 @@ int main(int argc, char **argv ) {
 	
 	// imprimir_arbol(arbol_ejecucion->p_nodo);
 
-	// printf("la pila esta vacia? %d\n", pila_vacia(&pila_sentencias) );
+	// printf("la pila esta vacia? %d\n", pila_vacia(&cola_sentencias) );
 	// if(!pila_vacia)
 	// {
 	// 	t_nodo_arbol

@@ -31,6 +31,7 @@ int comparar_etiquetas(t_info *,t_info *);
 int comparar_nodos(t_nodo_arbol *,t_nodo_arbol *);
 t_nodo_arbol * clonar_arbol(t_nodo_arbol *);
 t_info * copiar_etiqueta(t_info*);
+void refactorizar_nodo(t_nodo_arbol **);
 // t_info * sacar_de_pila(t_pila **);
 // t_info * frente_de_pila(t_pila **);
 // void vaciar_pila();

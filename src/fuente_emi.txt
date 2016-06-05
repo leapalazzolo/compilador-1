@@ -1,7 +1,11 @@
 MAIN
 DIM [a,b,c,d,r] AS [INT,INT,INT,INT,INT];
-d := 4;
-c := 3;
-b := c;
-a := a*b/c+d*r;
-
+a:=1;
+a:=2;
+a:=3;
+IF(1==1 )
+THEN
+a:=4;
+READ a;
+ENDIF
+a:=6;
