@@ -24,14 +24,14 @@ MOV AX,@DATA ;
 MOV DS,AX ;
 FINIT ;
 
-MOV a, 1
+MOV _a, 
 
-MOV a, 2
+MOV _a, 
 
-MOV a, 3
+MOV _a, 
 
-MOV a, 4
+MOV _a, 
 
-MOV a, 6
+MOV _a, 
 MOV AX, 4C00h
 end;

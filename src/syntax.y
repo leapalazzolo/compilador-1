@@ -41,6 +41,7 @@ t_info_sentencias * crear_info_sentencias(t_nodo_arbol * p_nodo) ;
 void crear_arbol_iguales(t_nodo_arbol ** raiz);
 void crear_codigo_assembler(t_nodo_arbol *tree);
 void crear_inicio_assembler();
+void reemplazar_etiqueta_por_valor_TS(t_nodo_arbol*);
 int is_hoja(t_nodo_arbol *n);
 
 extern int linecount;
@@ -1243,6 +1244,7 @@ int main(int argc, char **argv ) {
 	arbol_ejecucion->p_nodo = obtener_raiz(nodo_sentencia);
 
 	refactorizar_nodo(&arbol_ejecucion->p_nodo);
+	recorrer_en_orden(arbol_ejecucion->p_nodo,&reemplazar_etiqueta_por_valor_TS);
 
 	// crear_codigo_assembler(arbol_ejecucion->p_nodo);
 	// arbol_ejecucion->p_nodo = obtener_raiz(nodo_iguales);
@@ -1670,6 +1672,15 @@ void crear_arbol_iguales(t_nodo_arbol ** raiz)
 			// puts("b");
 			*raiz = nodo_aux_if;
 		}	
+}
+
+void reemplazar_etiqueta_por_valor_TS(t_nodo_arbol * p_nodo)
+{
+	if(!p_nodo) return;
+
+	int indice = buscar_en_TS_sin_prefijo(p_nodo->info->a,NULL,0);
+	if(indice >= 0)
+		strcpy(p_nodo->info->a,tabla_simbolos[indice].nombre);
 }
 
 void crear_inicio_assembler()
