@@ -1,9 +1,9 @@
-TITLE TP Compilador 2016
+;TITLE TP Compilador 2016
 .MODEL	small
 .386
-.STACK	300h
+.stack 300h
 
-.DATA
+.data
 message db	'-- EOF --', '$'
 overflow db	'Overflow!', '$'
 diviz db	'Division by 0!', '$'
@@ -19,19 +19,26 @@ _c DD ?
 _b DD ?
 _a DD ?
 
-.CODE
+.code
 MOV AX,@DATA ;
 MOV DS,AX ;
 FINIT ;
 
-MOV _a, 
+fld 1
+fstp _a
+fld 2
+fstp _a
+fld 3
+fstp _a
+fld aux2
+fld aux1
+fcomp
+jne end_if1
+fld 4
+fstp _a
+end_if1
+fld 6
+fstp _a
 
-MOV _a, 
-
-MOV _a, 
-
-MOV _a, 
-
-MOV _a, 
 MOV AX, 4C00h
 end;
