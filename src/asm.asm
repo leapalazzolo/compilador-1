@@ -1,5 +1,5 @@
 ;TITLE TP Compilador 2016
-.MODEL	small
+.model small
 .386
 .stack 300h
 
@@ -11,34 +11,22 @@ MAX_STRING_LENGTH equ 30 ;Longitud maxima de los string.
 MAX_STRING_INT equ 65535 ;Tama�o maximo de ints.
 aux1 DD ?
 aux2 DD ?
-_IGUALES DD ?
-_FILTER DD ?
-_r DD ?
-_d DD ?
-_c DD ?
-_b DD ?
-_a DD ?
+_IGUALES dd ?
+_FILTER dd ?
+_r dd ?
+_d dd ?
+_c dd ?
+_b dd ?
+_a dd ?
+_cte_4 dd 4.000000
 
 .code
-MOV AX,@DATA ;
-MOV DS,AX ;
-FINIT ;
+mov AX,@DATA ;
+mov DS,AX ;
+finit ;
 
-fld 1
-fstp _a
-fld 2
-fstp _a
-fld 3
-fstp _a
-fld aux2
-fld aux1
-fcomp
-jne end_if1
 fld 4
 fstp _a
-end_if1
-fld 6
-fstp _a
 
-MOV AX, 4C00h
+mov AX, 4C00h
 end;

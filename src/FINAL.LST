@@ -1,48 +1,38 @@
-Turbo Assembler	 Version 2.01	     05/29/16 19:13:15	    Page 1
+Turbo Assembler	 Version 2.01	     06/16/16 16:10:16	    Page 1
 Final.txt
-TP Compilador 2016
 
 
-      1					 TITLE TP Compilador 2016
-      2	    0000			 .MODEL	 small
+
+      1					 ;TITLE	TP Compilador 2016
+      2	    0000			 .model	small
       3					 .386
-      4	00000000			 .STACK	 300h
+      4	00000000			 .stack	300h
 *Warning* Final.txt(4) Assuming	segment	is 32-bit
       5
-      6	    0000			 .DATA
-      7	    0000  2D 2D	20 45 4F 46 20+	 message db	 '-- EOF --', '$'
-      8		  2D 2D	24
-      9	    000A  4F 76	65 72 66 6C 6F+	 overflow db	 'Overflow!', '$'
-     10		  77 21	24
-     11	    0014  44 69	76 69 73 69 6F+	 diviz db	 'Division by 0!', '$'
-     12		  6E 20	62 79 20 30 21+
-     13		  24
-     14		  = 001E		 MAX_STRING_LENGTH equ 30 ;Longitud maxima de los string.
-     15		  = FFFF		 MAX_STRING_INT	equ 65535 ;Tamaño maximo de ints.
-     16	    0023  ????			 _IGUALES DW ?
-     17	    0025  ????			 _FILTER DW ?
-     18	    0027  ????			 _r DW ?
-     19	    0029  ????			 _d DW ?
-     20	    002B  ????			 _c DW ?
-     21	    002D  ????			 _b DW ?
-     22	    002F  ????			 _a DW ?
-     23
-     24	    0031			 .CODE
-     25	    0000			 MAIN:
-     26	    0000  C7 06	0029r 0004	 MOV _d, 4
-     27	    0006  B8 4C00		 MOV AX, 4C00h
-     28					 END MAIN
-Turbo Assembler	 Version 2.01	     05/29/16 19:13:15	    Page 2
+      6	    0000			 .data
+      7
+      8
+      9	    0000			 .code
+     10
+     11	    0000  DD 06	0004		 fld 4
+*Warning* Final.txt(11)	Argument needs type override
+**Error** Final.txt(11)	Illegal	immediate
+     12	    0004  DD 1E	0000		 fstp _a
+**Error** Final.txt(12)	Undefined symbol: _A
+*Warning* Final.txt(12)	Argument needs type override
+     13
+     14					 end;
+Turbo Assembler	 Version 2.01	     06/16/16 16:10:16	    Page 2
 Symbol Table
-TP Compilador 2016
+
 
 
 
 Symbol Name			  Type	 Value
 
-??DATE				  Text	 "05/29/16"
+??DATE				  Text	 "06/16/16"
 ??FILENAME			  Text	 "Final	  "
-??TIME				  Text	 "19:13:15"
+??TIME				  Text	 "16:10:16"
 ??VERSION			  Number 0201
 @CODE				  Text	 _TEXT
 @CODESIZE			  Text	 0
@@ -53,30 +43,21 @@ Symbol Name			  Type	 Value
 @FILENAME			  Text	 FINAL
 @MODEL				  Text	 2
 @WORDSIZE			  Text	 2
-DIVIZ				  Byte	 DGROUP:0014
-MAIN				  Near	 _TEXT:0000
-MAX_STRING_INT			  Number FFFF
-MAX_STRING_LENGTH		  Number 001E
-MESSAGE				  Byte	 DGROUP:0000
-OVERFLOW			  Byte	 DGROUP:000A
-_A				  Word	 DGROUP:002F
-_B				  Word	 DGROUP:002D
-_C				  Word	 DGROUP:002B
-_D				  Word	 DGROUP:0029
-_FILTER				  Word	 DGROUP:0025
-_IGUALES			  Word	 DGROUP:0023
-_R				  Word	 DGROUP:0027
 
 Groups & Segments		  Bit Size Align  Combine Class
 
 DGROUP				  Group
   STACK				  32  0300 Para	  Stack	  STACK
-  _DATA				  16  0031 Word	  Public  DATA
-_TEXT				  16  0009 Word	  Public  CODE
-Turbo Assembler	 Version 2.01	     05/29/16 19:13:15	    Page 3
+  _DATA				  16  0000 Word	  Public  DATA
+_TEXT				  16  0008 Word	  Public  CODE
+Turbo Assembler	 Version 2.01	     06/16/16 16:10:16	    Page 3
 Error Summary
-TP Compilador 2016
+
 
 
 *Warning* Final.txt(4) Assuming	segment	is 32-bit
+*Warning* Final.txt(11)	Argument needs type override
+**Error** Final.txt(11)	Illegal	immediate
+**Error** Final.txt(12)	Undefined symbol: _A
+*Warning* Final.txt(12)	Argument needs type override
 

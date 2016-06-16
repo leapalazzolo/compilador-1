@@ -1,5 +1,5 @@
-tasm /la  /zi Final.txt
+tasm /la  /zi asm.asm
 
-tlink /v Final
+tlink /v asm
 
-TD -cspecial Final
+TD -cspecial asm

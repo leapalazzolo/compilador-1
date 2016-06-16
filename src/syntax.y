@@ -43,6 +43,7 @@ void crear_codigo_assembler(t_nodo_arbol *tree);
 void crear_inicio_assembler();
 void reemplazar_etiqueta_por_valor_TS(t_nodo_arbol*);
 int is_hoja(t_nodo_arbol *n);
+char *newStr (char *charBuffer);
 
 extern int linecount;
 static t_info_sentencias * p_info_iguales;
@@ -1326,7 +1327,7 @@ void imprimir_tabla_simbolos() {
 			{
 				fprintf(a, "\n");
 				fprintf(a, tabla_simbolos[i].nombre);			
-				fprintf(a, " DD ?");
+				fprintf(a, " dd ?");
 			}
 		}
 	
@@ -1337,7 +1338,15 @@ void imprimir_tabla_simbolos() {
 			{
 				fprintf(a, "\n");
 				fprintf(a, tabla_simbolos[i].nombre);			
-				fprintf(a, " DD ?");
+				fprintf(a, " dd ?");
+			} else if(tabla_simbolos[i].nombre[0] == '%')
+			{
+				char *aux = newStr(tabla_simbolos[i].nombre);
+				fprintf(a, "\n_cte_");
+				fprintf(a, aux);		
+				fprintf(a, " dd ");
+				fprintf(a, aux);
+				fprintf(a, ".000000");
 			}
 		}
 		
@@ -1349,6 +1358,14 @@ void imprimir_tabla_simbolos() {
 				fprintf(a, "\n");
 				fprintf(a, tabla_simbolos[i].nombre);			
 				fprintf(a, " DD ?");
+			} else if(tabla_simbolos[i].nombre[0] == '%')
+			{
+				char *aux = newStr(tabla_simbolos[i].nombre);
+				fprintf(a, "\n_cte_");
+				fprintf(a, aux);		
+				fprintf(a, " dd ");
+				fprintf(a, aux);
+				fprintf(a, ".000000");
 			}
 		}
 		
@@ -1686,14 +1703,14 @@ void reemplazar_etiqueta_por_valor_TS(t_nodo_arbol * p_nodo)
 
 void crear_inicio_assembler()
 {
-	a = fopen("Final.asm", "w");
+	a = fopen("asm.asm", "w");
 	if (a == NULL)
 	{
 	    puts("Error abriendo archivo assembler");
 	    exit(1);
 	}
 	fprintf(a, ";TITLE TP Compilador 2016");
-	fprintf(a, "\n.MODEL	small");
+	fprintf(a, "\n.model small");
 	fprintf(a, "\n.386");
 	fprintf(a, "\n.stack 300h");
 	fprintf(a, "\n");
@@ -1711,9 +1728,9 @@ void crear_codigo_assembler(t_nodo_arbol *tree)
 {
 	fprintf(a, "\n");
 	fprintf(a, "\n.code");
-	fprintf(a, "\nMOV AX,@DATA ;");
-	fprintf(a, "\nMOV DS,AX ;");
-	fprintf(a, "\nFINIT ;\n");
+	fprintf(a, "\nmov AX,@DATA ;");
+	fprintf(a, "\nmov DS,AX ;");
+	fprintf(a, "\nfinit ;\n");
 	recorrer_asm(tree, 0);
 	if(strcmp(sent_final, "")!=0){
 		fprintf(a, sent_final);
@@ -1730,7 +1747,7 @@ void crear_codigo_assembler(t_nodo_arbol *tree)
 		fprintf(a, buf);
 		ifs--;
 	}
-	fprintf(a, "\n\nMOV AX, 4C00h");
+	fprintf(a, "\n\nmov AX, 4C00h");
 	fprintf(a, "\nend;");
     
 }
@@ -1934,4 +1951,17 @@ int is_hoja(t_nodo_arbol *n)
 		return 0;
 		
 	return 1;
+}
+
+char *newStr (char *charBuffer) {
+  int length = strlen(charBuffer);
+  char *str;
+  if (length <= 1) {
+    str = (char *) malloc(1);
+    str[0] = '\0';
+  } else {
+    str = (char *) malloc(length);
+    strcpy(str, &charBuffer[1]);
+  }
+  return str;
 }
