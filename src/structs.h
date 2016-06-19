@@ -8,6 +8,7 @@ typedef struct
  char * valor_string;
  int valor_int;
  float valor_float;
+ int esConstante;
  int longitud;
  char *alias;
  int lineNumber;

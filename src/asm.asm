@@ -14,19 +14,24 @@ aux2 DD ?
 _IGUALES dd ?
 _FILTER dd ?
 _r dd ?
-_d dd ?
+_d DD ?
 _c dd ?
 _b dd ?
 _a dd ?
-_cte_4 dd 4.000000
+_cte_4 dd ?
+_cte_4.5000 DD ?
 
 .code
 mov AX,@DATA ;
 mov DS,AX ;
 finit ;
 
-fld 4
+fld _cte_4
 fstp _a
+fld _cte_4.5000
+fstp _d
+fld "hola"
+fstp _r
 
 mov AX, 4C00h
 end;

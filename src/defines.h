@@ -12,8 +12,10 @@
 #define ERROR_ABRIR_TABLA_SIMBOLOS "No se pudo crear la tabla de simbolos. Verifique que tenga permisos de escritura"
 
 #define PREFIJO_ID "_"
-#define PREFIJO_INT "\%"
-#define PREFIJO_FLOAT "$"
+// #define PREFIJO_INT "\%"
+#define PREFIJO_INT "_cte_"
+// #define PREFIJO_FLOAT "$"
+#define PREFIJO_FLOAT "_cte_"
 #define PREFIJO_STRING "&"
 
 

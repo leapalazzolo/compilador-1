@@ -9,12 +9,12 @@
 #include "pila.h"
 #include "cola.h"
 
-#define DEBUG 1
+#define DEBUG 0
 extern YYSTYPE yylval;
-char prefijo_id[2] = PREFIJO_ID;
-char prefijo_int[2] = PREFIJO_INT;
-char prefijo_float[2] = PREFIJO_FLOAT;
-char prefijo_string[2] = PREFIJO_STRING;
+char prefijo_id[10] = PREFIJO_ID;
+char prefijo_int[10] = PREFIJO_INT;
+char prefijo_float[10] = PREFIJO_FLOAT;
+char prefijo_string[10] = PREFIJO_STRING;
 char temp_variables[MAX_VARIABLES][30];
 char temp_tipo_dato[MAX_VARIABLES][10];
 t_info * crear_info(char *);
@@ -24,7 +24,7 @@ char aux2[30];
 int cantidad_cte_string = 0;
 int buscar_en_TS_sin_prefijo(char * nombre, char * mjs_error , int lineNumber );
 int buscar_en_TS(char * nombre, char * mjs_error, int lineNumber);
-void agregar_simbolo(char * nombre, int tipo, char * valor,char * alias,int lineNumber);
+void agregar_simbolo(char * nombre, int tipo, char * valor,char * alias,int lineNumber,int esConstante);
 void agregar_variable_a_TS(char * nombre, char * tipo,int lineNumber);
 void agregar_cte_a_TS(int tipo, char * valor_str, int valor_int,float valor_float,int lineNumber);
 void agregar_cte_a_TS_sin_prefijo(int tipo, char * valor_str, int valor_int,float valor_float,int lineNumber);
@@ -44,6 +44,8 @@ void crear_inicio_assembler();
 void reemplazar_etiqueta_por_valor_TS(t_nodo_arbol*);
 int is_hoja(t_nodo_arbol *n);
 char *newStr (char *charBuffer);
+char * substring(char * str , int start, int end);
+char * get_nombre_sin_prefijo(t_simbolo *);
 
 extern int linecount;
 static t_info_sentencias * p_info_iguales;
@@ -202,8 +204,8 @@ sentencia : asignacion PUNTO_Y_COMA
 
 	nodo_sentencia = crear_nodo_arbol(crear_info(";"),nodo_asignacion,NULL);
 	insertar_en_cola(&cola_sentencias,crear_info_sentencias(nodo_sentencia));
-	puts("insertando en cola");
-	recorrer_en_orden(nodo_sentencia,&visitar);
+	// puts("insertando en cola");
+	// recorrer_en_orden(nodo_sentencia,&visitar);
 
 
 };
@@ -218,8 +220,8 @@ lista_sentencias : sentencia
 	// }
 		t_info_sentencias * sentencia_apilada = sacar_de_cola(&cola_sentencias);
 		nodo_sentencias = sentencia_apilada->a;
-		puts("sacando de cola");
-		recorrer_en_orden(sentencia_apilada->a,&visitar);
+		// puts("sacando de cola");
+		// recorrer_en_orden(sentencia_apilada->a,&visitar);
 };
 
 lista_sentencias : sentencia lista_sentencias
@@ -234,8 +236,8 @@ lista_sentencias : sentencia lista_sentencias
 	nodo_sentencias->nodo_der = sentencia_apilada->a;
 	nodo_sentencias->nodo_der->padre = nodo_sentencias;
 	nodo_sentencias = sentencia_apilada->a;
-		puts("sacando de cola");
-		recorrer_en_orden(sentencia_apilada->a,&visitar);
+		// puts("sacando de cola");
+		// recorrer_en_orden(sentencia_apilada->a,&visitar);
 
 
 
@@ -257,8 +259,8 @@ sentencia : condicional
 
 	nodo_sentencia = crear_nodo_arbol(crear_info(";"),nodo_condicional,NULL);
 	insertar_en_cola(&cola_sentencias,crear_info_sentencias(nodo_sentencia));
-	puts("insertando en cola");
-	recorrer_en_orden(nodo_sentencia,&visitar);
+	// puts("insertando en cola");
+	// recorrer_en_orden(nodo_sentencia,&visitar);
 
 };
 
@@ -276,8 +278,8 @@ sentencia : iteracion
 
 	nodo_sentencia = crear_nodo_arbol(crear_info(";"),nodo_iteracion,NULL);
 	insertar_en_cola(&cola_sentencias,crear_info_sentencias(nodo_sentencia));
-		puts("insertando en cola");
-	recorrer_en_orden(nodo_sentencia,&visitar);
+		// puts("insertando en cola");
+	// recorrer_en_orden(nodo_sentencia,&visitar);
 	// print_t(nodo_sentencia);
 	// nodo_sentencia = nodo_iteracion;
 };
@@ -290,8 +292,8 @@ sentencia : io PUNTO_Y_COMA
 	}
 	nodo_sentencia = crear_nodo_arbol(crear_info(";"),nodo_io,NULL);
 	insertar_en_cola(&cola_sentencias,crear_info_sentencias(nodo_sentencia));
-		puts("insertando en cola");
-	recorrer_en_orden(nodo_sentencia,&visitar);
+		// puts("insertando en cola");
+	// recorrer_en_orden(nodo_sentencia,&visitar);
 };
 
 sentencia : iguales PUNTO_Y_COMA
@@ -302,8 +304,8 @@ sentencia : iguales PUNTO_Y_COMA
 	}
 	nodo_sentencia = crear_nodo_arbol(crear_info(";"),nodo_iguales,NULL);
 	insertar_en_cola(&cola_sentencias,crear_info_sentencias(nodo_sentencia));
-		puts("insertando en cola");
-	recorrer_en_orden(nodo_sentencia,&visitar);
+		// puts("insertando en cola");
+	// recorrer_en_orden(nodo_sentencia,&visitar);
 }
 
 sentencia : filter PUNTO_Y_COMA
@@ -315,8 +317,8 @@ sentencia : filter PUNTO_Y_COMA
 
 	nodo_sentencia = crear_nodo_arbol(crear_info(";"),nodo_filter,NULL);
 	insertar_en_cola(&cola_sentencias,crear_info_sentencias(nodo_sentencia));
-		puts("insertando en cola");
-	recorrer_en_orden(nodo_sentencia,&visitar);
+		// puts("insertando en cola");
+	// recorrer_en_orden(nodo_sentencia,&visitar);
 	
 }
 
@@ -717,6 +719,7 @@ asignacion : TOKEN_ID OP_IGUAL expresion
 
 	// printf("asignacion %s %s\n",$1,$3 );
 	/* comparo que para operar entre terminos, ambos tengan el mismo tipo de datos*/ 
+	puts("asignacion comprobacion tipos iguales");
 	char mjs_error[60];
 	if(!tipos_iguales($1,$3,mjs_error, linecount)) {
 		puts(mjs_error);
@@ -979,6 +982,8 @@ factor : CONST_INT
 	$$ = temp;
 	agregar_cte_a_TS(TIPO_INT,NULL, $1,0.0,linecount);
 
+	puts("agregando a factooooor intttttttttttttttttttttttttttttt");
+	puts(temp);
 	/*guardo el termino en el arbol de ejecucion*/
 	nodo_factor =  crear_hoja(crear_info(temp));
 	insertar_en_pila(&pila_factores,crear_info_sentencias(nodo_factor));
@@ -1224,6 +1229,8 @@ int main(int argc, char **argv ) {
 
     }
 
+
+
     crear_pila_de_colas(&pila_de_colas);
     // crear_pila(&cola_sentencias);
     crear_cola(&cola_sentencias);
@@ -1251,7 +1258,7 @@ int main(int argc, char **argv ) {
 	// crear_codigo_assembler(arbol_ejecucion->p_nodo);
 	// arbol_ejecucion->p_nodo = obtener_raiz(nodo_iguales);
 
-	//recorrer_en_orden(arbol_ejecucion->p_nodo,&visitar);
+	// recorrer_en_orden(arbol_ejecucion->p_nodo,&visitar);
 	// puts("hola");
 	print_t(arbol_ejecucion->p_nodo);
 	
@@ -1317,12 +1324,12 @@ void imprimir_tabla_simbolos() {
 	    exit(1);
 	}
 	int i;
-	fprintf(f, "NOMBRE \t\t\t\t TIPO \t\t\t\t VALOR\t\t\t\t LINEA\n\n");
+	fprintf(f, "NOMBRE \t\t\t\t TIPO \t\t\t\t CONST\t\t\t\t LINEA\n\n");
 	for (i = 0; i < cantidad_simbolos; ++i)
 	{
 		if(tabla_simbolos[i].tipo == TIPO_STRING)
 		{
-			fprintf(f, "%s\t\t\t\t%s\t\t\t\t%s\t\t\t\t%d \n",tabla_simbolos[i].nombre,tipo_simbolo_to_string(tabla_simbolos[i].tipo),tabla_simbolos[i].valor_string == NULL ? "" : tabla_simbolos[i].valor_string,tabla_simbolos[i].lineNumber);
+			fprintf(f, "%s\t\t\t\t%s\t\t\t\t%d\t\t\t\t%d \n",tabla_simbolos[i].nombre,tipo_simbolo_to_string(tabla_simbolos[i].tipo),tabla_simbolos[i].esConstante,tabla_simbolos[i].lineNumber);
 			if(tabla_simbolos[i].nombre[0] == '_')
 			{
 				fprintf(a, "\n");
@@ -1333,7 +1340,7 @@ void imprimir_tabla_simbolos() {
 	
 		if(tabla_simbolos[i].tipo == TIPO_INT)
 		{
-			fprintf(f, "%s\t\t\t\t%s\t\t\t\t%d\t\t\t\t%d\n",tabla_simbolos[i].nombre,tipo_simbolo_to_string(tabla_simbolos[i].tipo),tabla_simbolos[i].valor_int,tabla_simbolos[i].lineNumber);
+			fprintf(f, "%s\t\t\t\t%s\t\t\t\t%d\t\t\t\t%d\n",tabla_simbolos[i].nombre,tipo_simbolo_to_string(tabla_simbolos[i].tipo),tabla_simbolos[i].esConstante,tabla_simbolos[i].lineNumber);
 			if(tabla_simbolos[i].nombre[0] == '_')
 			{
 				fprintf(a, "\n");
@@ -1352,7 +1359,7 @@ void imprimir_tabla_simbolos() {
 		
 		if(tabla_simbolos[i].tipo == TIPO_FLOAT)
 		{
-			fprintf(f, "%s\t\t\t\t%s\t\t\t\t%.4f\t\t\t\t%d\n",tabla_simbolos[i].nombre,tipo_simbolo_to_string(tabla_simbolos[i].tipo),tabla_simbolos[i].valor_float,tabla_simbolos[i].lineNumber);
+			fprintf(f, "%s\t\t\t\t%s\t\t\t\t%d\t\t\t\t%d\n",tabla_simbolos[i].nombre,tipo_simbolo_to_string(tabla_simbolos[i].tipo),tabla_simbolos[i].esConstante,tabla_simbolos[i].lineNumber);
 			if(tabla_simbolos[i].nombre[0] == '_')
 			{
 				fprintf(a, "\n");
@@ -1381,7 +1388,7 @@ void imprimir_tabla_simbolos() {
 	La idea es que se le envie el nombre del simbolo (Si es un id, el nombre
 	de la variable con el  prefijo "_", el tipo de dato es un int definido
 	 en las macro y el valor, en caso de que sea una constante)*/
-void agregar_simbolo(char * nombre, int tipo, char * valor,char * alias, int lineNumber) {
+void agregar_simbolo(char * nombre, int tipo, char * valor,char * alias, int lineNumber,int esConstante) {
 int n;
 	tabla_simbolos[cantidad_simbolos].nombre = malloc(sizeof(char) * strlen(nombre));
 	strcpy(tabla_simbolos[cantidad_simbolos].nombre,nombre);
@@ -1392,6 +1399,7 @@ int n;
 		strcpy(tabla_simbolos[cantidad_simbolos].alias,alias);	
 	}
 	tabla_simbolos[cantidad_simbolos].tipo = tipo;
+	tabla_simbolos[cantidad_simbolos].esConstante = esConstante;
 	tabla_simbolos[cantidad_simbolos].lineNumber = lineNumber;
 	switch(tipo) {
 		case TIPO_FLOAT:
@@ -1420,14 +1428,39 @@ int n;
 
 }
 
+char * substring(char * str , int start, int end)
+{
+	char * ret = (char*) malloc(sizeof(char) * (end - start + 1));
+	memcpy( ret, str + start, end - start +1);
+	*(ret + (end - start+1)) = '\0';
+	return ret;
+}
+
+char * get_nombre_sin_prefijo(t_simbolo * p_simbolo)
+{
+	// printf("Prefijo int : %d\n",);
+	if(!p_simbolo->esConstante)
+		return p_simbolo->nombre + strlen(PREFIJO_ID);
+
+	if(p_simbolo->tipo == TIPO_INT)
+		return p_simbolo->nombre + strlen(PREFIJO_INT);
+
+	if(p_simbolo->tipo == TIPO_STRING)
+		return p_simbolo->nombre + strlen(PREFIJO_STRING);
+	
+	if(p_simbolo->tipo == TIPO_FLOAT)
+		return p_simbolo->nombre + strlen(PREFIJO_FLOAT);
+}
+
 /* Busca una variable en la TS sin tener en cuenta sus prefijos y devuelve
 el indice. si no lo encuentra, devuelve -1;*/
 int buscar_en_TS_sin_prefijo(char * nombre, char * mjs_error, int lineNumber) {
-	char temp[30];
+	char * temp;
 	int i;
 	for (i = 0; i < cantidad_simbolos; ++i)
 	{
-		strcpy(temp,tabla_simbolos[i].nombre + 1);
+		temp = get_nombre_sin_prefijo(&tabla_simbolos[i]	);
+		// strcpy(temp,tabla_simbolos[i].nombre + 1);
 		if(strcmp(temp,nombre) == 0) 
 			return i;
 	}
@@ -1465,7 +1498,7 @@ void agregar_variable_a_TS(char * nombre, char * tipo_str, int lineNumber) {
 	}
 
 	int tipo = strcmp(tipo_str, "FLOAT") == 0 ? TIPO_FLOAT : strcmp(tipo_str, "INT") == 0 ? TIPO_INT : TIPO_STRING;
-	agregar_simbolo(aux2,tipo,NULL,NULL,lineNumber);
+	agregar_simbolo(aux2,tipo,NULL,NULL,lineNumber,0);
 }
 
 /*Agrega una constante a la TS*/
@@ -1479,7 +1512,7 @@ void agregar_cte_a_TS(int tipo, char * valor_str, int valor_int,float valor_floa
 		return;
 
 		cantidad_cte_string++;
-		agregar_simbolo(aux2,tipo,NULL,NULL,lineNumber);
+		agregar_simbolo(aux2,tipo,NULL,NULL,lineNumber,1);
 
 
 	}else if(tipo == TIPO_INT) {
@@ -1489,7 +1522,7 @@ void agregar_cte_a_TS(int tipo, char * valor_str, int valor_int,float valor_floa
 		if(buscar_en_TS_sin_prefijo(aux,NULL,0) != -1)
 		return;
 
-		agregar_simbolo(aux2,tipo,aux,NULL,lineNumber);
+		agregar_simbolo(aux2,tipo,aux,NULL,lineNumber,1);
 		
 	}else if(tipo == TIPO_FLOAT) {
 		strcpy(aux2,prefijo_float);
@@ -1497,7 +1530,7 @@ void agregar_cte_a_TS(int tipo, char * valor_str, int valor_int,float valor_floa
 		strcat(aux2,aux);
 		if(buscar_en_TS_sin_prefijo(aux,NULL,0) != -1)
 		return;
-		agregar_simbolo(aux2,tipo,aux,NULL,lineNumber);
+		agregar_simbolo(aux2,tipo,aux,NULL,lineNumber,1);
 		
 	}
 }
