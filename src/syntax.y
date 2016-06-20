@@ -1341,39 +1341,44 @@ void imprimir_tabla_simbolos() {
 		if(tabla_simbolos[i].tipo == TIPO_INT)
 		{
 			fprintf(f, "%s\t\t\t\t%s\t\t\t\t%d\t\t\t\t%d\n",tabla_simbolos[i].nombre,tipo_simbolo_to_string(tabla_simbolos[i].tipo),tabla_simbolos[i].esConstante,tabla_simbolos[i].lineNumber);
-			if(tabla_simbolos[i].nombre[0] == '_')
+			fprintf(a, "\n");
+			if(tabla_simbolos[i].nombre[1] == 'c' && tabla_simbolos[i].nombre[2] == 't' && tabla_simbolos[i].nombre[3] == 'e')
+			{
+				char *aux = newStr(tabla_simbolos[i].nombre);
+				fprintf(a, aux);		
+				fprintf(a, " dd ");
+				char subbuff[5];
+				memcpy( subbuff, &aux[4], 1 );
+				subbuff[1] = '\0';
+				fprintf(a, subbuff);
+				fprintf(a, ".000000");
+			} else
 			{
 				fprintf(a, "\n");
 				fprintf(a, tabla_simbolos[i].nombre);			
 				fprintf(a, " dd ?");
-			} else if(tabla_simbolos[i].nombre[0] == '%')
-			{
-				char *aux = newStr(tabla_simbolos[i].nombre);
-				fprintf(a, "\n_cte_");
-				fprintf(a, aux);		
-				fprintf(a, " dd ");
-				fprintf(a, aux);
-				fprintf(a, ".000000");
 			}
 		}
 		
 		if(tabla_simbolos[i].tipo == TIPO_FLOAT)
 		{
 			fprintf(f, "%s\t\t\t\t%s\t\t\t\t%d\t\t\t\t%d\n",tabla_simbolos[i].nombre,tipo_simbolo_to_string(tabla_simbolos[i].tipo),tabla_simbolos[i].esConstante,tabla_simbolos[i].lineNumber);
-			if(tabla_simbolos[i].nombre[0] == '_')
+			fprintf(a, "\n");
+			if(tabla_simbolos[i].nombre[1] == 'c' && tabla_simbolos[i].nombre[2] == 't' && tabla_simbolos[i].nombre[3] == 'e')
+			{
+				char *aux = newStr(tabla_simbolos[i].nombre);
+				fprintf(a, aux);		
+				fprintf(a, " dd ");
+				char subbuff[5];
+				memcpy( subbuff, &aux[4], 6 );
+				subbuff[6] = '\0';
+				fprintf(a, subbuff);
+			} else
 			{
 				fprintf(a, "\n");
 				fprintf(a, tabla_simbolos[i].nombre);			
 				fprintf(a, " DD ?");
-			} else if(tabla_simbolos[i].nombre[0] == '%')
-			{
-				char *aux = newStr(tabla_simbolos[i].nombre);
-				fprintf(a, "\n_cte_");
-				fprintf(a, aux);		
-				fprintf(a, " dd ");
-				fprintf(a, aux);
-				fprintf(a, ".000000");
-			}
+			} 
 		}
 		
 		// if(tabla_simbolos[i].tipo == TIPO_PR)
