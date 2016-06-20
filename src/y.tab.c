@@ -3251,7 +3251,7 @@ void imprimir_tabla_simbolos() {
 			{
 				fprintf(a, "\n");
 				fprintf(a, tabla_simbolos[i].nombre);			
-				fprintf(a, " dd ?");
+				fprintf(a, " db ?");
 			}
 		}
 	
@@ -3262,6 +3262,7 @@ void imprimir_tabla_simbolos() {
 			if(tabla_simbolos[i].nombre[1] == 'c' && tabla_simbolos[i].nombre[2] == 't' && tabla_simbolos[i].nombre[3] == 'e')
 			{
 				char *aux = newStr(tabla_simbolos[i].nombre);
+				fprintf(a, "_");
 				fprintf(a, aux);		
 				fprintf(a, " dd ");
 				char subbuff[5];
@@ -3284,6 +3285,7 @@ void imprimir_tabla_simbolos() {
 			if(tabla_simbolos[i].nombre[1] == 'c' && tabla_simbolos[i].nombre[2] == 't' && tabla_simbolos[i].nombre[3] == 'e')
 			{
 				char *aux = newStr(tabla_simbolos[i].nombre);
+				fprintf(a, "_");
 				fprintf(a, aux);		
 				fprintf(a, " dd ");
 				char subbuff[5];
@@ -3294,7 +3296,7 @@ void imprimir_tabla_simbolos() {
 			{
 				fprintf(a, "\n");
 				fprintf(a, tabla_simbolos[i].nombre);			
-				fprintf(a, " DD ?");
+				fprintf(a, " dd ?");
 			} 
 		}
 		
@@ -3675,8 +3677,8 @@ void crear_inicio_assembler()
 	fprintf(a, "\ndiviz db	'Division by 0!', '$'");
 	fprintf(a, "\nMAX_STRING_LENGTH equ 30 ;Longitud maxima de los string.");
 	fprintf(a, "\nMAX_STRING_INT equ 65535 ;Tama�o maximo de ints.");
-	fprintf(a, "\naux1 DD ?");
-	fprintf(a, "\naux2 DD ?");
+	fprintf(a, "\naux1 dd ?");
+	fprintf(a, "\naux2 dd ?");
 }
 
 void crear_codigo_assembler(t_nodo_arbol *tree)
@@ -3901,6 +3903,71 @@ void recorrer_asm(t_nodo_arbol *n, int usar_aux2){
 		{
 			usar_aux2=1;
 			strcpy(string_cond, "\njne ");
+			if(strcmp(n->padre->info->a, "WHILE")==0){
+			} else if(is_hoja(n->nodo_izq) && is_hoja(n->nodo_der)){
+				fprintf(a, "\nfld ");
+				fprintf(a, n->nodo_izq->info->a);
+				fprintf(a, "\nfstp aux1");
+				fprintf(a, "\nfld ");
+				fprintf(a, n->nodo_der->info->a);
+				fprintf(a, "\nfstp aux2");
+			}
+		} else if(strcmp(n->info->a,"!=")==0)
+		{
+			usar_aux2=1;
+			strcpy(string_cond, "\nje ");
+			if(strcmp(n->padre->info->a, "WHILE")==0){
+			} else if(is_hoja(n->nodo_izq) && is_hoja(n->nodo_der)){
+				fprintf(a, "\nfld ");
+				fprintf(a, n->nodo_izq->info->a);
+				fprintf(a, "\nfstp aux1");
+				fprintf(a, "\nfld ");
+				fprintf(a, n->nodo_der->info->a);
+				fprintf(a, "\nfstp aux2");
+			}
+		} else if(strcmp(n->info->a,">")==0)
+		{
+			usar_aux2=1;
+			strcpy(string_cond, "\njle ");
+			if(strcmp(n->padre->info->a, "WHILE")==0){
+			} else if(is_hoja(n->nodo_izq) && is_hoja(n->nodo_der)){
+				fprintf(a, "\nfld ");
+				fprintf(a, n->nodo_izq->info->a);
+				fprintf(a, "\nfstp aux1");
+				fprintf(a, "\nfld ");
+				fprintf(a, n->nodo_der->info->a);
+				fprintf(a, "\nfstp aux2");
+			}
+		} else if(strcmp(n->info->a,">=")==0)
+		{
+			usar_aux2=1;
+			strcpy(string_cond, "\njl ");
+			if(strcmp(n->padre->info->a, "WHILE")==0){
+			} else if(is_hoja(n->nodo_izq) && is_hoja(n->nodo_der)){
+				fprintf(a, "\nfld ");
+				fprintf(a, n->nodo_izq->info->a);
+				fprintf(a, "\nfstp aux1");
+				fprintf(a, "\nfld ");
+				fprintf(a, n->nodo_der->info->a);
+				fprintf(a, "\nfstp aux2");
+			}
+		} else if(strcmp(n->info->a,"<")==0)
+		{
+			usar_aux2=1;
+			strcpy(string_cond, "\njge ");
+			if(strcmp(n->padre->info->a, "WHILE")==0){
+			} else if(is_hoja(n->nodo_izq) && is_hoja(n->nodo_der)){
+				fprintf(a, "\nfld ");
+				fprintf(a, n->nodo_izq->info->a);
+				fprintf(a, "\nfstp aux1");
+				fprintf(a, "\nfld ");
+				fprintf(a, n->nodo_der->info->a);
+				fprintf(a, "\nfstp aux2");
+			}
+		} else if(strcmp(n->info->a,"<=")==0)
+		{
+			usar_aux2=1;
+			strcpy(string_cond, "\njg ");
 			if(strcmp(n->padre->info->a, "WHILE")==0){
 			} else if(is_hoja(n->nodo_izq) && is_hoja(n->nodo_der)){
 				fprintf(a, "\nfld ");
@@ -4150,6 +4217,71 @@ void recorrer_asm_2(t_nodo_arbol *n, int usar_aux2){
 		{
 			usar_aux2=1;
 			strcpy(string_cond, "\nje ");
+			if(strcmp(n->padre->info->a, "WHILE")==0){
+			} else if(is_hoja(n->nodo_izq) && is_hoja(n->nodo_der)){
+				fprintf(a, "\nfld ");
+				fprintf(a, n->nodo_izq->info->a);
+				fprintf(a, "\nfstp aux1");
+				fprintf(a, "\nfld ");
+				fprintf(a, n->nodo_der->info->a);
+				fprintf(a, "\nfstp aux2");
+			}
+		} else if(strcmp(n->info->a,"!=")==0)
+		{
+			usar_aux2=1;
+			strcpy(string_cond, "\njne ");
+			if(strcmp(n->padre->info->a, "WHILE")==0){
+			} else if(is_hoja(n->nodo_izq) && is_hoja(n->nodo_der)){
+				fprintf(a, "\nfld ");
+				fprintf(a, n->nodo_izq->info->a);
+				fprintf(a, "\nfstp aux1");
+				fprintf(a, "\nfld ");
+				fprintf(a, n->nodo_der->info->a);
+				fprintf(a, "\nfstp aux2");
+			}
+		} else if(strcmp(n->info->a,">")==0)
+		{
+			usar_aux2=1;
+			strcpy(string_cond, "\njg ");
+			if(strcmp(n->padre->info->a, "WHILE")==0){
+			} else if(is_hoja(n->nodo_izq) && is_hoja(n->nodo_der)){
+				fprintf(a, "\nfld ");
+				fprintf(a, n->nodo_izq->info->a);
+				fprintf(a, "\nfstp aux1");
+				fprintf(a, "\nfld ");
+				fprintf(a, n->nodo_der->info->a);
+				fprintf(a, "\nfstp aux2");
+			}
+		} else if(strcmp(n->info->a,">=")==0)
+		{
+			usar_aux2=1;
+			strcpy(string_cond, "\njge ");
+			if(strcmp(n->padre->info->a, "WHILE")==0){
+			} else if(is_hoja(n->nodo_izq) && is_hoja(n->nodo_der)){
+				fprintf(a, "\nfld ");
+				fprintf(a, n->nodo_izq->info->a);
+				fprintf(a, "\nfstp aux1");
+				fprintf(a, "\nfld ");
+				fprintf(a, n->nodo_der->info->a);
+				fprintf(a, "\nfstp aux2");
+			}
+		} else if(strcmp(n->info->a,"<")==0)
+		{
+			usar_aux2=1;
+			strcpy(string_cond, "\njl ");
+			if(strcmp(n->padre->info->a, "WHILE")==0){
+			} else if(is_hoja(n->nodo_izq) && is_hoja(n->nodo_der)){
+				fprintf(a, "\nfld ");
+				fprintf(a, n->nodo_izq->info->a);
+				fprintf(a, "\nfstp aux1");
+				fprintf(a, "\nfld ");
+				fprintf(a, n->nodo_der->info->a);
+				fprintf(a, "\nfstp aux2");
+			}
+		}else if(strcmp(n->info->a,"<=")==0)
+		{
+			usar_aux2=1;
+			strcpy(string_cond, "\njle ");
 			if(strcmp(n->padre->info->a, "WHILE")==0){
 			} else if(is_hoja(n->nodo_izq) && is_hoja(n->nodo_der)){
 				fprintf(a, "\nfld ");
