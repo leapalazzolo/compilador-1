@@ -53,6 +53,7 @@ static t_info_sentencias * p_info_iguales;
 static FILE *a;
 static int usar_aux2 = 0, ifs=0, whiles=0;
 static char asig_final[80];
+static char asig_iguales[80];
 static char sent_final[80];
 static char string_saltos[1];
 static char string_cond[5];
@@ -1754,16 +1755,19 @@ void crear_inicio_assembler()
 	fprintf(a, ";TITLE TP Compilador 2016");
 	fprintf(a, "\n.model small");
 	fprintf(a, "\n.386");
-	fprintf(a, "\n.stack 300h");
+	fprintf(a, "\n.stack 100h");
 	fprintf(a, "\n");
 	fprintf(a, "\n.data");
 	fprintf(a, "\nmessage db	'-- EOF --', '$'");
 	fprintf(a, "\noverflow db	'Overflow!', '$'");
 	fprintf(a, "\ndiviz db	'Division by 0!', '$'");
+	fprintf(a, "\nread db	'Ingrese valor por teclado...', '$'");
 	fprintf(a, "\nMAX_STRING_LENGTH equ 30 ;Longitud maxima de los string.");
 	fprintf(a, "\nMAX_STRING_INT equ 65535 ;Tama�o maximo de ints.");
 	fprintf(a, "\naux1 dd ?");
 	fprintf(a, "\naux2 dd ?");
+	fprintf(a, "\ncont dd 0.000000");
+	fprintf(a, "\nfilt dd 0.000000");
 }
 
 void crear_codigo_assembler(t_nodo_arbol *tree)
@@ -1774,6 +1778,7 @@ void crear_codigo_assembler(t_nodo_arbol *tree)
 	fprintf(a, "\nmov DS,AX ;");
 	fprintf(a, "\nfinit ;\n");
 	recorrer_asm(tree, 0);
+	
 	if(strcmp(sent_final, "")!=0){
 		fprintf(a, sent_final);
 		strcpy(sent_final,"");
@@ -1782,13 +1787,15 @@ void crear_codigo_assembler(t_nodo_arbol *tree)
 		fprintf(a, asig_final);
 		strcpy(asig_final,"");
 	}	
-	if(ifs>0){
+	if(ifs>0 && ifs%10!=0){
 		fprintf(a, "\nend_if");
 		char buf[2];
 		sprintf(buf, "%d", ifs);
 		fprintf(a, buf);
 		fprintf(a, ":");
 		ifs--;
+		if(ifs==0)
+					ifs+=10;
 	}
 	if(whiles>0){
 				recorrer_asm_2(nodo_asm_while, 0);
@@ -1799,6 +1806,11 @@ void crear_codigo_assembler(t_nodo_arbol *tree)
 				fprintf(a, ":");
 				whiles--;
 			}
+
+	if(strcmp(asig_iguales, "")!=0){
+		fprintf(a, asig_iguales);
+		strcpy(asig_iguales,"");
+	}	
 	fprintf(a, "\n\nmov AX, 4C00h");
 	fprintf(a, "\nend;");
     
@@ -1818,10 +1830,10 @@ void recorrer_asm(t_nodo_arbol *n, int usar_aux2){
 				fprintf(a, "\nfstp ");
 				fprintf(a, n->nodo_izq->info->a);
 			} else if(!is_hoja(n->nodo_der)){
-				strcpy(asig_final, "\nfld ");
-				strcat(asig_final, "aux1");
-				strcat(asig_final, "\nfstp ");
-				strcat(asig_final, n->nodo_izq->info->a);
+					strcpy(asig_final, "\nfld ");
+					strcat(asig_final, "aux1");
+					strcat(asig_final, "\nfstp ");
+					strcat(asig_final, n->nodo_izq->info->a);
 			} 
 		} else if(strcmp(n->info->a,"+")==0)
 		{
@@ -1870,7 +1882,7 @@ void recorrer_asm(t_nodo_arbol *n, int usar_aux2){
 			if(strcmp(asig_final, "")!=0){
 				fprintf(a, asig_final);
 				strcpy(asig_final,"");		
-			}
+			}		
 			if(ifs>0 && strcmp(n->padre->info->a, "IF")!=0){
 				fprintf(a, "\nend_if");
 				char buf[2];
@@ -1878,7 +1890,13 @@ void recorrer_asm(t_nodo_arbol *n, int usar_aux2){
 				fprintf(a, buf);
 				fprintf(a, ":");
 				ifs--;
+				if(ifs==0)
+					ifs+=10;
 			}
+			if(strcmp(asig_iguales, "")!=0 && strcmp(n->nodo_izq->info->a, "IF")!=0){
+				fprintf(a, asig_iguales);
+				strcpy(asig_iguales,"");
+			}	
 			if(whiles>0 && strcmp(n->padre->info->a, "WHILE")!=0){
 				recorrer_asm_2(nodo_asm_while, 0);
 				fprintf(a, "\nend_while");
@@ -1887,7 +1905,8 @@ void recorrer_asm(t_nodo_arbol *n, int usar_aux2){
 				fprintf(a, buf);
 				fprintf(a, ":");
 				whiles--;
-			}			
+			}	
+				
 		} else if(strcmp(n->info->a,"-")==0)
 		{
 			if(is_hoja(n->nodo_izq) && is_hoja(n->nodo_der)){
@@ -2065,7 +2084,7 @@ void recorrer_asm(t_nodo_arbol *n, int usar_aux2){
 		} else if(strcmp(n->info->a,"IF")==0)
 		{
 		    ifs++;
-			if(strcmp(n->nodo_der->info->a, "<V.F>")!=0){
+			if(strcmp(n->nodo_der->info->a, "<V.F>")!=0 || strcmp(n->nodo_der->info->a, "<-true . false->")==0){
 				fprintf(a, "\nfld ");
 				fprintf(a, "aux2");
 				fprintf(a, "\nfld ");
@@ -2088,7 +2107,21 @@ void recorrer_asm(t_nodo_arbol *n, int usar_aux2){
 	 			sprintf(buf, "%d", ifs);
 				fprintf(a, buf);
 			}
-		} else if(strcmp(n->info->a,"<V.F>")==0){
+			if(strcmp(n->nodo_izq->info->a, "==")==0 && strcmp(n->nodo_der->nodo_izq->info->a, "cont")==0){
+					strcpy(asig_iguales, "\nfld ");
+					strcat(asig_iguales, "cont");
+					strcat(asig_iguales, "\nfstp ");
+					strcat(asig_iguales, n->nodo_izq->nodo_izq->info->a);				
+				}
+		} else if(strcmp(n->info->a,"READ")==0 && strcmp(n->padre->info->a, "READ")!=0){ 
+			fprintf(a, "\nmov dx, OFFSET read");
+			fprintf(a, "\nmov ah, 9");
+			fprintf(a, "\nint 21h");
+		} else if(strcmp(n->info->a,"WRITE")==0 && strcmp(n->padre->info->a, "WRITE")!=0){
+			fprintf(a, "\nmov dx, OFFSET read");
+			fprintf(a, "\nmov ah, 9");
+			fprintf(a, "\nint 21h");
+		} else if(strcmp(n->info->a,"<V.F>")==0 || strcmp(n->info->a, "<-true . false->")==0){
 				char buf[2];
 	 			sprintf(buf, "%d", ifs);
 				fprintf(a, "\njmp ");
@@ -2193,6 +2226,8 @@ void recorrer_asm_2(t_nodo_arbol *n, int usar_aux2){
 				fprintf(a, buf);
 				fprintf(a, ":");
 				ifs--;
+				if(ifs==0)
+					ifs+=10;
 			}
 			if(whiles>0 && strcmp(n->padre->info->a, "WHILE")!=0){
 				fprintf(a, "\nend_while");
