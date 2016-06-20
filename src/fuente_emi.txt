@@ -7,3 +7,4 @@ DO
 b:=5;
 a:=3;
 ENDWHILE
+b:=3+2;

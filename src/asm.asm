@@ -56,7 +56,25 @@ fld _cte_5
 fstp _b
 fld _cte_3
 fstp _a
+fld _cte_2
+fld _b
+fmul
+fstp aux1
+fld _cte_3
+fld _a
+fadd
+fstp aux2
+fld aux2
+fld aux1
+fcomp
+je while1
 end_while1:
+fld _cte_2
+fld _cte_3
+fadd
+fstp aux1
+fld aux1
+fstp _b
 
 mov AX, 4C00h
 end;
