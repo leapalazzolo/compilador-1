@@ -80,7 +80,7 @@
 #include "pila.h"
 #include "cola.h"
 
-#define DEBUG 0
+#define DEBUG 1
 extern YYSTYPE yylval;
 char prefijo_id[10] = PREFIJO_ID;
 char prefijo_int[10] = PREFIJO_INT;
@@ -2079,7 +2079,7 @@ yyreduce:
 		puts(mjs);
 		exit(1);
 	}
-	nodo_entrada = crear_nodo_arbol(crear_info("READ"),crear_hoja(crear_info((yyvsp[(2) - (2)].str_val))),NULL);
+	nodo_entrada = crear_nodo_arbol(crear_info("READ"),crear_hoja(crear_info((yyvsp[(2) - (2)].str_val))),crear_hoja(crear_info("READ")));
 }
     break;
 
@@ -2099,7 +2099,7 @@ yyreduce:
 		puts(mjs);
 		exit(1);
 	}
-	nodo_salida = crear_nodo_arbol(crear_info("WRITE"),crear_hoja(crear_info((yyvsp[(2) - (2)].str_val))),NULL);
+	nodo_salida = crear_nodo_arbol(crear_info("WRITE"),crear_hoja(crear_info((yyvsp[(2) - (2)].str_val))),crear_hoja(crear_info("WRITE")));
 
 }
     break;
@@ -2113,7 +2113,7 @@ yyreduce:
 		puts("salida : PR_WRITE cte\n");
 		puts("-------------------\n");	
 	}
-	nodo_salida = crear_nodo_arbol(crear_info("WRITE"),crear_hoja(crear_info((yyvsp[(2) - (2)].str_val))),NULL);
+	nodo_salida = crear_nodo_arbol(crear_info("WRITE"),crear_hoja(crear_info((yyvsp[(2) - (2)].str_val))),crear_hoja(crear_info("WRITE")));
 
 }
     break;

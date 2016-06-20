@@ -9,7 +9,7 @@
 #include "pila.h"
 #include "cola.h"
 
-#define DEBUG 0
+#define DEBUG 1
 extern YYSTYPE yylval;
 char prefijo_id[10] = PREFIJO_ID;
 char prefijo_int[10] = PREFIJO_INT;
@@ -528,7 +528,7 @@ entrada : PR_READ TOKEN_ID
 		puts(mjs);
 		exit(1);
 	}
-	nodo_entrada = crear_nodo_arbol(crear_info("READ"),crear_hoja(crear_info($2)),NULL);
+	nodo_entrada = crear_nodo_arbol(crear_info("READ"),crear_hoja(crear_info($2)),crear_hoja(crear_info("READ")));
 }
 
 salida : PR_WRITE TOKEN_ID
@@ -544,7 +544,7 @@ salida : PR_WRITE TOKEN_ID
 		puts(mjs);
 		exit(1);
 	}
-	nodo_salida = crear_nodo_arbol(crear_info("WRITE"),crear_hoja(crear_info($2)),NULL);
+	nodo_salida = crear_nodo_arbol(crear_info("WRITE"),crear_hoja(crear_info($2)),crear_hoja(crear_info("WRITE")));
 
 }
 
@@ -554,7 +554,7 @@ salida : PR_WRITE CONST_STR
 		puts("salida : PR_WRITE cte\n");
 		puts("-------------------\n");	
 	}
-	nodo_salida = crear_nodo_arbol(crear_info("WRITE"),crear_hoja(crear_info($2)),NULL);
+	nodo_salida = crear_nodo_arbol(crear_info("WRITE"),crear_hoja(crear_info($2)),crear_hoja(crear_info("WRITE")));
 
 }
 
