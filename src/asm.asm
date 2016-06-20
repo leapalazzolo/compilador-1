@@ -19,7 +19,9 @@ _c dd ?
 _b dd ?
 _a dd ?
 _cte_4 dd ?
-_cte_4.5000 DD ?
+_cte_3 dd ?
+_cte_2 dd ?
+_cte_5 dd ?
 
 .code
 mov AX,@DATA ;
@@ -28,10 +30,23 @@ finit ;
 
 fld _cte_4
 fstp _a
-fld _cte_4.5000
-fstp _d
-fld "hola"
-fstp _r
+fld _cte_2
+fld _b
+fdiv
+fstp aux1
+fld _cte_3
+fld _a
+fadd
+fstp aux2
+fld aux2
+fld aux1
+fcomp
+jne end_if1
+fld _cte_5
+fstp _b
+fld _cte_3
+fstp _a
+end_if1:
 
 mov AX, 4C00h
 end;

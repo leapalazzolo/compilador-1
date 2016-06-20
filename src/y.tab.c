@@ -121,7 +121,7 @@ char * get_nombre_sin_prefijo(t_simbolo *);
 extern int linecount;
 static t_info_sentencias * p_info_iguales;
 static FILE *a;
-static int usar_aux2 = 0, ifs=0;
+static int usar_aux2 = 0, ifs=0, whiles=0;
 static char asig_final[80];
 static char sent_final[80];
 static char string_saltos[1];
@@ -138,7 +138,7 @@ t_pila * pila_terminos;
 t_pila * pila_expresiones_iguales;
 t_pila * pila_variables_filter;
 t_pila * pila_comparacion_filter;
-t_pila_asm * pila_asm;
+t_pila_asm * pila_whiles;
 
 t_arbol * arbol_ejecucion;
 t_nodo_arbol * nodo_factor;
@@ -3463,8 +3463,6 @@ un mensaje de error
 */
 int tipos_iguales(char * nombre1, char * nombre2, char * msj_error,int lineNumber) {
 
-puts(nombre1);
-puts(nombre2);
 	int index1 = buscar_en_TS_sin_prefijo(nombre1,msj_error,lineNumber);
 	int index2 = buscar_en_TS_sin_prefijo(nombre2,msj_error,lineNumber);
 
@@ -3695,8 +3693,17 @@ void crear_codigo_assembler(t_nodo_arbol *tree)
 		char buf[2];
 		sprintf(buf, "%d", ifs);
 		fprintf(a, buf);
+		fprintf(a, ":");
 		ifs--;
 	}
+	if(whiles>0){
+				fprintf(a, "\nend_while");
+				char buf[2];
+				sprintf(buf, "%d", whiles);
+				fprintf(a, buf);
+				fprintf(a, ":");
+				whiles--;
+			}
 	fprintf(a, "\n\nmov AX, 4C00h");
 	fprintf(a, "\nend;");
     
@@ -3769,13 +3776,22 @@ void recorrer_asm(t_nodo_arbol *n, int usar_aux2){
 				fprintf(a, asig_final);
 				strcpy(asig_final,"");		
 			}
-			if(ifs>0){
+			if(ifs>0 && strcmp(n->padre->info->a, "IF")!=0){
 				fprintf(a, "\nend_if");
 				char buf[2];
 				sprintf(buf, "%d", ifs);
 				fprintf(a, buf);
+				fprintf(a, ":");
 				ifs--;
-			}		
+			}
+			if(whiles>0 && strcmp(n->padre->info->a, "WHILE")!=0){
+				fprintf(a, "\nend_while");
+				char buf[2];
+				sprintf(buf, "%d", whiles);
+				fprintf(a, buf);
+				fprintf(a, ":");
+				whiles--;
+			}			
 		} else if(strcmp(n->info->a,"-")==0)
 		{
 			if(is_hoja(n->nodo_izq) && is_hoja(n->nodo_der)){
@@ -3876,20 +3892,66 @@ void recorrer_asm(t_nodo_arbol *n, int usar_aux2){
 		{
 			usar_aux2=1;
 			strcpy(string_cond, "\njne ");
+			if(strcmp(n->padre->info->a, "WHILE")==0){
+			} else if(is_hoja(n->nodo_izq) && is_hoja(n->nodo_der)){
+				fprintf(a, "\nfld ");
+				fprintf(a, n->nodo_izq->info->a);
+				fprintf(a, "\nfstp aux1");
+				fprintf(a, "\nfld ");
+				fprintf(a, n->nodo_der->info->a);
+				fprintf(a, "\nfstp aux2");
+			}
 		} else if(strcmp(n->info->a,"IF")==0)
 		{
-			ifs++;
+		    ifs++;
+			if(strcmp(n->nodo_der->info->a, "<V.F>")!=0){
+				fprintf(a, "\nfld ");
+				fprintf(a, "aux2");
+				fprintf(a, "\nfld ");
+				fprintf(a, "aux1");
+				fprintf(a, "\nfcomp");
+				fprintf(a, string_cond);
+				fprintf(a, "end_if");
+				char buf[2];
+	 			sprintf(buf, "%d", ifs);
+				fprintf(a, buf);
+			} else{
+				fprintf(a, "\nfld ");
+				fprintf(a, "aux2");
+				fprintf(a, "\nfld ");
+				fprintf(a, "aux1");
+				fprintf(a, "\nfcomp");
+				fprintf(a, string_cond);
+				fprintf(a, "else_if");
+				char buf[2];
+	 			sprintf(buf, "%d", ifs);
+				fprintf(a, buf);
+			}
+		} else if(strcmp(n->info->a,"<V.F>")==0){
+				char buf[2];
+	 			sprintf(buf, "%d", ifs);
+				fprintf(a, "\njmp ");
+				fprintf(a, "end_if");
+				fprintf(a, buf);
+				fprintf(a, "\nelse_if");
+				fprintf(a, buf);
+				fprintf(a, ":");
+		} else if(strcmp(n->info->a,"WHILE")==0){
+			whiles++;
 			fprintf(a, "\nfld ");
 			fprintf(a, "aux2");
 			fprintf(a, "\nfld ");
 			fprintf(a, "aux1");
 			fprintf(a, "\nfcomp");
 			fprintf(a, string_cond);
-			fprintf(a, "end_if");
+			fprintf(a, "end_while");
 			char buf[2];
- 			sprintf(buf, "%d", ifs);
+	 		sprintf(buf, "%d", whiles);
 			fprintf(a, buf);
-		} 
+			fprintf(a, "\nwhile");
+			fprintf(a, buf);
+			fprintf(a, ":");
+		}
 		
 	if(n->nodo_der != NULL)
 		recorrer_asm(n->nodo_der, usar_aux2);
