@@ -3275,7 +3275,7 @@ void imprimir_tabla_simbolos() {
 			{
 				fprintf(a, "\n");
 				fprintf(a, tabla_simbolos[i].nombre);			
-				fprintf(a, " dd ?");
+				fprintf(a, " dd 0");
 			}
 		}
 		
@@ -4036,8 +4036,9 @@ void recorrer_asm(t_nodo_arbol *n, int usar_aux2){
 			fprintf(a, "\nmov ah, 9");
 			fprintf(a, "\nint 21h");
 		} else if(strcmp(n->info->a,"WRITE")==0 && strcmp(n->padre->info->a, "WRITE")!=0){
-			fprintf(a, "\nDisplayInteger ");
+			fprintf(a, "\nDisplayFloat ");
 			fprintf(a, n->nodo_izq->info->a);
+			fprintf(a, " 2");
 		} else if(strcmp(n->info->a,"<V.F>")==0 || strcmp(n->info->a, "<-true . false->")==0){
 				char buf[2];
 	 			sprintf(buf, "%d", ifs);

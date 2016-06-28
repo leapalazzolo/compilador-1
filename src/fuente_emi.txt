@@ -4,3 +4,5 @@ a:=5;
 b:=3;
 c:=8;
 WRITE a;
+WRITE b;
+WRITE c;

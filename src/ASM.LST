@@ -1,4 +1,4 @@
-Turbo Assembler	 Version 2.01	     06/27/16 22:56:39	    Page 1
+Turbo Assembler	 Version 2.01	     06/28/16 00:19:42	    Page 1
 asm.asm
 
 
@@ -60,7 +60,7 @@ asm.asm
 1    55
 1    56								 push	 dx
 1    57								 push	 ax
-Turbo Assembler	 Version 2.01	     06/27/16 22:56:39	    Page 2
+Turbo Assembler	 Version 2.01	     06/28/16 00:19:42	    Page 2
 asm.asm
 
 
@@ -122,7 +122,7 @@ asm.asm
 1   112								 popa
 1   113
 1   114					 endm
-Turbo Assembler	 Version 2.01	     06/27/16 22:56:39	    Page 3
+Turbo Assembler	 Version 2.01	     06/28/16 00:19:42	    Page 3
 asm.asm
 
 
@@ -184,7 +184,7 @@ asm.asm
 1   169					 ;They are for integer and floating point input	and output.
 1   170					 ;They were written by Myron Berg at Dickinson State University
 1   171					 ;4/1/99
-Turbo Assembler	 Version 2.01	     06/27/16 22:56:39	    Page 4
+Turbo Assembler	 Version 2.01	     06/28/16 00:19:42	    Page 4
 asm.asm
 
 
@@ -246,7 +246,7 @@ asm.asm
     226	00000000			 .stack	200h
 *Warning* asm.asm(8) Assuming segment is 32-bit
     227
-Turbo Assembler	 Version 2.01	     06/27/16 22:56:39	    Page 5
+Turbo Assembler	 Version 2.01	     06/28/16 00:19:42	    Page 5
 asm.asm
 
 
@@ -268,44 +268,47 @@ asm.asm
     242		  = FFFF		 MAX_STRING_INT	equ 65535 ;Tama�o maximo de ints.
     243	    0040  ????????		 aux1 dd ?
     244	    0044  ????????		 aux2 dd ?
-    245	    0048  000A			 TEN DW	10
-    246	    004A  00000000		 cont dd 0.000000
-    247	    004E  00000000		 filt dd 0.000000
-    248
-    249	    0052  ????????		 _IGUALES dd ?
-    250
-    251	    0056  ????????		 _FILTER dd ?
-    252	    005A  ??			 _d db ?
-    253
-    254	    005B  ????????		 _c dd ?
-    255
-    256	    005F  ????????		 _b dd ?
-    257
-    258	    0063  ????????		 _a dd ?
-    259	    0067  40A00000		 _cte_5	dd 5.000000
-    260	    006B  40400000		 _cte_3	dd 3.000000
-    261	    006F  41000000		 _cte_8	dd 8.000000
-    262
-    263	    0073			 .code
-    264	    0000			 main:
-    265	    0000  B8 0000s		 mov AX,@DATA ;
-    266	    0003  8E D8			 mov DS,AX ;
-    267	    0005  9B DB	E3		 finit ;
-    268
-    269	    0008  D9 06	0067r		 fld _cte_5
-    270	    000C  D9 1E	0063r		 fstp _a
-    271	    0010  D9 06	006Br		 fld _cte_3
-    272	    0014  D9 1E	005Fr		 fstp _b
-    273	    0018  D9 06	006Fr		 fld _cte_8
-    274	    001C  D9 1E	005Br		 fstp _c
-    275	    0020  8B 1E	0063r		 mov bx, _a
-**Error** asm.asm(49) Operand types do not match
-    276	    0024  FF 16	0000		 call DisplayInteger
-**Error** asm.asm(50) Can't use	macro name in expression: DISPLAYINTEGER
-    277
-    278	    0028  B8 4C00		 mov AX, 4C00h
-    279					 end main
-Turbo Assembler	 Version 2.01	     06/27/16 22:56:39	    Page 6
+    245	    0048  00000000		 cont dd 0.000000
+    246	    004C  00000000		 filt dd 0.000000
+    247
+    248	    0050  00000000		 _IGUALES dd 0
+    249
+    250	    0054  00000000		 _FILTER dd 0
+    251	    0058  ??			 _d db ?
+    252
+    253	    0059  00000000		 _c dd 0
+    254
+    255	    005D  00000000		 _b dd 0
+    256
+    257	    0061  00000000		 _a dd 0
+    258	    0065  0000			 _cte_5	dw 5.000000
+**Error** asm.asm(32) Illegal number
+    259	    0067  40400000		 _cte_3	dd 3.000000
+    260	    006B  41000000		 _cte_8	dd 8.000000
+    261
+    262	    006F			 .code
+    263	    0000			 main:
+    264	    0000  B8 0000s		 mov AX,@DATA ;
+    265	    0003  8E D8			 mov DS,AX ;
+    266	    0005  9B DB	E3		 finit ;
+    267
+    268	    0008  DD 06	0065r		 fld _cte_5
+**Error** asm.asm(42) Argument to operation or instruction has illegal size
+    269	    000C  D9 1E	0061r		 fstp _a
+    270	    0010  D9 06	0067r		 fld _cte_3
+    271	    0014  D9 1E	005Dr		 fstp _b
+    272	    0018  D9 06	006Br		 fld _cte_8
+    273	    001C  D9 1E	0059r		 fstp _c
+    274					 DisplayInteger	_CTE_5
+1   275					 ;displays an double word sized	variable on the	screen
+1   276
+1   277	    0020  BB 0065r				 lea	bx, _CTE_5
+1   278	    0023  E8 0000e				 call	 itoa
+1   279
+    280
+    281	    0026  B8 4C00		 mov AX, 4C00h
+    282					 end main
+Turbo Assembler	 Version 2.01	     06/28/16 00:19:42	    Page 6
 Symbol Table
 
 
@@ -313,9 +316,9 @@ Symbol Table
 
 Symbol Name			  Type	 Value
 
-??DATE				  Text	 "06/27/16"
+??DATE				  Text	 "06/28/16"
 ??FILENAME			  Text	 "asm	  "
-??TIME				  Text	 "22:56:39"
+??TIME				  Text	 "00:19:42"
 ??VERSION			  Number 0201
 @CODE				  Text	 _TEXT
 @CODESIZE			  Text	 0
@@ -330,9 +333,9 @@ ATOF				  Near	 ----:---- Extern
 ATOI				  Near	 ----:---- Extern
 AUX1				  Dword	 DGROUP:0040
 AUX2				  Dword	 DGROUP:0044
-CONT				  Dword	 DGROUP:004A
+CONT				  Dword	 DGROUP:0048
 DIVIZ				  Byte	 DGROUP:0014
-FILT				  Dword	 DGROUP:004E
+FILT				  Dword	 DGROUP:004C
 FTOA				  Near	 ----:---- Extern
 ITOA				  Near	 ----:---- Extern
 MAIN				  Near	 _TEXT:0000
@@ -341,16 +344,15 @@ MAX_STRING_LENGTH		  Number 001E
 MESSAGE				  Byte	 DGROUP:0000
 OVERFLOW			  Byte	 DGROUP:000A
 READ				  Byte	 DGROUP:0023
-TEN				  Word	 DGROUP:0048
-_A				  Dword	 DGROUP:0063
-_B				  Dword	 DGROUP:005F
-_C				  Dword	 DGROUP:005B
-_CTE_3				  Dword	 DGROUP:006B
-_CTE_5				  Dword	 DGROUP:0067
-_CTE_8				  Dword	 DGROUP:006F
-_D				  Byte	 DGROUP:005A
-_FILTER				  Dword	 DGROUP:0056
-_IGUALES			  Dword	 DGROUP:0052
+_A				  Dword	 DGROUP:0061
+_B				  Dword	 DGROUP:005D
+_C				  Dword	 DGROUP:0059
+_CTE_3				  Dword	 DGROUP:0067
+_CTE_5				  Word	 DGROUP:0065
+_CTE_8				  Dword	 DGROUP:006B
+_D				  Byte	 DGROUP:0058
+_FILTER				  Dword	 DGROUP:0054
+_IGUALES			  Dword	 DGROUP:0050
 
 Macro Name
 
@@ -367,7 +369,7 @@ GETTIME
 NEWLINE
 SCROLLUP
 SETCURPOS
-Turbo Assembler	 Version 2.01	     06/27/16 22:56:39	    Page 7
+Turbo Assembler	 Version 2.01	     06/28/16 00:19:42	    Page 7
 Symbol Table
 
 
@@ -377,14 +379,14 @@ Groups & Segments		  Bit Size Align  Combine Class
 
 DGROUP				  Group
   STACK				  32  0200 Para	  Stack	  STACK
-  _DATA				  16  0073 Word	  Public  DATA
-_TEXT				  16  002B Word	  Public  CODE
-Turbo Assembler	 Version 2.01	     06/27/16 22:56:39	    Page 8
+  _DATA				  16  006F Word	  Public  DATA
+_TEXT				  16  0029 Word	  Public  CODE
+Turbo Assembler	 Version 2.01	     06/28/16 00:19:42	    Page 8
 Error Summary
 
 
 
 *Warning* asm.asm(8) Assuming segment is 32-bit
-**Error** asm.asm(49) Operand types do not match
-**Error** asm.asm(50) Can't use	macro name in expression: DISPLAYINTEGER
+**Error** asm.asm(32) Illegal number
+**Error** asm.asm(42) Argument to operation or instruction has illegal size
 
