@@ -1,0 +1,1091 @@
+Turbo Assembler	 Version 2.01	     06/27/16 22:29:13	    Page 1
+NUMBERS.ASM
+
+
+
+      1
+      2
+      3					  ;numbers.asm
+      4					 ;This file was	written	by Myron Berg of Dickinson State University
+      5					 ;It is	used for inputting and outputting numbers into an assembly language
+      6					 ;program.
+      7
+      8					 ;This program should be seperately assembled and then linked to the program
+      9					 ;using	it.
+     10
+     11
+     12
+     13					 public	 atof, ftoa, itoa, atoi
+     14	    0000			 .model	small
+     15	    0000			 .stack	100h
+     16					 .386
+     17					 .387
+     18
+     19					 ;+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+     20
+     21					 displayString			macro  string	       ;write string on	screen
+     22
+     23					 ;This macro displays a	$ terminated string on the screen.
+     24
+     25								 pushad
+     26
+     27								 lea	dx, string
+     28								 mov	ah, 9
+     29							       int    21h
+     30
+     31								 popad
+     32
+     33					 endm
+     34
+     35					 ;+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+     36
+     37
+     38					 getFloatString		   macro  string	;read string from keyboard
+     39					 local	label1,	label2,	label3,	label4,	label5,	label6,	label7,	label8
+     40
+     41
+     42					 ;This macro gets a string from	the user and stores it in a string variable.
+     43					 ;It is	used by	the AtoF procedure.
+     44					 ;When the enter key is	pressed	(0Dh), the process ends	and a $	is entered
+     45					 ;at the end of	the string.
+     46					 ;A backspace key (8) will allow the overwriting of the	previous character.
+     47					 ;They only keys entered in the	string are the numbers,	the negative sign,
+     48					 ;and the decimal.  Only one entry of the decimal and negative sign are
+     49					 ;allowed.
+     50
+     51								 pushad
+     52								 push	 edi
+     53								 push	 esi
+     54
+     55								 lea	si, string
+     56
+     57								 mov	bx, si
+Turbo Assembler	 Version 2.01	     06/27/16 22:29:13	    Page 2
+NUMBERS.ASM
+
+
+
+     58
+     59					 label1:		mov    ah, 1
+     60								 int	21h
+     61
+     62								 cmp	al, 0Dh	       ;when enter is pressed,
+     63								 je	 label2		 ;string is complete.
+     64
+     65								 cmp	al, 8	       ;backspace key
+     66								 je	 label8
+     67								 jmp	label7
+     68
+     69					 label8:		dec    si	       ;backspace, so move back
+     70								 cmp	si, bx
+     71								 jl	 label6
+     72								 jmp	label1
+     73
+     74					 label6:		mov    si, bx
+     75								 jmp	label1
+     76
+     77
+     78					 label7:		cmp    al, '-'	      ;has '-' been pressed before?
+     79								 jne	label4
+     80								 cmp	bl, 1
+     81								 je	 label1
+     82								 mov	bl, 1
+     83
+     84					 label4:		cmp    al, '.'	      ;has '.' been pressed before?
+     85								 jne	label5
+     86								 cmp	bh, 1
+     87								 je	 label1
+     88							       mov    bh, 1
+     89
+     90					 label5:		cmp    al, '-'	      ;most allowable character
+     91								 jl	 label1		 ;codes	are between - and 9
+     92								 cmp	al, '9'
+     93								 jg	 label1
+     94								 cmp	al, '/'
+     95								 je	 label1
+     96					 label3:		mov    [si], al
+     97								 inc	si
+     98								 jmp	label1
+     99					 label2:		mov    byte ptr	[si], '$'    ;add $ to string end
+    100
+    101								 mov	al, 0Dh		 ;go to	new line
+    102								 mov	ah, 0Eh
+    103								 int	10h
+    104								 mov	al, 0Ah
+    105								 mov	ah, 0Eh
+    106								 int	10h
+    107
+    108								 pop	esi
+    109								 pop	edi
+    110								 popad
+    111
+    112					 endm
+    113
+    114					 ;+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Turbo Assembler	 Version 2.01	     06/27/16 22:29:13	    Page 3
+NUMBERS.ASM
+
+
+
+    115
+    116
+    117
+    118					 getIntegerString    macro  string	  ;read	string from keyboard
+    119					 local	label1,	label2,	label3,	label4,	label5,	label6,	label7
+    120
+    121
+    122					 ;This macro gets a string from	the user and stores it in a string variable.
+    123					 ;It is	used by	the AtoI procedure.
+    124					 ;When the enter key is	pressed	(0Dh), the process ends	and a $	is entered
+    125					 ;at the end of	the string.
+    126					 ;A backspace key (8) will allow the overwriting of the	previous character.
+    127					 ;They only keys entered in the	string are the numbers,	the negative sign,
+    128					 ;and the decimal.  Only one entry of the decimal is allowed.  Entering	a
+    129					 ;decimal will end the process (since this is for integers).
+    130
+    131
+    132								 pushad
+    133								 push	 edi
+    134								 push	 esi
+    135
+    136								 lea	si, string
+    137
+    138								 mov	bx, si
+    139
+    140					 label1:		mov    ah, 1
+    141								 int	21h
+    142
+    143								 cmp	al, 0Dh	     ;enter key
+    144								 je	 label2
+    145
+    146							       cmp    al, 8	   ;backspace key
+    147								 je	 label5
+    148								 jmp	label7
+    149
+    150					 label5:		dec    si	   ;backspace, so overwrite
+    151								 cmp	si, bx	      ;previous	character
+    152								 jl	 label6
+    153								 jmp	label1
+    154
+    155					 label6:		mov    si, bx
+    156								 jmp	label1
+    157
+    158
+    159					 label7:		cmp    al, '-'	    ;only allow	one negative sign
+    160								 jne	label4	    ;per string
+    161								 cmp	bl, 1
+    162								 je	 label1
+    163								 mov	bl, 1
+    164
+    165					 label4:		cmp    al, '.'	    ;most ascii	codes allowed are
+    166								 je	 label2	     ;in this range, except the
+    167								 cmp	al, '-'	     ;'/'
+    168								 jl	 label1
+    169								 cmp	al, '9'
+    170								 jg	 label1
+    171								 cmp	al, '/'
+Turbo Assembler	 Version 2.01	     06/27/16 22:29:13	    Page 4
+NUMBERS.ASM
+
+
+
+    172								 je	 label1
+    173					 label3:		mov    [si], al
+    174								 inc	si
+    175								 jmp	label1
+    176					 label2:		mov    byte ptr	[si], '$'
+    177
+    178								 mov	al, 0Dh	   ;proceed to new line.
+    179								 mov	ah, 0Eh
+    180								 int	10h
+    181								 mov	al, 0Ah
+    182								 mov	ah, 0Eh
+    183							       int    10h
+    184
+    185								 pop	esi
+    186								 pop	edi
+    187								 popad
+    188
+    189					 endm
+    190
+    191					 ;+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    192
+    193	    0000			 .data
+    194	    0000  19*(??) 24		       tempStr	      db      25 dup (?), '$'
+    195	    001A  ????????		       Int1	       dd      ?
+    196	    001E  ????????		       Int2	       dd      ?
+    197	    0022  41200000		       realTen	      dd      10.0
+    198	    0026  0000000A		       integerTen      dd      10
+    199	    002A  ????			       places	       dw      ?
+    200	    002C  0A 0D	54 68 65 20 76+	       TooLarge	       db      10, 13, 'The value entered '
+    201		  61 6C	75 65 20 65 6E+
+    202		  74 65	72 65 64 20
+    203	    0040  68 61	73 20 74 6F 6F+			       db      'has too	many digits.', 10, 13, '$'
+    204		  20 6D	61 6E 79 20 64+
+    205		  69 67	69 74 73 2E 0A+
+    206		  0D 24
+    207
+    208	    0057			 .code
+    209
+    210	    0000			 begin:
+    211
+    212					 ;+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    213
+    214	    0000			 AtoF	 proc
+    215					 locals
+    216
+    217					 ;This procedure converts a string to a	double word sized floating point
+    218					 ;memory variable. It works using the following	methods:
+    219					 ;l.	First the string is examined for the number of places after the
+    220					 ;	decimal.  This number is stored	in the variable	places.	 The decimal
+    221					 ;	point is deleted from the string so an integer remains.
+    222					 ;2.	If a negative sign has been entered, a value of	-1 is stored
+    223					 ;	for later multiplication with the result.
+    224					 ;3.	By a process of	subtracting 30h	from each digit, then adding this
+    225					 ;	value to the previous accumulation and multiplying the accumulation
+    226					 ;	by 10, the number is converted from ascii to integer.
+    227					 ;4.	The integer value from step 3 above is loaded into the floating
+    228					 ;	point processor	and divided by 10 as many times	as there were
+Turbo Assembler	 Version 2.01	     06/27/16 22:29:13	    Page 5
+NUMBERS.ASM
+
+
+
+    229					 ;	places entered by the user.
+    230
+    231
+    232
+    233
+    234	    0000  66| 60					 pushad
+    235	    0002  66| 57					 push	 edi
+    236	    0004  66| 56					 push	 esi
+    237
+    238	    0006  53						 push	 bx
+    239
+    240								 getFloatString	     tempStr
+1   241
+1   242
+1   243					 ;This macro gets a tempStr from the user and stores it	in a tempStr variable.
+1   244					 ;It is	used by	the AtoF procedure.
+1   245					 ;When the enter key is	pressed	(0Dh), the process ends	and a $	is entered
+1   246					 ;at the end of	the tempStr.
+1   247					 ;A backspace key (8) will allow the overwriting of the	previous character.
+1   248					 ;They only keys entered in the	tempStr	are the	numbers, the negative sign,
+1   249					 ;and the decimal.  Only one entry of the decimal and negative sign are
+1   250					 ;allowed.
+1   251
+1   252	    0007  66| 60					 pushad
+1   253	    0009  66| 57					 push	 edi
+1   254	    000B  66| 56					 push	 esi
+1   255
+1   256	    000D  BE 0000r					 lea	si, tempStr
+1   257
+1   258	    0010  8B DE						 mov	bx, si
+1   259
+1   260	    0012  B4 01			 ??0000:		mov    ah, 1
+1   261	    0014  CD 21						 int	21h
+1   262
+1   263	    0016  3C 0D						 cmp	al, 0Dh	       ;when enter is pressed,
+1   264	    0018  74 43	90 90					 je	 ??0001		 ;tempStr is complete.
+1   265
+1   266	    001C  3C 08						 cmp	al, 8	       ;backspace key
+1   267	    001E  74 05	90 90					 je	 ??0007
+1   268	    0022  EB 0E	90					 jmp	??0006
+1   269
+1   270	    0025  4E			 ??0007:		dec    si	       ;backspace, so move back
+1   271	    0026  3B F3						 cmp	si, bx
+1   272	    0028  7C 04	90 90					 jl	 ??0005
+1   273	    002C  EB E4						 jmp	??0000
+1   274
+1   275	    002E  8B F3			 ??0005:		mov    si, bx
+1   276	    0030  EB E0						 jmp	??0000
+1   277
+1   278
+1   279	    0032  3C 2D			 ??0006:		cmp    al, '-'	      ;has '-' been pressed before?
+1   280	    0034  75 09	90 90					 jne	??0003
+1   281	    0038  80 FB	01					 cmp	bl, 1
+1   282	    003B  74 D5						 je	 ??0000
+1   283	    003D  B3 01						 mov	bl, 1
+1   284
+1   285	    003F  3C 2E			 ??0003:		cmp    al, '.'	      ;has '.' been pressed before?
+Turbo Assembler	 Version 2.01	     06/27/16 22:29:13	    Page 6
+NUMBERS.ASM
+
+
+
+1   286	    0041  75 09	90 90					 jne	??0004
+1   287	    0045  80 FF	01					 cmp	bh, 1
+1   288	    0048  74 C8						 je	 ??0000
+1   289	    004A  B7 01					       mov    bh, 1
+1   290
+1   291	    004C  3C 2D			 ??0004:		cmp    al, '-'	      ;most allowable character
+1   292	    004E  7C C2						 jl	 ??0000		 ;codes	are between - and 9
+1   293	    0050  3C 39						 cmp	al, '9'
+1   294	    0052  7F BE						 jg	 ??0000
+1   295	    0054  3C 2F						 cmp	al, '/'
+1   296	    0056  74 BA						 je	 ??0000
+1   297	    0058  88 04			 ??0002:		mov    [si], al
+1   298	    005A  46						 inc	si
+1   299	    005B  EB B5						 jmp	??0000
+1   300	    005D  C6 04	24		 ??0001:		mov    byte ptr	[si], '$'    ;add $ to tempStr end
+1   301
+1   302	    0060  B0 0D						 mov	al, 0Dh		 ;go to	new line
+1   303	    0062  B4 0E						 mov	ah, 0Eh
+1   304	    0064  CD 10						 int	10h
+1   305	    0066  B0 0A						 mov	al, 0Ah
+1   306	    0068  B4 0E						 mov	ah, 0Eh
+1   307	    006A  CD 10						 int	10h
+1   308
+1   309	    006C  66| 5E					 pop	esi
+1   310	    006E  66| 5F					 pop	edi
+1   311	    0070  66| 61					 popad
+1   312
+    313	    0072  BE 0000r					 lea	si, tempStr
+    314
+    315	    0075  BB 0000					 mov	bx, 0
+    316
+    317	    0078  80 38	24		 @@cycle12:		 cmp	byte ptr [bx][si], '$'
+    318	    007B  75 0B	90 90					 jne	@@around2
+    319	    007F  C7 06	002Ar 0000				 mov	places,	0
+    320	    0085  EB 24	90					 jmp	@@skip2
+    321	    0088  80 38	2E		 @@around2:		 cmp	byte ptr [bx][si], '.'
+    322	    008B  74 05	90 90					 je	 @@done30
+    323	    008F  43						 inc	bx
+    324	    0090  EB E6						 jmp	@@cycle12
+    325
+    326	    0092  C7 06	002Ar 0000	 @@done30:		mov    places, 0
+    327	    0098  43			 @@skip:		inc    bx
+    328	    0099  8A 00						 mov	al, byte ptr [bx][si]
+    329	    009B  88 40	FF					 mov	byte ptr [bx-1][si], al
+    330	    009E  80 38	24					 cmp	byte ptr [bx][si], '$'
+    331	    00A1  74 08	90 90					 je	 @@skip2
+    332	    00A5  FF 06	002Ar					 inc	places
+    333	    00A9  EB ED						 jmp	@@skip
+    334
+    335	    00AB  66| BF 00000000	 @@skip2:		 mov	edi, 0
+    336	    00B1  66| BA 00000000				 mov	edx, 0
+    337	    00B7  66| B8 00000000				 mov	eax, 0
+    338	    00BD  BB 0000					 mov	bx, 0
+    339
+    340	    00C0  80 38	24		 @@cycle:		 cmp	byte ptr [si][bx], '$'
+    341	    00C3  74 51	90 90					 je	 @@done10
+    342
+Turbo Assembler	 Version 2.01	     06/27/16 22:29:13	    Page 7
+NUMBERS.ASM
+
+
+
+    343	    00C7  80 38	2D					 cmp	byte ptr [si][bx], '-'
+    344	    00CA  75 09	90 90					 jne	@@skip10
+    345	    00CE  66| 83 CF FF					 or	 edi, -1
+    346
+    347	    00D2  EB 3F	90					 jmp	@@notAscii
+    348
+    349	    00D5  66| 83 CF 01		 @@skip10:		or	edi, 1
+    350	    00D9  66| BA 00000000	 @@skip11:		mov    edx, 0
+    351	    00DF  66| F7 2E 0026r				 Imul	 IntegerTen
+    352	    00E4  66| 83 FA 00					 cmp	edx, 0
+    353	    00E8  74 16	90 90					 je	 @@InRange
+    354								 displaystring	TooLarge
+1   355
+1   356					 ;This macro displays a	$ terminated TooLarge on the screen.
+1   357
+1   358	    00EC  66| 60					 pushad
+1   359
+1   360	    00EE  BA 002Cr					 lea	dx, TooLarge
+1   361	    00F1  B4 09						 mov	ah, 9
+1   362	    00F3  CD 21					       int    21h
+1   363
+1   364	    00F5  66| 61					 popad
+1   365
+    366	    00F7  66| B8 00000000				 mov	eax, 0
+    367	    00FD  EB 17	90					 jmp	@@done10
+    368
+    369	    0100  66| 0F BE 08		 @@InRange:		 movsx	ecx, byte ptr[si][bx]
+    370	    0104  66| 03 C1					 add	eax, ecx
+    371	    0107  66| 83 F9 30					 cmp	ecx, 30h
+    372	    010B  7C 06	90 90				       jl      @@notAscii
+    373	    010F  66| 83 E8 30					 sub	eax, 30h
+    374	    0113  43			 @@notASCii:		inc    bx
+    375	    0114  EB AA						 jmp	@@cycle
+    376
+    377	    0116  66| BA 00000000	 @@done10:		mov    edx, 0
+    378	    011C  66| F7 EF					 imul	 edi
+    379	    011F  66| A3 001Ar					 mov	int1, eax
+    380	    0123  9B DB	E3					 finit
+    381	    0126  DB 06	001Ar					 fild	 int1
+    382
+    383	    012A  B9 0000					 mov	cx, 0
+    384	    012D  3B 0E	002Ar		 @@cycle2:cmp		 cx,	places
+    385	    0131  74 0B	90 90					 je	 @@done
+    386	    0135  D9 06	0022r					 fld	realTen
+    387	    0139  DE F9					       fdivp
+    388	    013B  41						 inc	cx
+    389	    013C  EB EF						 jmp	@@cycle2
+    390
+    391	    013E  5B			 @@done:		pop    bx
+    392	    013F  D9 1F						 fstp	 dword ptr[bx]
+    393
+    394	    0141  9B						 fwait
+    395
+    396	    0142  66| 5E					 pop	esi
+    397	    0144  66| 5F					 pop	edi
+    398	    0146  66| 61					 popad
+    399	    0148  C3						 ret
+Turbo Assembler	 Version 2.01	     06/27/16 22:29:13	    Page 8
+NUMBERS.ASM
+
+
+
+    400
+    401	    0149			 AtoF	 endp
+    402
+    403
+    404
+    405					 ;+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    406
+    407	    0149			 ftoa	 proc
+    408					 locals
+    409
+    410
+    411					 ;This procedure converts a double word	sized floating point to	a string
+    412					 ;memory variable. It works using the following	methods:
+    413					 ;l.	First the string is cleared.
+    414					 ;2.	The value is multiplied	by 10 as many times as there was places
+    415					 ;	specified by the user.
+    416					 ;3.	This number is stored as an rounded integer using the fist command.
+    417					 ;4.	From the back of the string, digits are	added by repeatedly dividing
+    418					 ;	by ten and using the remainders	added to 30h to	make ascii codes
+    419					 ;5.	If the value was negative, a '-' is added to the front of the string
+    420					 ;6.	Commas are inserted in the correct places both before and after	the
+    421					 ;	decimal	point.
+    422					 ;7.	The string is shortened	to its minimum length.	It has a $ at the end
+    423					 ;	of the string.
+    424
+    425
+    426	    0149  66| 60					 pushad
+    427	    014B  66| 57					 push	 edi
+    428	    014D  66| 56					 push	 esi
+    429
+    430	    014F  BE 0000r					 lea	si, tempstr
+    431	    0152  53						 push	 bx
+    432	    0153  BB 0000					 mov	bx, 0
+    433	    0156  C6 00	00		 @@cycle6:		mov    byte ptr[bx][si], 0
+    434	    0159  43						 inc	bx
+    435	    015A  83 FB	19					 cmp	bx, 25
+    436	    015D  7C F7						 jl	 @@cycle6
+    437	    015F  5B						 pop	bx
+    438	    0160  9B DB	E3					 finit
+    439	    0163  D9 07						 fld	dword ptr [bx]
+    440	    0165  D9 E1						 fabs
+    441	    0167  89 0E	002Ar					 mov	places,	cx
+    442	    016B  B9 0000					 mov	cx, 0
+    443	    016E  3B 0E	002Ar		 @@cycle:		 cmp	cx, places
+    444	    0172  74 0B	90 90					 je	 @@done
+    445	    0176  D9 06	0022r					 fld	realTen
+    446	    017A  DE C9						 fmulp
+    447
+    448	    017C  41						 inc	cx
+    449	    017D  EB EF						 jmp	@@cycle
+    450
+    451	    017F  DB 1E	001Er		 @@done:		fistp  int2
+    452
+    453	    0183  D9 07						 fld	dword ptr [bx]
+    454	    0185  D9 E4						 ftst
+    455	    0187  9B DF	E0					 fstsw	ax
+    456	    018A  DE C9						 fmulp
+Turbo Assembler	 Version 2.01	     06/27/16 22:29:13	    Page 9
+NUMBERS.ASM
+
+
+
+    457	    018C  9B						 fwait
+    458
+    459	    018D  9E						 sahf
+    460
+    461	    018E  73 07	90 90					 jae	@@notNeg
+    462	    0192  B1 2D						 mov	cl, '-'
+    463	    0194  EB 03	90					 jmp	@@skip3
+    464	    0197  B1 00			 @@notNeg:		mov    cl, 0
+    465
+    466	    0199  BB 0018		 @@skip3:		 mov	bx, 24
+    467
+    468	    019C  66| A1 001Er					 mov	eax, int2
+    469
+    470	    01A0  66| 99		 @@cycle7:		cdq
+    471	    01A2  66| F7 3E 0026r				 idiv	 IntegerTen
+    472	    01A7  80 C2	30					 add	dl, 30h
+    473	    01AA  88 10						 mov	byte ptr [bx][si], dl
+    474	    01AC  4B						 dec	bx
+    475	    01AD  66| 83 F8 00					 cmp	eax, 0
+    476	    01B1  74 07	90 90					 je	 @@done5
+    477	    01B5  83 FB	00					 cmp	bx, 0
+    478	    01B8  7F E6						 jg	 @@cycle7
+    479
+    480	    01BA  88 08			 @@done5:		 mov	byte ptr [bx][si], cl
+    481
+    482	    01BC  4B			 @@cycle8:		dec    bx
+    483	    01BD  83 FB	00					 cmp	bx, 0
+    484	    01C0  7C 08	90 90					 jl	 @@done2
+    485	    01C4  C6 00	00					 mov	byte ptr [bx][si], 0
+    486	    01C7  EB F3						 jmp	@@cycle8
+    487
+    488	    01C9  5B						 pop	bx
+    489
+    490	    01CA  B9 0019		 @@done2:		 mov	cx, 25
+    491	    01CD  2B 0E	002Ar					 sub	cx, places
+    492	    01D1  49						 dec	cx
+    493	    01D2  BB 0000					 mov	bx, 0
+    494
+    495	    01D5  3B D9			 @@cycle3:		cmp    bx, cx
+    496	    01D7  74 0A	90 90					 je	 @@done3
+    497	    01DB  8A 40	01					 mov	al, [bx+1][si]
+    498	    01DE  88 00						 mov	[bx][si], al
+    499	    01E0  43						 inc	bx
+    500	    01E1  EB F2						 jmp	@@cycle3
+    501
+    502	    01E3  C6 00	2E		 @@done3:		 mov	byte ptr [bx][si], '.'
+    503
+    504	    01E6  B1 00						 mov	cl, 0
+    505	    01E8  BB 0018					 mov	bx, 24
+    506
+    507	    01EB  80 38	2E		 @@cycle101:		cmp    byte ptr	[si][bx], '.'
+    508	    01EE  74 3F	90 90					 je	 @@skip102
+    509	    01F2  80 38	00					 cmp	byte ptr [si][bx], 0
+    510	    01F5  74 40	90 90					 je	 @@reduce
+    511	    01F9  80 38	2D					 cmp	byte ptr [si][bx], '-'
+    512	    01FC  74 39	90 90					 je	 @@reduce
+    513
+Turbo Assembler	 Version 2.01	     06/27/16 22:29:13	    Page 10
+NUMBERS.ASM
+
+
+
+    514	    0200  8A C1						 mov	al, cl
+    515	    0202  98						 cbw
+    516	    0203  B5 03						 mov	ch, 3
+    517	    0205  F6 F5						 div	ch
+    518	    0207  80 FC	00					 cmp	ah, 0
+    519	    020A  74 07	90 90					 je	 @@process101
+    520
+    521	    020E  FE C1			 @@atEnd:		 inc	cl
+    522	    0210  4B						 dec	bx
+    523	    0211  EB D8						 jmp	@@cycle101
+    524
+    525	    0213			 @@process101:
+    526	    0213  3C 00						 cmp	al, 0
+    527	    0215  74 F7						 je	 @@atEnd
+    528
+    529	    0217  8B D3						 mov	dx, bx
+    530	    0219  BB 0001					 mov	bx, 1
+    531	    021C  8A 00			 @@cycle102:		mov    al, [si][bx]
+    532	    021E  88 40	FF					 mov	[si][bx-1], al
+    533
+    534	    0221  3B DA						 cmp	bx, dx
+    535	    0223  74 05	90 90					 je	 @@done101
+    536	    0227  43						 inc	bx
+    537	    0228  EB F2						 jmp	@@cycle102
+    538
+    539	    022A  C6 00	2C		 @@done101:		 mov	byte ptr [si][bx], ','
+    540	    022D  8B DA						 mov	bx, dx
+    541
+    542	    022F  B1 00			 @@skip102:		 mov	cl, 0
+    543	    0231  4B						 dec	bx
+    544	    0232  83 FB	00					 cmp	bx, 0
+    545	    0235  7F B4						 jg	 @@cycle101
+    546
+    547
+    548	    0237			 @@reduce:
+    549					 ;reduce string	to shortest length possible
+    550
+    551
+    552	    0237  8B FE						 mov	di, si
+    553	    0239  BB 0000					 mov	bx, 0
+    554	    023C  80 38	24		 @@cycle4:		cmp    byte ptr	[si][bx],'$'
+    555	    023F  74 17	90 90					 je	 @@done4
+    556	    0243  80 38	00					 cmp	byte ptr [si][bx], 0
+    557	    0246  74 0D	90 90				       je      @@skip
+    558	    024A  8A 00						 mov	al, [si][bx]
+    559	    024C  88 05						 mov	[di], al
+    560	    024E  C6 00	00					 mov	byte ptr [si][bx], 0
+    561	    0251  47						 inc	di
+    562	    0252  43						 inc	bx
+    563	    0253  EB E7						 jmp	@@cycle4
+    564	    0255  43			 @@skip:		inc    bx
+    565	    0256  EB E4						 jmp	@@cycle4
+    566
+    567	    0258  C6 05	24		 @@done4:		 mov	byte ptr [di], '$'
+    568
+    569								 displayString tempStr
+1   570
+Turbo Assembler	 Version 2.01	     06/27/16 22:29:13	    Page 11
+NUMBERS.ASM
+
+
+
+1   571					 ;This macro displays a	$ terminated tempStr on	the screen.
+1   572
+1   573	    025B  66| 60					 pushad
+1   574
+1   575	    025D  BA 0000r					 lea	dx, tempStr
+1   576	    0260  B4 09						 mov	ah, 9
+1   577	    0262  CD 21					       int    21h
+1   578
+1   579	    0264  66| 61					 popad
+1   580
+    581
+    582	    0266  66| 5E					 pop	esi
+    583	    0268  66| 5F				       pop    edi
+    584	    026A  66| 61					 popad
+    585	    026C  C3						 ret
+    586
+    587	    026D			 ftoa	 endp
+    588
+    589
+    590
+    591					 ;+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    592
+    593	    026D			 itoa	 proc
+    594					 locals
+    595
+    596					 ;This procedure converts a double word	sized integer to a string
+    597					 ;memory variable. It works using the following	methods:
+    598					 ;l.	First the string is cleared.
+    599					 ;2.	From the back of the string, digits are	added by repeatedly dividing
+    600					 ;	by ten and using the remainders	added to 30h to	make ascii codes
+    601					 ;3.	If the value was negative, a '-' is added to the front of the string
+    602					 ;4.	Commas are inserted in the correct places.
+    603					 ;5.	The string is shortened	to its minimum length.	It has a $ at the end
+    604					 ;	of the string.
+    605
+    606
+    607
+    608
+    609	    026D  66| 60					 pushad
+    610	    026F  66| 57					 push	 edi
+    611	    0271  66| 56					 push	 esi
+    612
+    613	    0273  BE 0000r					 lea	si, tempstr
+    614
+    615	    0276  53						 push	 bx
+    616	    0277  BB 0000					 mov	bx, 0
+    617	    027A  C6 00	00		 @@cycle6:		mov    byte ptr[bx][si], 0
+    618	    027D  43						 inc	bx
+    619	    027E  83 FB	19					 cmp	bx, 25
+    620	    0281  7C F7						 jl	 @@cycle6
+    621	    0283  5B						 pop	bx
+    622
+    623	    0284  66| 8B 07					 mov	eax, [bx]
+    624
+    625	    0287  66| 83 3F 00					 cmp	dword ptr [bx],	0
+    626	    028B  7D 0C	90 90					 jge	@@notNeg
+    627	    028F  B1 2D						 mov	cl, '-'
+Turbo Assembler	 Version 2.01	     06/27/16 22:29:13	    Page 12
+NUMBERS.ASM
+
+
+
+    628	    0291  66| F7 D0					 not	eax
+    629	    0294  66| 40					 inc	eax
+    630	    0296  EB 03	90					 jmp	@@skip3
+    631	    0299  B1 00			 @@notNeg:		mov    cl, 0
+    632
+    633	    029B  BB 0018		 @@skip3:		 mov	bx, 24
+    634
+    635	    029E  66| 99		 @@cycle7:		cdq
+    636	    02A0  66| F7 3E 0026r				 idiv	 IntegerTen
+    637	    02A5  80 C2	30					 add	dl, 30h
+    638	    02A8  88 10						 mov	byte ptr [bx][si], dl
+    639	    02AA  4B						 dec	bx
+    640	    02AB  66| 83 F8 00					 cmp	eax, 0
+    641	    02AF  74 07	90 90					 je	 @@done5
+    642	    02B3  83 FB	00					 cmp	bx, 0
+    643	    02B6  7F E6						 jg	 @@cycle7
+    644
+    645	    02B8  88 08			 @@done5:		 mov	byte ptr [bx][si], cl
+    646
+    647	    02BA  4B			 @@cycle8:		 dec	bx
+    648	    02BB  83 FB	00					 cmp	bx, 0
+    649	    02BE  7C 07	90 90					 jl	 @@done2
+    650	    02C2  C6 00	00					 mov	byte ptr [bx][si], 0
+    651	    02C5  EB F3						 jmp	@@cycle8
+    652
+    653	    02C7  B1 00			 @@done2:		 mov	cl, 0
+    654	    02C9  BB 0018					 mov	bx, 24
+    655
+    656	    02CC  80 38	00		 @@cycle101:		cmp    byte ptr	[si][bx], 0
+    657	    02CF  74 40	90 90					 je	 @@reduce
+    658	    02D3  80 38	2D					 cmp	byte ptr [si][bx], '-'
+    659	    02D6  74 39	90 90					 je	 @@reduce
+    660
+    661	    02DA  8A C1						 mov	al, cl
+    662	    02DC  98						 cbw
+    663	    02DD  B5 03						 mov	ch, 3
+    664	    02DF  F6 F5						 div	ch
+    665	    02E1  80 FC	00					 cmp	ah, 0
+    666	    02E4  74 07	90 90					 je	 @@process101
+    667
+    668	    02E8  FE C1			 @@atEnd:		 inc	cl
+    669	    02EA  4B						 dec	bx
+    670	    02EB  EB DF						 jmp	@@cycle101
+    671
+    672	    02ED			 @@process101:
+    673	    02ED  3C 00						 cmp	al, 0
+    674	    02EF  74 F7						 je	 @@atEnd
+    675
+    676	    02F1  8B D3						 mov	dx, bx
+    677	    02F3  BB 0001					 mov	bx, 1
+    678	    02F6  8A 00			 @@cycle102:		mov    al, [si][bx]
+    679	    02F8  88 40	FF					 mov	[si][bx-1], al
+    680
+    681	    02FB  3B DA						 cmp	bx, dx
+    682	    02FD  74 05	90 90					 je	 @@done101
+    683	    0301  43						 inc	bx
+    684	    0302  EB F2						 jmp	@@cycle102
+Turbo Assembler	 Version 2.01	     06/27/16 22:29:13	    Page 13
+NUMBERS.ASM
+
+
+
+    685
+    686	    0304  C6 00	2C		 @@done101:		 mov	byte ptr [si][bx], ','
+    687	    0307  8B DA						 mov	bx, dx
+    688	    0309  B1 00						 mov	cl, 0
+    689	    030B  4B						 dec	bx
+    690	    030C  83 FB	00					 cmp	bx, 0
+    691	    030F  7F BB						 jg	 @@cycle101
+    692
+    693
+    694
+    695
+    696	    0311			 @@reduce:
+    697	    0311  8B FE						 mov	di, si
+    698	    0313  BB 0000					 mov	bx, 0
+    699	    0316  80 38	24		 @@cycle4:		cmp    byte ptr	[si][bx],'$'
+    700	    0319  74 17	90 90					 je	 @@done4
+    701	    031D  80 38	00					 cmp	byte ptr [si][bx], 0
+    702	    0320  74 0D	90 90					 je	 @@skip
+    703	    0324  8A 00						 mov	al, [si][bx]
+    704	    0326  88 05						 mov	[di], al
+    705	    0328  C6 00	00					 mov	byte ptr [si][bx], 0
+    706	    032B  47						 inc	di
+    707	    032C  43						 inc	bx
+    708	    032D  EB E7					       jmp    @@cycle4
+    709	    032F  43			 @@skip:		inc    bx
+    710	    0330  EB E4						 jmp	@@cycle4
+    711
+    712	    0332  C6 05	24		 @@done4:		 mov	byte ptr [di], '$'
+    713
+    714								 DisplayString tempStr
+1   715
+1   716					 ;This macro displays a	$ terminated tempStr on	the screen.
+1   717
+1   718	    0335  66| 60					 pushad
+1   719
+1   720	    0337  BA 0000r					 lea	dx, tempStr
+1   721	    033A  B4 09						 mov	ah, 9
+1   722	    033C  CD 21					       int    21h
+1   723
+1   724	    033E  66| 61					 popad
+1   725
+    726
+    727	    0340  66| 5E					 pop	esi
+    728	    0342  66| 5F					 pop	edi
+    729	    0344  66| 61					 popad
+    730	    0346  C3						 ret
+    731
+    732	    0347			 itoa	 endp
+    733
+    734					 ;+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    735
+    736	    0347			 atoi	 proc
+    737					 locals
+    738
+    739					 ;This procedure converts a string to a	double word sized integer
+    740					 ;memory variable. It works using the following	methods:
+    741					 ;1.	If a negative sign has been entered, a value of	-1 is stored
+Turbo Assembler	 Version 2.01	     06/27/16 22:29:13	    Page 14
+NUMBERS.ASM
+
+
+
+    742					 ;	for later multiplication with the result.
+    743					 ;2.	By a process of	subtracting 30h	from each digit, then adding this
+    744					 ;	value to the previous accumulation and multiplying the accumulation
+    745					 ;	by 10, the number is converted from ascii to integer.
+    746
+    747
+    748
+    749	    0347  66| 60					 pushad
+    750	    0349  66| 57					 push	 edi
+    751	    034B  66| 56					 push	 esi
+    752
+    753	    034D  53						 push	 bx
+    754
+    755								 getIntegerString      TempStr
+1   756
+1   757
+1   758					 ;This macro gets a TempStr from the user and stores it	in a TempStr variable.
+1   759					 ;It is	used by	the AtoI procedure.
+1   760					 ;When the enter key is	pressed	(0Dh), the process ends	and a $	is entered
+1   761					 ;at the end of	the TempStr.
+1   762					 ;A backspace key (8) will allow the overwriting of the	previous character.
+1   763					 ;They only keys entered in the	TempStr	are the	numbers, the negative sign,
+1   764					 ;and the decimal.  Only one entry of the decimal is allowed.  Entering	a
+1   765					 ;decimal will end the process (since this is for integers).
+1   766
+1   767
+1   768	    034E  66| 60					 pushad
+1   769	    0350  66| 57					 push	 edi
+1   770	    0352  66| 56					 push	 esi
+1   771
+1   772	    0354  BE 0000r					 lea	si, TempStr
+1   773
+1   774	    0357  8B DE						 mov	bx, si
+1   775
+1   776	    0359  B4 01			 ??0008:		mov    ah, 1
+1   777	    035B  CD 21						 int	21h
+1   778
+1   779	    035D  3C 0D						 cmp	al, 0Dh	     ;enter key
+1   780	    035F  74 3C	90 90					 je	 ??0009
+1   781
+1   782	    0363  3C 08					       cmp    al, 8	   ;backspace key
+1   783	    0365  74 05	90 90					 je	 ??000C
+1   784	    0369  EB 0E	90					 jmp	??000E
+1   785
+1   786	    036C  4E			 ??000C:		dec    si	   ;backspace, so overwrite
+1   787	    036D  3B F3						 cmp	si, bx	      ;previous	character
+1   788	    036F  7C 04	90 90					 jl	 ??000D
+1   789	    0373  EB E4						 jmp	??0008
+1   790
+1   791	    0375  8B F3			 ??000D:		mov    si, bx
+1   792	    0377  EB E0						 jmp	??0008
+1   793
+1   794
+1   795	    0379  3C 2D			 ??000E:		cmp    al, '-'	    ;only allow	one negative sign
+1   796	    037B  75 09	90 90					 jne	??000B	    ;per TempStr
+1   797	    037F  80 FB	01					 cmp	bl, 1
+1   798	    0382  74 D5						 je	 ??0008
+Turbo Assembler	 Version 2.01	     06/27/16 22:29:13	    Page 15
+NUMBERS.ASM
+
+
+
+1   799	    0384  B3 01						 mov	bl, 1
+1   800
+1   801	    0386  3C 2E			 ??000B:		cmp    al, '.'	    ;most ascii	codes allowed are
+1   802	    0388  74 13	90 90					 je	 ??0009	     ;in this range, except the
+1   803	    038C  3C 2D						 cmp	al, '-'	     ;'/'
+1   804	    038E  7C C9						 jl	 ??0008
+1   805	    0390  3C 39						 cmp	al, '9'
+1   806	    0392  7F C5						 jg	 ??0008
+1   807	    0394  3C 2F						 cmp	al, '/'
+1   808	    0396  74 C1						 je	 ??0008
+1   809	    0398  88 04			 ??000A:		mov    [si], al
+1   810	    039A  46						 inc	si
+1   811	    039B  EB BC						 jmp	??0008
+1   812	    039D  C6 04	24		 ??0009:		mov    byte ptr	[si], '$'
+1   813
+1   814	    03A0  B0 0D						 mov	al, 0Dh	   ;proceed to new line.
+1   815	    03A2  B4 0E						 mov	ah, 0Eh
+1   816	    03A4  CD 10						 int	10h
+1   817	    03A6  B0 0A						 mov	al, 0Ah
+1   818	    03A8  B4 0E						 mov	ah, 0Eh
+1   819	    03AA  CD 10					       int    10h
+1   820
+1   821	    03AC  66| 5E					 pop	esi
+1   822	    03AE  66| 5F					 pop	edi
+1   823	    03B0  66| 61					 popad
+1   824
+    825	    03B2  BE 0000r					 lea	si, tempstr
+    826
+    827	    03B5  66| BF 00000000				 mov	edi, 0
+    828	    03BB  66| BA 00000000				 mov	edx, 0
+    829	    03C1  66| B8 00000000				 mov	eax, 0
+    830	    03C7  66| BB 00000000				 mov	ebx, 0
+    831
+    832	    03CD  80 38	24		 @@cycle:		 cmp	byte ptr [si][bx], '$'
+    833	    03D0  74 51	90 90					 je	 @@done10
+    834
+    835	    03D4  80 38	2D					 cmp	byte ptr[si][bx], '-'
+    836	    03D7  75 09	90 90					 jne	@@skip10
+    837	    03DB  66| 83 CF FF					 or	 edi, -1
+    838	    03DF  EB 3F	90					 jmp	@@notAScii
+    839
+    840	    03E2  66| 83 CF 01		 @@skip10:		or	edi, 1
+    841	    03E6  66| BA 00000000	 @@skip11:		mov    edx, 0
+    842	    03EC  66| F7 2E 0026r	   Imul	   IntegerTen
+    843
+    844	    03F1  66| 83 FA 00					 cmp	edx, 0
+    845	    03F5  74 16	90 90					 je	 @@InRange
+    846								 displaystring	TooLarge
+1   847
+1   848					 ;This macro displays a	$ terminated TooLarge on the screen.
+1   849
+1   850	    03F9  66| 60					 pushad
+1   851
+1   852	    03FB  BA 002Cr					 lea	dx, TooLarge
+1   853	    03FE  B4 09						 mov	ah, 9
+1   854	    0400  CD 21					       int    21h
+1   855
+Turbo Assembler	 Version 2.01	     06/27/16 22:29:13	    Page 16
+NUMBERS.ASM
+
+
+
+1   856	    0402  66| 61					 popad
+1   857
+    858	    0404  66| B8 00000000				 mov	eax, 0
+    859	    040A  EB 17	90					 jmp	@@done10
+    860
+    861	    040D  66| 0F BE 08		 @@InRange:		 movsx	ecx, byte ptr[si][bx]
+    862	    0411  66| 03 C1					 add	eax, ecx
+    863	    0414  66| 83 F9 30					 cmp	ecx, 30h
+    864	    0418  7C 06	90 90					 jl	 @@notAscii
+    865	    041C  66| 83 E8 30					 sub	eax, 30h
+    866	    0420  43			 @@notAscii:		inc    bx
+    867	    0421  EB AA						 jmp	@@cycle
+    868
+    869	    0423  66| BA 00000000	 @@done10:		mov    edx, 0
+    870	    0429  66| F7 EF					 imul	 edi
+    871
+    872	    042C  5B						 pop	bx
+    873	    042D  66| 89 07					 mov	[bx], eax
+    874
+    875	    0430  66| 5E					 pop	esi
+    876	    0432  66| 5F					 pop	edi
+    877	    0434  66| 61					 popad
+    878	    0436  C3						 ret
+    879
+    880	    0437			 atoi	 endp
+    881
+    882
+    883					 ;+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    884
+    885
+    886
+    887
+    888					 end	begin
+Turbo Assembler	 Version 2.01	     06/27/16 22:29:13	    Page 17
+Symbol Table
+
+
+
+
+Symbol Name			  Type	 Value
+
+??0000				  Near	 _TEXT:0012
+??0001				  Near	 _TEXT:005D
+??0002				  Near	 _TEXT:0058
+??0003				  Near	 _TEXT:003F
+??0004				  Near	 _TEXT:004C
+??0005				  Near	 _TEXT:002E
+??0006				  Near	 _TEXT:0032
+??0007				  Near	 _TEXT:0025
+??0008				  Near	 _TEXT:0359
+??0009				  Near	 _TEXT:039D
+??000A				  Near	 _TEXT:0398
+??000B				  Near	 _TEXT:0386
+??000C				  Near	 _TEXT:036C
+??000D				  Near	 _TEXT:0375
+??000E				  Near	 _TEXT:0379
+??DATE				  Text	 "06/27/16"
+??FILENAME			  Text	 "NUMBERS "
+??TIME				  Text	 "22:29:12"
+??VERSION			  Number 0201
+@@AROUND2			  Near	 _TEXT:0088
+@@ATEND				  Near	 _TEXT:020E
+@@ATEND				  Near	 _TEXT:02E8
+@@CYCLE				  Near	 _TEXT:00C0
+@@CYCLE				  Near	 _TEXT:016E
+@@CYCLE				  Near	 _TEXT:03CD
+@@CYCLE101			  Near	 _TEXT:01EB
+@@CYCLE101			  Near	 _TEXT:02CC
+@@CYCLE102			  Near	 _TEXT:021C
+@@CYCLE102			  Near	 _TEXT:02F6
+@@CYCLE12			  Near	 _TEXT:0078
+@@CYCLE2			  Near	 _TEXT:012D
+@@CYCLE3			  Near	 _TEXT:01D5
+@@CYCLE4			  Near	 _TEXT:023C
+@@CYCLE4			  Near	 _TEXT:0316
+@@CYCLE6			  Near	 _TEXT:0156
+@@CYCLE6			  Near	 _TEXT:027A
+@@CYCLE7			  Near	 _TEXT:01A0
+@@CYCLE7			  Near	 _TEXT:029E
+@@CYCLE8			  Near	 _TEXT:01BC
+@@CYCLE8			  Near	 _TEXT:02BA
+@@DONE				  Near	 _TEXT:013E
+@@DONE				  Near	 _TEXT:017F
+@@DONE10			  Near	 _TEXT:0116
+@@DONE10			  Near	 _TEXT:0423
+@@DONE101			  Near	 _TEXT:022A
+@@DONE101			  Near	 _TEXT:0304
+@@DONE2				  Near	 _TEXT:01CA
+@@DONE2				  Near	 _TEXT:02C7
+@@DONE3				  Near	 _TEXT:01E3
+@@DONE30			  Near	 _TEXT:0092
+@@DONE4				  Near	 _TEXT:0258
+@@DONE4				  Near	 _TEXT:0332
+@@DONE5				  Near	 _TEXT:01BA
+@@DONE5				  Near	 _TEXT:02B8
+Turbo Assembler	 Version 2.01	     06/27/16 22:29:13	    Page 18
+Symbol Table
+
+
+
+@@INRANGE			  Near	 _TEXT:0100
+@@INRANGE			  Near	 _TEXT:040D
+@@NOTASCII			  Near	 _TEXT:0113
+@@NOTASCII			  Near	 _TEXT:0420
+@@NOTNEG			  Near	 _TEXT:0197
+@@NOTNEG			  Near	 _TEXT:0299
+@@PROCESS101			  Near	 _TEXT:0213
+@@PROCESS101			  Near	 _TEXT:02ED
+@@REDUCE			  Near	 _TEXT:0237
+@@REDUCE			  Near	 _TEXT:0311
+@@SKIP				  Near	 _TEXT:0098
+@@SKIP				  Near	 _TEXT:0255
+@@SKIP				  Near	 _TEXT:032F
+@@SKIP10			  Near	 _TEXT:00D5
+@@SKIP10			  Near	 _TEXT:03E2
+@@SKIP102			  Near	 _TEXT:022F
+@@SKIP11			  Near	 _TEXT:00D9
+@@SKIP11			  Near	 _TEXT:03E6
+@@SKIP2				  Near	 _TEXT:00AB
+@@SKIP3				  Near	 _TEXT:0199
+@@SKIP3				  Near	 _TEXT:029B
+@CODE				  Text	 _TEXT
+@CODESIZE			  Text	 0
+@CPU				  Text	 0D0FH
+@CURSEG				  Text	 _TEXT
+@DATA				  Text	 DGROUP
+@DATASIZE			  Text	 0
+@FILENAME			  Text	 NUMBERS
+@MODEL				  Text	 2
+@WORDSIZE			  Text	 2
+ATOF				  Near	 _TEXT:0000
+ATOI				  Near	 _TEXT:0347
+BEGIN				  Near	 _TEXT:0000
+FTOA				  Near	 _TEXT:0149
+INT1				  Dword	 DGROUP:001A
+INT2				  Dword	 DGROUP:001E
+INTEGERTEN			  Dword	 DGROUP:0026
+ITOA				  Near	 _TEXT:026D
+PLACES				  Word	 DGROUP:002A
+REALTEN				  Dword	 DGROUP:0022
+TEMPSTR				  Byte	 DGROUP:0000
+TOOLARGE			  Byte	 DGROUP:002C
+
+Macro Name
+
+DISPLAYSTRING
+GETFLOATSTRING
+GETINTEGERSTRING
+
+Groups & Segments		  Bit Size Align  Combine Class
+
+DGROUP				  Group
+  STACK				  16  0100 Para	  Stack	  STACK
+  _DATA				  16  0057 Word	  Public  DATA
+_TEXT				  16  0437 Word	  Public  CODE
+

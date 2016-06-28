@@ -1753,9 +1753,11 @@ void crear_inicio_assembler()
 	    exit(1);
 	}
 	fprintf(a, ";TITLE TP Compilador 2016");
+	fprintf(a, "\ninclude macros2.asm\t\t ;incluye macros\n");
+	fprintf(a, "\ninclude number.asm\t\t ;incluye el asm para impresion de numeros\n");
 	fprintf(a, "\n.model small");
 	fprintf(a, "\n.386");
-	fprintf(a, "\n.stack 100h");
+	fprintf(a, "\n.stack 200h");
 	fprintf(a, "\n");
 	fprintf(a, "\n.data");
 	fprintf(a, "\nmessage db	'-- EOF --', '$'");
@@ -1774,6 +1776,7 @@ void crear_codigo_assembler(t_nodo_arbol *tree)
 {
 	fprintf(a, "\n");
 	fprintf(a, "\n.code");
+	fprintf(a, "\nmain:");
 	fprintf(a, "\nmov AX,@DATA ;");
 	fprintf(a, "\nmov DS,AX ;");
 	fprintf(a, "\nfinit ;\n");
@@ -1812,7 +1815,7 @@ void crear_codigo_assembler(t_nodo_arbol *tree)
 		strcpy(asig_iguales,"");
 	}	
 	fprintf(a, "\n\nmov AX, 4C00h");
-	fprintf(a, "\nend;");
+	fprintf(a, "\nend main");
     
 }
 
@@ -2118,9 +2121,8 @@ void recorrer_asm(t_nodo_arbol *n, int usar_aux2){
 			fprintf(a, "\nmov ah, 9");
 			fprintf(a, "\nint 21h");
 		} else if(strcmp(n->info->a,"WRITE")==0 && strcmp(n->padre->info->a, "WRITE")!=0){
-			fprintf(a, "\nmov dx, OFFSET read");
-			fprintf(a, "\nmov ah, 9");
-			fprintf(a, "\nint 21h");
+			fprintf(a, "\nDisplayInteger ");
+			fprintf(a, n->nodo_izq->info->a);
 		} else if(strcmp(n->info->a,"<V.F>")==0 || strcmp(n->info->a, "<-true . false->")==0){
 				char buf[2];
 	 			sprintf(buf, "%d", ifs);

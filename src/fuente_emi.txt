@@ -3,10 +3,4 @@ DIM [a,b,c,d] AS [INT,INT,INT,STRING];
 a:=5;
 b:=3;
 c:=8;
-
-IF(a==b)
-THEN
-a:=a+3;
-ELSE
-b:=c/2*3;
-ENDIF
+WRITE a;
