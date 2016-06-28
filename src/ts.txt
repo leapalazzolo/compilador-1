@@ -6,6 +6,8 @@ _d				STRING				0				3
 _c				INT				0				3
 _b				INT				0				3
 _a				INT				0				3
-_cte_5				INT				1				3
-_cte_3				INT				1				4
-_cte_8				INT				1				5
+_cte_1				INT				1				3
+_cte_8				INT				1				4
+_cte_3				INT				1				5
+_cte_2				INT				1				5
+_cte_5				INT				1				6

@@ -2009,9 +2009,8 @@ void recorrer_asm(t_nodo_arbol *n, int usar_aux2){
 		} else if(strcmp(n->info->a,"==")==0)
 		{
 			usar_aux2=1;
-			strcpy(string_cond, "\njne ");
-			if(strcmp(n->padre->info->a, "WHILE")==0){
-			} else if(is_hoja(n->nodo_izq) && is_hoja(n->nodo_der)){
+			strcpy(string_cond, "\nje ");
+			if(is_hoja(n->nodo_izq) && is_hoja(n->nodo_der)){
 				fprintf(a, "\nfld ");
 				fprintf(a, n->nodo_izq->info->a);
 				fprintf(a, "\nfstp aux1");
@@ -2022,9 +2021,8 @@ void recorrer_asm(t_nodo_arbol *n, int usar_aux2){
 		} else if(strcmp(n->info->a,"!=")==0)
 		{
 			usar_aux2=1;
-			strcpy(string_cond, "\nje ");
-			if(strcmp(n->padre->info->a, "WHILE")==0){
-			} else if(is_hoja(n->nodo_izq) && is_hoja(n->nodo_der)){
+			strcpy(string_cond, "\njne ");
+			if(is_hoja(n->nodo_izq) && is_hoja(n->nodo_der)){
 				fprintf(a, "\nfld ");
 				fprintf(a, n->nodo_izq->info->a);
 				fprintf(a, "\nfstp aux1");
@@ -2035,9 +2033,8 @@ void recorrer_asm(t_nodo_arbol *n, int usar_aux2){
 		} else if(strcmp(n->info->a,">")==0)
 		{
 			usar_aux2=1;
-			strcpy(string_cond, "\njle ");
-			if(strcmp(n->padre->info->a, "WHILE")==0){
-			} else if(is_hoja(n->nodo_izq) && is_hoja(n->nodo_der)){
+			strcpy(string_cond, "\njg ");
+			if(is_hoja(n->nodo_izq) && is_hoja(n->nodo_der)){
 				fprintf(a, "\nfld ");
 				fprintf(a, n->nodo_izq->info->a);
 				fprintf(a, "\nfstp aux1");
@@ -2048,9 +2045,8 @@ void recorrer_asm(t_nodo_arbol *n, int usar_aux2){
 		} else if(strcmp(n->info->a,">=")==0)
 		{
 			usar_aux2=1;
-			strcpy(string_cond, "\njl ");
-			if(strcmp(n->padre->info->a, "WHILE")==0){
-			} else if(is_hoja(n->nodo_izq) && is_hoja(n->nodo_der)){
+			strcpy(string_cond, "\nge ");
+			if(is_hoja(n->nodo_izq) && is_hoja(n->nodo_der)){
 				fprintf(a, "\nfld ");
 				fprintf(a, n->nodo_izq->info->a);
 				fprintf(a, "\nfstp aux1");
@@ -2061,9 +2057,8 @@ void recorrer_asm(t_nodo_arbol *n, int usar_aux2){
 		} else if(strcmp(n->info->a,"<")==0)
 		{
 			usar_aux2=1;
-			strcpy(string_cond, "\njge ");
-			if(strcmp(n->padre->info->a, "WHILE")==0){
-			} else if(is_hoja(n->nodo_izq) && is_hoja(n->nodo_der)){
+			strcpy(string_cond, "\njl ");
+			if(is_hoja(n->nodo_izq) && is_hoja(n->nodo_der)){
 				fprintf(a, "\nfld ");
 				fprintf(a, n->nodo_izq->info->a);
 				fprintf(a, "\nfstp aux1");
@@ -2074,9 +2069,8 @@ void recorrer_asm(t_nodo_arbol *n, int usar_aux2){
 		} else if(strcmp(n->info->a,"<=")==0)
 		{
 			usar_aux2=1;
-			strcpy(string_cond, "\njg ");
-			if(strcmp(n->padre->info->a, "WHILE")==0){
-			} else if(is_hoja(n->nodo_izq) && is_hoja(n->nodo_der)){
+			strcpy(string_cond, "\njle ");
+			if(is_hoja(n->nodo_izq) && is_hoja(n->nodo_der)){
 				fprintf(a, "\nfld ");
 				fprintf(a, n->nodo_izq->info->a);
 				fprintf(a, "\nfstp aux1");
@@ -2340,9 +2334,8 @@ void recorrer_asm_2(t_nodo_arbol *n, int usar_aux2){
 		} else if(strcmp(n->info->a,"==")==0)
 		{
 			usar_aux2=1;
-			strcpy(string_cond, "\nje ");
-			if(strcmp(n->padre->info->a, "WHILE")==0){
-			} else if(is_hoja(n->nodo_izq) && is_hoja(n->nodo_der)){
+			strcpy(string_cond, "\njne ");
+			if(is_hoja(n->nodo_izq) && is_hoja(n->nodo_der)){
 				fprintf(a, "\nfld ");
 				fprintf(a, n->nodo_izq->info->a);
 				fprintf(a, "\nfstp aux1");
@@ -2353,9 +2346,8 @@ void recorrer_asm_2(t_nodo_arbol *n, int usar_aux2){
 		} else if(strcmp(n->info->a,"!=")==0)
 		{
 			usar_aux2=1;
-			strcpy(string_cond, "\njne ");
-			if(strcmp(n->padre->info->a, "WHILE")==0){
-			} else if(is_hoja(n->nodo_izq) && is_hoja(n->nodo_der)){
+			strcpy(string_cond, "\nje ");
+			if(is_hoja(n->nodo_izq) && is_hoja(n->nodo_der)){
 				fprintf(a, "\nfld ");
 				fprintf(a, n->nodo_izq->info->a);
 				fprintf(a, "\nfstp aux1");
@@ -2366,9 +2358,8 @@ void recorrer_asm_2(t_nodo_arbol *n, int usar_aux2){
 		} else if(strcmp(n->info->a,">")==0)
 		{
 			usar_aux2=1;
-			strcpy(string_cond, "\njg ");
-			if(strcmp(n->padre->info->a, "WHILE")==0){
-			} else if(is_hoja(n->nodo_izq) && is_hoja(n->nodo_der)){
+			strcpy(string_cond, "\njl ");
+			if(is_hoja(n->nodo_izq) && is_hoja(n->nodo_der)){
 				fprintf(a, "\nfld ");
 				fprintf(a, n->nodo_izq->info->a);
 				fprintf(a, "\nfstp aux1");
@@ -2379,9 +2370,8 @@ void recorrer_asm_2(t_nodo_arbol *n, int usar_aux2){
 		} else if(strcmp(n->info->a,">=")==0)
 		{
 			usar_aux2=1;
-			strcpy(string_cond, "\njge ");
-			if(strcmp(n->padre->info->a, "WHILE")==0){
-			} else if(is_hoja(n->nodo_izq) && is_hoja(n->nodo_der)){
+			strcpy(string_cond, "\njle ");
+			if(is_hoja(n->nodo_izq) && is_hoja(n->nodo_der)){
 				fprintf(a, "\nfld ");
 				fprintf(a, n->nodo_izq->info->a);
 				fprintf(a, "\nfstp aux1");
@@ -2392,9 +2382,8 @@ void recorrer_asm_2(t_nodo_arbol *n, int usar_aux2){
 		} else if(strcmp(n->info->a,"<")==0)
 		{
 			usar_aux2=1;
-			strcpy(string_cond, "\njl ");
-			if(strcmp(n->padre->info->a, "WHILE")==0){
-			} else if(is_hoja(n->nodo_izq) && is_hoja(n->nodo_der)){
+			strcpy(string_cond, "\njge ");
+			if(is_hoja(n->nodo_izq) && is_hoja(n->nodo_der)){
 				fprintf(a, "\nfld ");
 				fprintf(a, n->nodo_izq->info->a);
 				fprintf(a, "\nfstp aux1");
@@ -2405,9 +2394,8 @@ void recorrer_asm_2(t_nodo_arbol *n, int usar_aux2){
 		}else if(strcmp(n->info->a,"<=")==0)
 		{
 			usar_aux2=1;
-			strcpy(string_cond, "\njle ");
-			if(strcmp(n->padre->info->a, "WHILE")==0){
-			} else if(is_hoja(n->nodo_izq) && is_hoja(n->nodo_der)){
+			strcpy(string_cond, "\njge ");
+			if(is_hoja(n->nodo_izq) && is_hoja(n->nodo_der)){
 				fprintf(a, "\nfld ");
 				fprintf(a, n->nodo_izq->info->a);
 				fprintf(a, "\nfstp aux1");
