@@ -31,7 +31,6 @@ _b dd 0
 _a dd 0
 _cte_1 dd 1.000000
 _cte_8 dd 8.000000
-_cte_3 dd 3.000000
 _cte_2 dd 2.000000
 _cte_5 dd 5.000000
 
@@ -45,17 +44,9 @@ fld _cte_1
 fstp _a
 fld _cte_8
 fstp _c
-fld _c
-fld _cte_3
-fmul
-fstp aux2
 fld _cte_2
-fld aux1
+fld _a
 fadd
-fstp aux1
-fld aux2
-fld aux1
-fadd 
 fstp aux1
 fld aux1
 fstp _b
@@ -66,13 +57,17 @@ fstp aux2
 fld aux2
 fld aux1
 fcomp
-jl end_if1
+jg else_if1
 DisplayFloat _a 2
 newLine 1
 fld _cte_1
 fld _a
 fadd
 fstp aux1
+jmp end_if1
+else_if1:
+DisplayFloat _c 2
+newLine 1
 fld aux1
 fstp _a
 end_if1:

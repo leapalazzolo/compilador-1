@@ -3711,9 +3711,6 @@ void crear_codigo_assembler(t_nodo_arbol *tree)
 		sprintf(buf, "%d", ifs);
 		fprintf(a, buf);
 		fprintf(a, ":");
-		ifs--;
-		if(ifs==0)
-					ifs+=10;
 	}
 	if(whiles>0){
 				recorrer_asm_2(nodo_asm_while, 0);
@@ -3801,15 +3798,12 @@ void recorrer_asm(t_nodo_arbol *n, int usar_aux2){
 				fprintf(a, asig_final);
 				strcpy(asig_final,"");		
 			}		
-			if(ifs>0 && strcmp(n->padre->info->a, "IF")!=0){
+			if(ifs>0 && strcmp(n->padre->info->a, "IF")!=0 && strcmp(n->padre->info->a, "<V.F>")!=0){
 				fprintf(a, "\nend_if");
 				char buf[2];
 				sprintf(buf, "%d", ifs);
 				fprintf(a, buf);
 				fprintf(a, ":");
-				ifs--;
-				if(ifs==0)
-					ifs+=10;
 			}
 			if(strcmp(asig_iguales, "")!=0 && strcmp(n->nodo_izq->info->a, "IF")!=0){
 				fprintf(a, asig_iguales);
@@ -4138,9 +4132,6 @@ void recorrer_asm_2(t_nodo_arbol *n, int usar_aux2){
 				sprintf(buf, "%d", ifs);
 				fprintf(a, buf);
 				fprintf(a, ":");
-				ifs--;
-				if(ifs==0)
-					ifs+=10;
 			}
 			if(whiles>0 && strcmp(n->padre->info->a, "WHILE")!=0){
 				fprintf(a, "\nend_while");
