@@ -4000,6 +4000,7 @@ void recorrer_asm(t_nodo_arbol *n, int usar_aux2){
 				fprintf(a, "aux1");
 				fprintf(a, "\nfcomp");
 				fprintf(a, "\nfstsw ax");
+				fprintf(a, "\nfwait");
 				fprintf(a, "\nsahf");
 				fprintf(a, "\nffree st(0)");
 				fprintf(a, string_cond);
@@ -4014,6 +4015,7 @@ void recorrer_asm(t_nodo_arbol *n, int usar_aux2){
 				fprintf(a, "aux1");
 				fprintf(a, "\nfcomp");
 				fprintf(a, "\nfstsw ax");
+				fprintf(a, "\nfwait");
 				fprintf(a, "\nsahf");
 				fprintf(a, "\nffree st(0)");
 				fprintf(a, string_cond);
@@ -4062,6 +4064,7 @@ void recorrer_asm(t_nodo_arbol *n, int usar_aux2){
 			fprintf(a, "aux1");
 			fprintf(a, "\nfcomp");
 			fprintf(a, "\nfstsw ax");
+			fprintf(a, "\nfwait");
 			fprintf(a, "\nsahf");
 			fprintf(a, "\nffree st(0)");
 			fprintf(a, string_cond);
@@ -4339,6 +4342,7 @@ void recorrer_asm_2(t_nodo_arbol *n, int usar_aux2){
 				fprintf(a, "aux1");
 				fprintf(a, "\nfcomp");
 				fprintf(a, "\nfstsw ax");
+				fprintf(a, "\nfwait");
 				fprintf(a, "\nsahf");
 				fprintf(a, "\nffree st(0)");
 				fprintf(a, string_cond);
@@ -4353,6 +4357,7 @@ void recorrer_asm_2(t_nodo_arbol *n, int usar_aux2){
 				fprintf(a, "aux1");
 				fprintf(a, "\nfcomp");
 				fprintf(a, "\nfstsw ax");
+				fprintf(a, "\nfwait");
 				fprintf(a, "\nsahf");
 				fprintf(a, "\nffree st(0)");
 				fprintf(a, string_cond);
@@ -4377,6 +4382,7 @@ void recorrer_asm_2(t_nodo_arbol *n, int usar_aux2){
 			fprintf(a, "aux1");
 			fprintf(a, "\nfcomp");
 			fprintf(a, "\nfstsw ax");
+			fprintf(a, "\nfwait");
 			fprintf(a, "\nsahf");
 			fprintf(a, "\nffree st(0)");
 			fprintf(a, string_cond);

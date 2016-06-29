@@ -32,7 +32,6 @@ _a dd 0
 _cte_1 dd 1.000000
 _cte_8 dd 8.000000
 _cte_2 dd 2.000000
-_cte_10 dd 1.000000
 
 .code
 main:
@@ -50,7 +49,7 @@ fadd
 fstp aux1
 fld aux1
 fstp _b
-fld _cte_10
+fld _cte_8
 fstp aux1
 fld _c
 fstp aux2
@@ -58,9 +57,10 @@ fld aux2
 fld aux1
 fcomp
 fstsw ax
+fwait
 sahf
 ffree st(0)
-jb else_if1
+je else_if1
 fld _cte_1
 fld _a
 fadd
