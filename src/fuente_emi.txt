@@ -3,4 +3,8 @@ DIM [a,b,c,d] AS [INT,INT,INT,STRING];
 a:=1;
 c:=8;
 b:=a+2;
-WRITE c;
+IF(c<=7)
+THEN
+a:=a+1;
+ENDIF
+WRITE a;
