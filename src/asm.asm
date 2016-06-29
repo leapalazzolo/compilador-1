@@ -29,6 +29,9 @@ _c dd 0
 _b dd 0
 
 _a dd 0
+_cte_3 dd 3.000000
+_cte_2 dd 2.000000
+_cte_4 dd 4.000000
 
 .code
 main:
@@ -36,14 +39,42 @@ mov AX,@DATA ;
 mov DS,AX ;
 finit ;
 
-mov dx, OFFSET read
-mov ah, 9
-int 21h
-newLine 1
-GetString _d
-newLine 1
-DisplayString _d
-newLine 1
+fld _cte_3
+fstp _c
+fld _cte_3
+fstp aux1
+fld _c
+fstp aux2
+fld aux2
+fld aux1
+fcomp
+fstsw ax
+fwait
+sahf
+ffree st(0)
+jne end_if1
+fld _cte_3
+fld _cte_2
+fadd
+fstp aux1
+fld aux1
+fstp _c
+end_if1:
+fld _cte_4
+fstp aux1
+fld _c
+fstp aux2
+fld aux2
+fld aux1
+fcomp
+fstsw ax
+fwait
+sahf
+ffree st(0)
+jne end_if11
+fld _cte_2
+fstp _c
+end_if11:
 
 mov AX, 4C00h
 end main

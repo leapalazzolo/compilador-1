@@ -1,4 +1,12 @@
 MAIN
 DIM [a,b,c,d] AS [INT,INT,INT,STRING];
-READ d;
-WRITE d;
+c:=3;
+IF(c==3)
+THEN
+c:=2+3;
+ENDIF
+
+IF(c==4)
+THEN
+c:=2;
+ENDIF

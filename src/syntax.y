@@ -52,7 +52,7 @@ int traer_tipo_con_prefijo(char * nombre);
 extern int linecount;
 static t_info_sentencias * p_info_iguales;
 static FILE *a;
-static int usar_aux2 = 0, ifs=0, whiles=0;
+static int usar_aux2 = 0, ifs=0, whiles=0, base=0;
 static char asig_final[80];
 static char asig_iguales[80];
 static char sent_final[80];
@@ -1798,6 +1798,10 @@ void crear_codigo_assembler(t_nodo_arbol *tree)
 		fprintf(a, buf);
 		fprintf(a, ":");
 		ifs--;
+		if(ifs==base){
+					ifs+=10;
+					base+=10;
+				}
 	}
 	if(whiles>0){
 				recorrer_asm_2(nodo_asm_while, 0);
@@ -1892,6 +1896,10 @@ void recorrer_asm(t_nodo_arbol *n, int usar_aux2){
 				fprintf(a, buf);
 				fprintf(a, ":");
 				ifs--;
+				if(ifs==base){
+					ifs+=10;
+					base+=10;
+				}
 			}
 			if(strcmp(asig_iguales, "")!=0 && strcmp(n->nodo_izq->info->a, "IF")!=0){
 				fprintf(a, asig_iguales);
@@ -2251,6 +2259,10 @@ void recorrer_asm_2(t_nodo_arbol *n, int usar_aux2){
 				fprintf(a, buf);
 				fprintf(a, ":");
 				ifs--;
+				if(ifs==base){
+					ifs+=10;
+					base+=10;
+				}
 			}
 			if(whiles>0 && strcmp(n->padre->info->a, "WHILE")!=0){
 				fprintf(a, "\nend_while");
