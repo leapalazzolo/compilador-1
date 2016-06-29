@@ -29,9 +29,6 @@ _c dd 0
 _b dd 0
 
 _a dd 0
-_cte_1 dd 1.000000
-_cte_8 dd 8.000000
-_cte_2 dd 2.000000
 
 .code
 main:
@@ -39,41 +36,12 @@ mov AX,@DATA ;
 mov DS,AX ;
 finit ;
 
-fld _cte_1
-fstp _a
-fld _cte_8
-fstp _c
-fld _cte_2
-fld _a
-fadd
-fstp aux1
-fld aux1
-fstp _b
-fld _cte_8
-fstp aux1
-fld _c
-fstp aux2
-fld aux2
-fld aux1
-fcomp
-fstsw ax
-fwait
-sahf
-ffree st(0)
-je else_if1
-fld _cte_1
-fld _a
-fadd
-fstp aux1
-jmp end_if1
-else_if1:
-fld _cte_2
-fld _a
-fadd
-fstp aux1
-fld aux1
-fstp _a
-end_if1:
+mov dx, OFFSET read
+mov ah, 9
+int 21h
+newLine 1
+GetFloat _a
+newLine 1
 DisplayFloat _a 2
 newLine 1
 

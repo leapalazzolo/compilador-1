@@ -1,12 +1,4 @@
 MAIN
 DIM [a,b,c,d] AS [INT,INT,INT,STRING];
-a:=1;
-c:=8;
-b:=a+2;
-IF(c!=8)
-THEN
-a:=a+1;
-ELSE
-a:=a+2;
-ENDIF
+READ a;
 WRITE a;
