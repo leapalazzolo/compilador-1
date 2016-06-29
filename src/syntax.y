@@ -47,6 +47,7 @@ char *newStr (char *charBuffer);
 char * substring(char * str , int start, int end);
 char * get_nombre_sin_prefijo(t_simbolo *);
 void recorrer_asm_2(t_nodo_arbol *n, int usar_aux2);
+int traer_tipo_con_prefijo(char * nombre);
 
 extern int linecount;
 static t_info_sentencias * p_info_iguales;
@@ -2109,10 +2110,17 @@ void recorrer_asm(t_nodo_arbol *n, int usar_aux2){
 			fprintf(a, "\nmov ah, 9");
 			fprintf(a, "\nint 21h");
 		} else if(strcmp(n->info->a,"WRITE")==0 && strcmp(n->padre->info->a, "WRITE")!=0){
-			fprintf(a, "\nDisplayFloat ");
-			fprintf(a, n->nodo_izq->info->a);
-			fprintf(a, " 2");
-			fprintf(a, "\nnewLine 1");
+			int tipo = traer_tipo_con_prefijo(n->nodo_izq->info->a);
+			if(tipo!=3){
+				fprintf(a, "\nDisplayFloat ");
+				fprintf(a, n->nodo_izq->info->a);
+				fprintf(a, " 2");
+				fprintf(a, "\nnewLine 1");
+			} else{
+				fprintf(a, "\nDisplayString ");
+				fprintf(a, n->nodo_izq->info->a);
+				fprintf(a, "\nnewLine 1");
+			}			
 		} else if(strcmp(n->info->a,"<V.F>")==0 || strcmp(n->info->a, "<-true . false->")==0){
 				char buf[2];
 	 			sprintf(buf, "%d", ifs);
@@ -2465,4 +2473,9 @@ char *newStr (char *charBuffer) {
     strcpy(str, &charBuffer[1]);
   }
   return str;
+}
+
+int traer_tipo_con_prefijo(char * nombre) {
+	int index = buscar_en_TS(nombre, NULL,0);
+	return tabla_simbolos[index].tipo;
 }

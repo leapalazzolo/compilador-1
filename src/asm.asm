@@ -32,7 +32,6 @@ _a dd 0
 _cte_1 dd 1.000000
 _cte_8 dd 8.000000
 _cte_2 dd 2.000000
-_cte_5 dd 5.000000
 
 .code
 main:
@@ -50,27 +49,8 @@ fadd
 fstp aux1
 fld aux1
 fstp _b
-fld _cte_5
-fstp aux1
-fld _a
-fstp aux2
-fld aux2
-fld aux1
-fcomp
-jg else_if1
-DisplayFloat _a 2
-newLine 1
-fld _cte_1
-fld _a
-fadd
-fstp aux1
-jmp end_if1
-else_if1:
 DisplayFloat _c 2
 newLine 1
-fld aux1
-fstp _a
-end_if1:
 
 mov AX, 4C00h
 end main

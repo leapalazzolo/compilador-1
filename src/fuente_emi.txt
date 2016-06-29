@@ -3,10 +3,4 @@ DIM [a,b,c,d] AS [INT,INT,INT,STRING];
 a:=1;
 c:=8;
 b:=a+2;
-IF (a>5)
-THEN
-WRITE a;
-a:=a+1;
-ELSE
 WRITE c;
-ENDIF
