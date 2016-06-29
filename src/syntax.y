@@ -2125,7 +2125,11 @@ void recorrer_asm(t_nodo_arbol *n, int usar_aux2){
 				fprintf(a, "\nGetFloat ");
 				fprintf(a, n->nodo_izq->info->a);
 				fprintf(a, "\nnewLine 1");
-			} 
+			} else{
+				fprintf(a, "\nGetString ");
+				fprintf(a, n->nodo_izq->info->a);
+				fprintf(a, "\nnewLine 1");
+			}
 		} else if(strcmp(n->info->a,"WRITE")==0 && strcmp(n->padre->info->a, "WRITE")!=0){
 			int tipo = traer_tipo_con_prefijo(n->nodo_izq->info->a);
 			if(tipo!=3){

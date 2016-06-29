@@ -1,4 +1,4 @@
 MAIN
 DIM [a,b,c,d] AS [INT,INT,INT,STRING];
-READ a;
-WRITE a;
+READ d;
+WRITE d;

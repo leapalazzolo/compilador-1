@@ -40,9 +40,9 @@ mov dx, OFFSET read
 mov ah, 9
 int 21h
 newLine 1
-GetFloat _a
+GetString _d
 newLine 1
-DisplayFloat _a 2
+DisplayString _d
 newLine 1
 
 mov AX, 4C00h
