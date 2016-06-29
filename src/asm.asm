@@ -1,19 +1,19 @@
 ;TITLE TP Compilador 2016
-include macros2.asm      ;incluye macros
+include macros2.asm		 ;incluye macros
 
-include number.asm       ;incluye el asm para impresion de numeros
+include number.asm		 ;incluye el asm para impresion de numeros
 
 .model small
 .386
 .stack 200h
 
 .data
-message db  '-- EOF --', '$'
-overflow db 'Overflow!', '$'
-diviz db    'Division by 0!', '$'
-read db 'Ingrese valor por teclado...', '$'
+message db	'-- EOF --', '$'
+overflow db	'Overflow!', '$'
+diviz db	'Division by 0!', '$'
+read db	'Ingrese valor por teclado...', '$'
 MAX_STRING_LENGTH equ 30 ;Longitud maxima de los string.
-MAX_STRING_INT equ 65535 ;Tama?o maximo de ints.
+MAX_STRING_INT equ 65535 ;Tama�o maximo de ints.
 aux1 dd ?
 aux2 dd ?
 cont dd 0.000000
@@ -32,7 +32,7 @@ _a dd 0
 _cte_1 dd 1.000000
 _cte_8 dd 8.000000
 _cte_2 dd 2.000000
-_cte_7 dd 7.000000
+_cte_10 dd 1.000000
 
 .code
 main:
@@ -50,7 +50,7 @@ fadd
 fstp aux1
 fld aux1
 fstp _b
-fld _cte_8
+fld _cte_10
 fstp aux1
 fld _c
 fstp aux2
@@ -60,8 +60,14 @@ fcomp
 fstsw ax
 sahf
 ffree st(0)
-jb end_if1
+jb else_if1
 fld _cte_1
+fld _a
+fadd
+fstp aux1
+jmp end_if1
+else_if1:
+fld _cte_2
 fld _a
 fadd
 fstp aux1

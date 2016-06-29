@@ -2138,7 +2138,6 @@ void recorrer_asm(t_nodo_arbol *n, int usar_aux2){
 				fprintf(a, "\nelse_if");
 				fprintf(a, buf);
 				fprintf(a, ":");
-				ifs--;
 		} else if(strcmp(n->info->a,"WHILE")==0){
 			nodo_asm_while = n;
 			whiles++;
@@ -2456,7 +2455,6 @@ void recorrer_asm_2(t_nodo_arbol *n, int usar_aux2){
 				fprintf(a, "\nelse_if");
 				fprintf(a, buf);
 				fprintf(a, ":");
-				ifs--;
 		} else if(strcmp(n->info->a,"WHILE")==0){
 			fprintf(a, "\nfld ");
 			fprintf(a, "aux2");

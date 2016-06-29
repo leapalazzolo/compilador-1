@@ -3,8 +3,10 @@ DIM [a,b,c,d] AS [INT,INT,INT,STRING];
 a:=1;
 c:=8;
 b:=a+2;
-IF(c<=7)
+IF(c<=10)
 THEN
 a:=a+1;
+ELSE
+a:=a+2;
 ENDIF
 WRITE a;
